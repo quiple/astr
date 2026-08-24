@@ -99,9 +99,9 @@ WEIGHT_AXIS_MAPPING = {
 # Keep the original metadata namespace stable. Renaming these keys with the
 # family would make an existing package look unsynchronized and force every
 # imported glyph to be rewritten.
-SYNC_STATE_KEY = "com.quiple.AstaSans.interSync"
-IMPORTED_GLYPH_KEY = "com.quiple.AstaSans.interGlyph"
-REMOVED_UNICODES_KEY = "com.quiple.AstaSans.interRemovedUnicodes"
+SYNC_STATE_KEY = "com.quiple.Aster.interSync"
+IMPORTED_GLYPH_KEY = "com.quiple.Aster.interGlyph"
+REMOVED_UNICODES_KEY = "com.quiple.Aster.interRemovedUnicodes"
 DISPLAY_MASTER_NAMESPACE = uuid.UUID("899f9541-4354-42f3-9582-fdf66f401235")
 SYNC_STATE_VERSION = 3
 
