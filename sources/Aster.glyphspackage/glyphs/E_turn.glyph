@@ -5,8 +5,8 @@ layers = (
 {
 anchors = (
 {
-name = top;
-pos = (308.35,727.539);
+name = bottom;
+pos = (295.817,0);
 },
 {
 name = cedilla;
@@ -21,8 +21,8 @@ name = tonos;
 pos = (488.403,0);
 },
 {
-name = bottom;
-pos = (295.817,0);
+name = top;
+pos = (308.35,727.539);
 }
 );
 layerId = m003;
@@ -40,8 +40,8 @@ width = 591.10514;
 {
 anchors = (
 {
-name = top;
-pos = (307.373,727.539);
+name = bottom;
+pos = (298.096,0);
 },
 {
 name = cedilla;
@@ -56,8 +56,8 @@ name = tonos;
 pos = (502.563,0);
 },
 {
-name = bottom;
-pos = (298.096,0);
+name = top;
+pos = (307.373,727.539);
 }
 );
 layerId = m01;
@@ -75,8 +75,8 @@ width = 596.80176;
 {
 anchors = (
 {
-name = top;
-pos = (306.641,727.539);
+name = bottom;
+pos = (299.805,0);
 },
 {
 name = cedilla;
@@ -91,8 +91,8 @@ name = tonos;
 pos = (513.184,0);
 },
 {
-name = bottom;
-pos = (299.805,0);
+name = top;
+pos = (306.641,727.539);
 }
 );
 layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
@@ -110,8 +110,8 @@ width = 601.07422;
 {
 anchors = (
 {
-name = top;
-pos = (306.885,727.539);
+name = bottom;
+pos = (300.391,0);
 },
 {
 name = cedilla;
@@ -126,8 +126,8 @@ name = tonos;
 pos = (515.82,0);
 },
 {
-name = bottom;
-pos = (300.391,0);
+name = top;
+pos = (306.885,727.539);
 }
 );
 layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
@@ -145,8 +145,8 @@ width = 601.66016;
 {
 anchors = (
 {
-name = top;
-pos = (307.373,727.539);
+name = bottom;
+pos = (301.562,0);
 },
 {
 name = cedilla;
@@ -161,8 +161,8 @@ name = tonos;
 pos = (521.094,0);
 },
 {
-name = bottom;
-pos = (301.562,0);
+name = top;
+pos = (307.373,727.539);
 }
 );
 layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
@@ -180,8 +180,8 @@ width = 602.83203;
 {
 anchors = (
 {
-name = top;
-pos = (308.105,727.539);
+name = bottom;
+pos = (303.32,0);
 },
 {
 name = cedilla;
@@ -196,8 +196,8 @@ name = tonos;
 pos = (529.004,0);
 },
 {
-name = bottom;
-pos = (303.32,0);
+name = top;
+pos = (308.105,727.539);
 }
 );
 layerId = m005;
@@ -215,8 +215,8 @@ width = 604.58984;
 {
 anchors = (
 {
-name = top;
-pos = (296.956,727.539);
+name = bottom;
+pos = (287.272,0);
 },
 {
 name = cedilla;
@@ -231,8 +231,8 @@ name = tonos;
 pos = (489.665,0);
 },
 {
-name = bottom;
-pos = (287.272,0);
+name = top;
+pos = (296.956,727.539);
 }
 );
 layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
@@ -250,8 +250,8 @@ width = 567.62695;
 {
 anchors = (
 {
-name = top;
-pos = (286.865,727.539);
+name = bottom;
+pos = (282.715,0);
 },
 {
 name = cedilla;
@@ -266,8 +266,8 @@ name = tonos;
 pos = (499.756,0);
 },
 {
-name = bottom;
-pos = (282.715,0);
+name = top;
+pos = (286.865,727.539);
 }
 );
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
@@ -285,8 +285,8 @@ width = 574.46289;
 {
 anchors = (
 {
-name = top;
-pos = (279.297,727.539);
+name = bottom;
+pos = (279.297,0);
 },
 {
 name = cedilla;
@@ -301,8 +301,8 @@ name = tonos;
 pos = (507.324,0);
 },
 {
-name = bottom;
-pos = (279.297,0);
+name = top;
+pos = (279.297,727.539);
 }
 );
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
@@ -320,8 +320,8 @@ width = 579.58984;
 {
 anchors = (
 {
-name = top;
-pos = (280.908,727.539);
+name = bottom;
+pos = (280.908,0);
 },
 {
 name = cedilla;
@@ -336,8 +336,8 @@ name = tonos;
 pos = (511.597,0);
 },
 {
-name = bottom;
-pos = (280.908,0);
+name = top;
+pos = (280.908,727.539);
 }
 );
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
@@ -355,8 +355,8 @@ width = 582.20215;
 {
 anchors = (
 {
-name = top;
-pos = (284.131,727.539);
+name = bottom;
+pos = (284.131,0);
 },
 {
 name = cedilla;
@@ -371,8 +371,8 @@ name = tonos;
 pos = (520.142,0);
 },
 {
-name = bottom;
-pos = (284.131,0);
+name = top;
+pos = (284.131,727.539);
 }
 );
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
@@ -390,8 +390,8 @@ width = 587.42676;
 {
 anchors = (
 {
-name = top;
-pos = (288.965,727.539);
+name = bottom;
+pos = (288.965,0);
 },
 {
 name = cedilla;
@@ -406,8 +406,8 @@ name = tonos;
 pos = (532.959,0);
 },
 {
-name = bottom;
-pos = (288.965,0);
+name = top;
+pos = (288.965,727.539);
 }
 );
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
@@ -423,7 +423,6 @@ vertWidth = 0;
 width = 595.26367;
 }
 );
-note = "";
 production = uni018E;
 unicode = 398;
 userData = {

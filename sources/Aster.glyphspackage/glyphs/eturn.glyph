@@ -6,8 +6,8 @@ layers = (
 {
 anchors = (
 {
-name = top;
-pos = (290.12,545.898);
+name = bottom;
+pos = (287.842,0);
 },
 {
 name = cedilla;
@@ -18,8 +18,8 @@ name = ogonek;
 pos = (341.96,-8.545);
 },
 {
-name = bottom;
-pos = (287.842,0);
+name = top;
+pos = (290.12,545.898);
 }
 );
 layerId = m003;
@@ -37,8 +37,8 @@ width = 576.74154;
 {
 anchors = (
 {
-name = top;
-pos = (291.748,545.898);
+name = bottom;
+pos = (290.771,0);
 },
 {
 name = cedilla;
@@ -49,8 +49,8 @@ name = ogonek;
 pos = (360.84,-3.662);
 },
 {
-name = bottom;
-pos = (290.771,0);
+name = top;
+pos = (291.748,545.898);
 }
 );
 layerId = m01;
@@ -68,8 +68,8 @@ width = 580.32227;
 {
 anchors = (
 {
-name = top;
-pos = (292.969,545.898);
+name = bottom;
+pos = (292.969,0);
 },
 {
 name = cedilla;
@@ -80,8 +80,8 @@ name = ogonek;
 pos = (375,0);
 },
 {
-name = bottom;
-pos = (292.969,0);
+name = top;
+pos = (292.969,545.898);
 }
 );
 layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
@@ -99,8 +99,8 @@ width = 583.00781;
 {
 anchors = (
 {
-name = top;
-pos = (293.506,545.898);
+name = bottom;
+pos = (293.652,0);
 },
 {
 name = cedilla;
@@ -111,8 +111,8 @@ name = ogonek;
 pos = (379.736,1.221);
 },
 {
-name = bottom;
-pos = (293.652,0);
+name = top;
+pos = (293.506,545.898);
 }
 );
 layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
@@ -130,8 +130,8 @@ width = 584.17969;
 {
 anchors = (
 {
-name = top;
-pos = (294.58,545.898);
+name = bottom;
+pos = (295.02,0);
 },
 {
 name = cedilla;
@@ -142,8 +142,8 @@ name = ogonek;
 pos = (389.209,3.662);
 },
 {
-name = bottom;
-pos = (295.02,0);
+name = top;
+pos = (294.58,545.898);
 }
 );
 layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
@@ -161,8 +161,8 @@ width = 586.52344;
 {
 anchors = (
 {
-name = top;
-pos = (296.191,545.898);
+name = bottom;
+pos = (297.07,0);
 },
 {
 name = cedilla;
@@ -173,8 +173,8 @@ name = ogonek;
 pos = (403.418,7.324);
 },
 {
-name = bottom;
-pos = (297.07,0);
+name = top;
+pos = (296.191,545.898);
 }
 );
 layerId = m005;
@@ -192,8 +192,8 @@ width = 590.03906;
 {
 anchors = (
 {
-name = top;
-pos = (290.12,515.625);
+name = bottom;
+pos = (287.842,0);
 },
 {
 name = cedilla;
@@ -204,8 +204,8 @@ name = ogonek;
 pos = (341.96,-8.545);
 },
 {
-name = bottom;
-pos = (287.842,0);
+name = top;
+pos = (290.12,515.625);
 }
 );
 layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
@@ -223,8 +223,8 @@ width = 521.89128;
 {
 anchors = (
 {
-name = top;
-pos = (291.748,515.625);
+name = bottom;
+pos = (290.771,0);
 },
 {
 name = cedilla;
@@ -235,8 +235,8 @@ name = ogonek;
 pos = (360.84,-3.662);
 },
 {
-name = bottom;
-pos = (290.771,0);
+name = top;
+pos = (291.748,515.625);
 }
 );
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
@@ -254,8 +254,8 @@ width = 530.0293;
 {
 anchors = (
 {
-name = top;
-pos = (292.969,515.625);
+name = bottom;
+pos = (292.969,0);
 },
 {
 name = cedilla;
@@ -266,8 +266,8 @@ name = ogonek;
 pos = (375,0);
 },
 {
-name = bottom;
-pos = (292.969,0);
+name = top;
+pos = (292.969,515.625);
 }
 );
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
@@ -285,8 +285,8 @@ width = 536.13281;
 {
 anchors = (
 {
-name = top;
-pos = (293.506,515.625);
+name = bottom;
+pos = (293.652,0);
 },
 {
 name = cedilla;
@@ -297,8 +297,8 @@ name = ogonek;
 pos = (379.736,1.221);
 },
 {
-name = bottom;
-pos = (293.652,0);
+name = top;
+pos = (293.506,515.625);
 }
 );
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
@@ -316,8 +316,8 @@ width = 538.47656;
 {
 anchors = (
 {
-name = top;
-pos = (294.58,515.625);
+name = bottom;
+pos = (295.02,0);
 },
 {
 name = cedilla;
@@ -328,8 +328,8 @@ name = ogonek;
 pos = (389.209,3.662);
 },
 {
-name = bottom;
-pos = (295.02,0);
+name = top;
+pos = (294.58,515.625);
 }
 );
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
@@ -347,8 +347,8 @@ width = 543.16406;
 {
 anchors = (
 {
-name = top;
-pos = (296.191,515.625);
+name = bottom;
+pos = (297.07,0);
 },
 {
 name = cedilla;
@@ -359,8 +359,8 @@ name = ogonek;
 pos = (403.418,7.324);
 },
 {
-name = bottom;
-pos = (297.07,0);
+name = top;
+pos = (296.191,515.625);
 }
 );
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
@@ -376,7 +376,6 @@ vertWidth = 0;
 width = 550.19531;
 }
 );
-note = "";
 production = uni01DD;
 unicode = 477;
 userData = {

@@ -4,12 +4,12 @@ layers = (
 {
 anchors = (
 {
-name = cross;
-pos = (701.538,375.203);
-},
-{
 name = bottom;
 pos = (701.538,0);
+},
+{
+name = cross;
+pos = (701.538,375.203);
 },
 {
 name = ogonek;
@@ -46,12 +46,12 @@ width = 830.11882;
 {
 anchors = (
 {
-name = cross;
-pos = (728.394,375.366);
-},
-{
 name = bottom;
 pos = (728.394,0);
+},
+{
+name = cross;
+pos = (728.394,375.366);
 },
 {
 name = ogonek;
@@ -88,12 +88,12 @@ width = 860.22949;
 {
 anchors = (
 {
-name = cross;
-pos = (748.535,375.488);
-},
-{
 name = bottom;
 pos = (748.535,0);
+},
+{
+name = cross;
+pos = (748.535,375.488);
 },
 {
 name = ogonek;
@@ -130,12 +130,12 @@ width = 882.8125;
 {
 anchors = (
 {
-name = cross;
-pos = (751.245,375.952);
-},
-{
 name = bottom;
 pos = (751.245,0);
+},
+{
+name = cross;
+pos = (751.245,375.952);
 },
 {
 name = ogonek;
@@ -172,12 +172,12 @@ width = 886.13281;
 {
 anchors = (
 {
-name = cross;
-pos = (756.665,376.88);
-},
-{
 name = bottom;
 pos = (756.665,0);
+},
+{
+name = cross;
+pos = (756.665,376.88);
 },
 {
 name = ogonek;
@@ -214,12 +214,12 @@ width = 892.77344;
 {
 anchors = (
 {
-name = cross;
-pos = (764.795,378.271);
-},
-{
 name = bottom;
 pos = (764.795,0);
+},
+{
+name = cross;
+pos = (764.795,378.271);
 },
 {
 name = ogonek;
@@ -256,12 +256,12 @@ width = 902.73437;
 {
 anchors = (
 {
-name = cross;
-pos = (645.915,375);
-},
-{
 name = bottom;
 pos = (645.915,0);
+},
+{
+name = cross;
+pos = (645.915,375);
 },
 {
 name = ogonek;
@@ -298,12 +298,12 @@ width = 748.73861;
 {
 anchors = (
 {
-name = cross;
-pos = (677.49,375);
-},
-{
 name = bottom;
 pos = (677.49,0);
+},
+{
+name = cross;
+pos = (677.49,375);
 },
 {
 name = ogonek;
@@ -340,12 +340,12 @@ width = 787.96387;
 {
 anchors = (
 {
-name = cross;
-pos = (701.172,375);
-},
-{
 name = bottom;
 pos = (701.172,0);
+},
+{
+name = cross;
+pos = (701.172,375);
 },
 {
 name = ogonek;
@@ -382,12 +382,12 @@ width = 817.38281;
 {
 anchors = (
 {
-name = cross;
-pos = (705.176,375.488);
-},
-{
 name = bottom;
 pos = (705.176,0);
+},
+{
+name = cross;
+pos = (705.176,375.488);
 },
 {
 name = ogonek;
@@ -424,12 +424,12 @@ width = 822.60742;
 {
 anchors = (
 {
-name = cross;
-pos = (713.184,376.465);
-},
-{
 name = bottom;
 pos = (713.184,0);
+},
+{
+name = cross;
+pos = (713.184,376.465);
 },
 {
 name = ogonek;
@@ -466,12 +466,12 @@ width = 833.05664;
 {
 anchors = (
 {
-name = cross;
-pos = (725.195,377.93);
-},
-{
 name = bottom;
 pos = (725.195,0);
+},
+{
+name = cross;
+pos = (725.195,377.93);
 },
 {
 name = ogonek;
@@ -506,7 +506,6 @@ vertWidth = 0;
 width = 848.73047;
 }
 );
-note = "";
 production = uni04F8.ss07;
 unicode = 58006;
 userData = {
