@@ -4,5 +4,5 @@ autohintTTF: False
 buildOTF: True
 buildStatic: True
 buildVariable: False
-buildWebfont: False
+buildWebfont: True
 removeOutlineOverlaps: True
