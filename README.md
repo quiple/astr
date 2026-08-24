@@ -12,9 +12,9 @@ OpenType features that exist only in Asta Sans are retained.
 
 ## Creating the Aster source
 
-The source package keeps the filename `sources/AstaSans.glyphspackage`, while
-the family stored inside it is Aster. To turn an original Asta Sans package at
-that path into the complete Aster project in place, run:
+The input package is `sources/Aster.glyphspackage`: it has that filename but
+initially contains the original Asta Sans project. To turn it into the complete
+Aster project in place, run:
 
 ```sh
 make init-aster
@@ -27,7 +27,7 @@ and `QPLE` vendor metadata; and fetches and merges the latest Inter source.
 
 ## Synchronizing Inter
 
-Inter is stored in `sources/AstaSans.glyphspackage`, not merged during every
+Inter is stored in `sources/Aster.glyphspackage`, not merged during every
 font build. Run this command whenever the Inter source should be updated:
 
 ```sh

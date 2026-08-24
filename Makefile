@@ -7,7 +7,7 @@ help:
 	@echo "###"
 	@echo
 	@echo "  make setup:  Installs the font build dependencies"
-	@echo "  make init-aster:  Converts AstaSans.glyphspackage into the complete Aster source"
+	@echo "  make init-aster:  Converts Aster.glyphspackage into the complete Aster source"
 	@echo "  make sync-inter:  Fetches current Inter and updates changed merged data"
 	@echo "  make sync-inter-all:  Fetches current Inter and reapplies every Inter glyph"
 	@echo "  make build:  Builds the fonts and places them in the fonts/ directory"
@@ -18,7 +18,7 @@ help:
 build: build.stamp
 
 INTER_REPOSITORY_URL ?= https://github.com/rsms/inter.git
-GLYPHS_SOURCE ?= sources/AstaSans.glyphspackage
+GLYPHS_SOURCE ?= sources/Aster.glyphspackage
 
 sync-inter: venv
 	. venv/bin/activate; python sources/sync_inter.py --source "$(GLYPHS_SOURCE)" --repository "$(INTER_REPOSITORY_URL)"

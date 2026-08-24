@@ -37,7 +37,7 @@ from ufomerge.scaler import scale_ufo
 
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_FONT_SOURCE = ROOT / "sources" / "AstaSans.glyphspackage"
+DEFAULT_FONT_SOURCE = ROOT / "sources" / "Aster.glyphspackage"
 INTER_CACHE = ROOT / "sources" / "vendor" / "inter"
 INTER_SOURCE_IN_REPOSITORY = Path("src/Inter-Roman.glyphspackage")
 DEFAULT_REPOSITORY = "https://github.com/rsms/inter.git"
@@ -1177,7 +1177,7 @@ def main() -> None:
         default=str(DEFAULT_FONT_SOURCE),
         help=(
             "Glyphs package to update "
-            "(default: sources/AstaSans.glyphspackage)"
+            "(default: sources/Aster.glyphspackage)"
         ),
     )
     parser.add_argument(
