@@ -1,0 +1,155 @@
+{
+glyphname = quotedblbase.ss08;
+kernLeft = quotedblbase;
+kernRight = quotedblbase;
+layers = (
+{
+layerId = m003;
+shapes = (
+{
+alignment = -1;
+pos = (0,-654.704);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 404.70378;
+},
+{
+layerId = m01;
+shapes = (
+{
+alignment = -1;
+pos = (0,-631.592);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 444.0918;
+},
+{
+layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
+shapes = (
+{
+alignment = -1;
+pos = (0,-614.258);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 473.63281;
+},
+{
+layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
+shapes = (
+{
+alignment = -1;
+pos = (0,-610.547);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 481.39648;
+},
+{
+layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
+shapes = (
+{
+alignment = -1;
+pos = (0,-603.125);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 496.92383;
+},
+{
+layerId = m005;
+shapes = (
+{
+alignment = -1;
+pos = (0,-591.992);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 520.21484;
+},
+{
+layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
+shapes = (
+{
+alignment = -1;
+pos = (0,-660.807);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 279.13411;
+},
+{
+layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
+shapes = (
+{
+alignment = -1;
+pos = (0,-638.672);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 314.94141;
+},
+{
+layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
+shapes = (
+{
+alignment = -1;
+pos = (0,-622.07);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 341.79688;
+},
+{
+layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
+shapes = (
+{
+alignment = -1;
+pos = (0,-617.969);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 348.58398;
+},
+{
+layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
+shapes = (
+{
+alignment = -1;
+pos = (0,-609.766);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 362.1582;
+},
+{
+layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
+shapes = (
+{
+alignment = -1;
+pos = (0,-597.461);
+ref = quotedblright.ss08;
+}
+);
+vertWidth = 0;
+width = 382.51953;
+}
+);
+note = "";
+userData = {
+com.quiple.Aster.interGlyph = 1;
+};
+}

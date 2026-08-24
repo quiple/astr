@@ -1,0 +1,337 @@
+{
+glyphname = yturn;
+kernLeft = A;
+kernRight = f;
+layers = (
+{
+anchors = (
+{
+name = top;
+pos = (384.684,750);
+},
+{
+name = ogonek;
+pos = (249.064,545.898);
+},
+{
+name = bottom;
+pos = (275.757,0);
+}
+);
+layerId = m003;
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (551.473,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 551.47298;
+},
+{
+anchors = (
+{
+name = top;
+pos = (383.057,750);
+},
+{
+name = ogonek;
+pos = (242.065,545.898);
+},
+{
+name = bottom;
+pos = (277.222,0);
+}
+);
+layerId = m01;
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (557.495,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 557.49512;
+},
+{
+anchors = (
+{
+name = top;
+pos = (381.836,750);
+},
+{
+name = ogonek;
+pos = (236.816,545.898);
+},
+{
+name = bottom;
+pos = (278.32,0);
+}
+);
+layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (562.012,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 562.01172;
+},
+{
+anchors = (
+{
+name = top;
+pos = (383.105,750);
+},
+{
+name = ogonek;
+pos = (235.645,545.898);
+},
+{
+name = bottom;
+pos = (280.615,0);
+}
+);
+layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (565.698,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 565.69824;
+},
+{
+anchors = (
+{
+name = top;
+pos = (385.645,750);
+},
+{
+name = ogonek;
+pos = (233.301,545.898);
+},
+{
+name = bottom;
+pos = (285.205,0);
+}
+);
+layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (573.071,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 573.07129;
+},
+{
+anchors = (
+{
+name = top;
+pos = (389.453,750);
+},
+{
+name = ogonek;
+pos = (229.785,545.898);
+},
+{
+name = bottom;
+pos = (292.09,0);
+}
+);
+layerId = m005;
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (584.131,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 584.13086;
+},
+{
+anchors = (
+{
+name = top;
+pos = (384.684,719.157);
+},
+{
+name = ogonek;
+pos = (223.999,515.625);
+},
+{
+name = bottom;
+pos = (247.559,0);
+}
+);
+layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (497.477,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 497.47721;
+},
+{
+anchors = (
+{
+name = top;
+pos = (383.057,719.482);
+},
+{
+name = ogonek;
+pos = (219.604,515.625);
+},
+{
+name = bottom;
+pos = (251.465,0);
+}
+);
+layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (505.615,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 505.61523;
+},
+{
+anchors = (
+{
+name = top;
+pos = (381.836,719.727);
+},
+{
+name = ogonek;
+pos = (216.309,515.625);
+},
+{
+name = bottom;
+pos = (254.395,0);
+}
+);
+layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (511.719,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 511.71875;
+},
+{
+anchors = (
+{
+name = top;
+pos = (383.105,719.727);
+},
+{
+name = ogonek;
+pos = (215.137,515.625);
+},
+{
+name = bottom;
+pos = (256.519,0);
+}
+);
+layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (515.625,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 515.625;
+},
+{
+anchors = (
+{
+name = top;
+pos = (385.645,719.727);
+},
+{
+name = ogonek;
+pos = (212.793,515.625);
+},
+{
+name = bottom;
+pos = (260.767,0);
+}
+);
+layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (523.438,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 523.4375;
+},
+{
+anchors = (
+{
+name = top;
+pos = (389.453,719.727);
+},
+{
+name = ogonek;
+pos = (209.277,515.625);
+},
+{
+name = bottom;
+pos = (267.139,0);
+}
+);
+layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (535.156,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 535.15625;
+}
+);
+note = "";
+production = uni028E;
+unicode = 654;
+userData = {
+com.quiple.Aster.interGlyph = 1;
+};
+}

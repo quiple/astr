@@ -1,0 +1,361 @@
+{
+glyphname = encyrillic;
+kernLeft = m;
+kernRight = a;
+layers = (
+{
+anchors = (
+{
+name = bottom;
+pos = (292.521,0);
+},
+{
+name = cyrtic;
+pos = (494.995,0);
+},
+{
+name = lfthook;
+pos = (445.272,0);
+},
+{
+name = top;
+pos = (292.521,545.898);
+}
+);
+layerId = m003;
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 583.53678;
+},
+{
+anchors = (
+{
+name = bottom;
+pos = (293.335,0);
+},
+{
+name = cyrtic;
+pos = (504.272,0);
+},
+{
+name = lfthook;
+pos = (432.739,0);
+},
+{
+name = top;
+pos = (293.335,545.898);
+}
+);
+layerId = m01;
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 586.30371;
+},
+{
+anchors = (
+{
+name = bottom;
+pos = (293.945,0);
+},
+{
+name = cyrtic;
+pos = (511.23,0);
+},
+{
+name = lfthook;
+pos = (423.34,0);
+},
+{
+name = top;
+pos = (293.945,545.898);
+}
+);
+layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 588.37891;
+},
+{
+anchors = (
+{
+name = bottom;
+pos = (295.483,0);
+},
+{
+name = cyrtic;
+pos = (515.649,0);
+},
+{
+name = lfthook;
+pos = (422.339,0);
+},
+{
+name = top;
+pos = (295.483,545.898);
+}
+);
+layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 591.43066;
+},
+{
+anchors = (
+{
+name = bottom;
+pos = (298.56,0);
+},
+{
+name = cyrtic;
+pos = (524.487,0);
+},
+{
+name = lfthook;
+pos = (420.337,0);
+},
+{
+name = top;
+pos = (298.56,545.898);
+}
+);
+layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 597.53418;
+},
+{
+anchors = (
+{
+name = bottom;
+pos = (303.174,0);
+},
+{
+name = cyrtic;
+pos = (537.744,0);
+},
+{
+name = lfthook;
+pos = (417.334,0);
+},
+{
+name = top;
+pos = (303.174,545.898);
+}
+);
+layerId = m005;
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 606.68945;
+},
+{
+anchors = (
+{
+name = bottom;
+pos = (266.561,0);
+},
+{
+name = cyrtic;
+pos = (468.018,0);
+},
+{
+name = lfthook;
+pos = (420.329,0);
+},
+{
+name = top;
+pos = (266.561,515.625);
+}
+);
+layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 531.81966;
+},
+{
+anchors = (
+{
+name = bottom;
+pos = (271.606,0);
+},
+{
+name = cyrtic;
+pos = (480.713,0);
+},
+{
+name = lfthook;
+pos = (412.842,0);
+},
+{
+name = top;
+pos = (271.606,515.625);
+}
+);
+layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 543.21289;
+},
+{
+anchors = (
+{
+name = bottom;
+pos = (275.391,0);
+},
+{
+name = cyrtic;
+pos = (490.234,0);
+},
+{
+name = lfthook;
+pos = (407.227,0);
+},
+{
+name = top;
+pos = (275.391,515.625);
+}
+);
+layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 551.75781;
+},
+{
+anchors = (
+{
+name = bottom;
+pos = (277.466,0);
+},
+{
+name = cyrtic;
+pos = (495.312,0);
+},
+{
+name = lfthook;
+pos = (406.689,0);
+},
+{
+name = top;
+pos = (277.466,515.625);
+}
+);
+layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 555.85938;
+},
+{
+anchors = (
+{
+name = bottom;
+pos = (281.616,0);
+},
+{
+name = cyrtic;
+pos = (505.469,0);
+},
+{
+name = lfthook;
+pos = (405.615,0);
+},
+{
+name = top;
+pos = (281.616,515.625);
+}
+);
+layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 564.0625;
+},
+{
+anchors = (
+{
+name = bottom;
+pos = (287.842,0);
+},
+{
+name = cyrtic;
+pos = (520.703,0);
+},
+{
+name = lfthook;
+pos = (404.004,0);
+},
+{
+name = top;
+pos = (287.842,515.625);
+}
+);
+layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
+shapes = (
+{
+alignment = -1;
+ref = h.sc;
+}
+);
+vertWidth = 0;
+width = 576.36719;
+}
+);
+note = "";
+production = uni043D;
+unicode = 1085;
+userData = {
+com.quiple.Aster.interGlyph = 1;
+};
+}
