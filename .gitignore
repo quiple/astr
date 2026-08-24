@@ -1,4 +1,5 @@
 *~
+__pycache__/
 venv
 venv-test
 build.stamp
@@ -42,4 +43,5 @@ Thumbs.db
 results.md
 changelist.txt
 masters
+/sources/vendor/inter/
 out

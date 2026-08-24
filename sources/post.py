@@ -1,4 +1,3 @@
-import glob
 from pathlib import Path
 from fontTools.ttLib import TTFont
 

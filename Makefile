@@ -1,9 +1,15 @@
 
+.PHONY: help setup sync-inter sync-inter-all init-aster converter builder test proof clean update-project-template update
+
 help:
 	@echo "###"
-	@echo "# Build targets for Asta Sans"
+	@echo "# Build targets for Aster"
 	@echo "###"
 	@echo
+	@echo "  make setup:  Installs the font build dependencies"
+	@echo "  make init-aster:  Converts AstaSans.glyphspackage into the complete Aster source"
+	@echo "  make sync-inter:  Fetches current Inter and updates changed merged data"
+	@echo "  make sync-inter-all:  Fetches current Inter and reapplies every Inter glyph"
 	@echo "  make build:  Builds the fonts and places them in the fonts/ directory"
 	@echo "  make test:   Tests the fonts with fontbakery"
 	@echo "  make proof:  Creates HTML proof documents in the proof/ directory"
@@ -11,20 +17,33 @@ help:
 
 build: build.stamp
 
+INTER_REPOSITORY_URL ?= https://github.com/rsms/inter.git
+GLYPHS_SOURCE ?= sources/AstaSans.glyphspackage
+
+sync-inter: venv
+	. venv/bin/activate; python sources/sync_inter.py --source "$(GLYPHS_SOURCE)" --repository "$(INTER_REPOSITORY_URL)"
+
+sync-inter-all: venv
+	. venv/bin/activate; python sources/sync_inter.py --source "$(GLYPHS_SOURCE)" --repository "$(INTER_REPOSITORY_URL)" --force
+
+init-aster: venv
+	. venv/bin/activate; python sources/sync_inter.py --source "$(GLYPHS_SOURCE)" --repository "$(INTER_REPOSITORY_URL)" --initialize --force
+
+setup: venv
+
 venv: venv/touchfile
 
 venv-test: venv-test/touchfile
 
 converter: venv
-	rm -rf sources/masters
-	. venv/bin/activate; glyphs2ufo sources/AstaSans.glyphspackage -m sources/masters
+	find sources/masters -mindepth 1 -maxdepth 1 ! -name .DS_Store -exec rm -rf {} +
+	. venv/bin/activate; glyphs2ufo --generate-GDEF "$(GLYPHS_SOURCE)" -m sources/masters
 
 builder: venv
-	rm -rf fonts	
+	find fonts -mindepth 1 -maxdepth 1 ! -name .DS_Store -exec rm -rf {} +
 	. venv/bin/activate; gftools builder sources/config_variable.yaml
 	. venv/bin/activate; gftools builder sources/config_static.yaml
 	. venv/bin/activate; python sources/post.py
-
 build.stamp: venv converter builder
 
 venv/touchfile: requirements.txt
