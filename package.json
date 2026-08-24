@@ -1,0 +1,38 @@
+{
+  "name": "@quiple/aster",
+  "version": "1.0.0",
+  "description": "Aster webfonts, combining Asta Sans and Inter",
+  "license": "OFL-1.1",
+  "author": "quiple",
+  "homepage": "https://github.com/quiple/aster#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quiple/aster.git"
+  },
+  "bugs": {
+    "url": "https://github.com/quiple/aster/issues"
+  },
+  "style": "./fonts/webfonts/aster.css",
+  "exports": {
+    ".": "./fonts/webfonts/aster.css",
+    "./aster.css": "./fonts/webfonts/aster.css",
+    "./static.css": "./fonts/webfonts/static.css",
+    "./fonts/*": "./fonts/webfonts/*"
+  },
+  "files": [
+    "fonts/webfonts/*.css",
+    "fonts/webfonts/*.woff2",
+    "OFL.txt"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "make build-woff2",
+    "prepack": "pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@11.22.0"
+}
