@@ -1,5 +1,5 @@
 
-.PHONY: help setup sync-inter sync-inter-all init-aster converter builder test proof clean update-project-template update
+.PHONY: help setup sync-inter sync-inter-all init-aster build-woff2 converter builder test proof clean update-project-template update
 
 help:
 	@echo "###"
@@ -11,6 +11,7 @@ help:
 	@echo "  make sync-inter:  Fetches current Inter and updates changed merged data"
 	@echo "  make sync-inter-all:  Fetches current Inter and reapplies every Inter glyph"
 	@echo "  make build:  Builds the fonts and places them in the fonts/ directory"
+	@echo "  make build-woff2:  Compresses existing variable and static TTFs to WOFF2"
 	@echo "  make test:   Tests the fonts with fontbakery"
 	@echo "  make proof:  Creates HTML proof documents in the proof/ directory"
 	@echo
@@ -28,6 +29,9 @@ sync-inter-all: venv
 
 init-aster: venv
 	. venv/bin/activate; python sources/sync_inter.py --source "$(GLYPHS_SOURCE)" --repository "$(INTER_REPOSITORY_URL)" --initialize --force
+
+build-woff2: venv
+	. venv/bin/activate; python sources/build_woff2.py
 
 setup: venv
 
