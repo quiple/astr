@@ -1,4 +1,4 @@
-![Aster](documentation/header.png)
+![Aster](https://raw.githubusercontent.com/quiple/aster/main/documentation/header.png)
 
 # Aster
 
