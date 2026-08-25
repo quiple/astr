@@ -51,7 +51,7 @@ APPLE_LATIN_STROKE_BIAS = (
 )
 TEXT_OPSZ = 14
 DISPLAY_OPSZ = 32
-OUTPUT_DECIMAL_PLACES = 2
+OUTPUT_DECIMAL_PLACES = 3
 
 
 def parse_scale(value: str) -> float:
