@@ -8,7 +8,7 @@ help:
 	@echo
 	@echo "  make setup:  Installs the font build dependencies"
 	@echo "  make init-aster:  Converts Aster.glyphspackage into the complete Aster source"
-	@echo "    Optional: INTER_SCALE=96% INTER_BASELINE=0 ASTER_MASTER_WEIGHTS=225,325,400,425,475,550 ASTER_EXPORT_WEIGHTS=225,300,400,500,550"
+	@echo "    Optional (decimals accepted): INTER_SCALE=101.1% INTER_BASELINE=-14.7 ASTER_MASTER_WEIGHTS=259.6,361.7,419.8,465,509.8,594.1 ASTER_EXPORT_WEIGHTS=259.6,336.2,419.8,537.9,594.1"
 	@echo "  make sync-inter:  Fetches current Inter and updates changed merged data"
 	@echo "  make sync-inter-all:  Fetches current Inter and reapplies every Inter glyph"
 	@echo "  make build:  Builds the fonts and places them in the fonts/ directory"

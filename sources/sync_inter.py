@@ -99,6 +99,8 @@ IMPORTED_GLYPH_KEY = "com.quiple.Aster.interGlyph"
 REMOVED_UNICODES_KEY = "com.quiple.Aster.interRemovedUnicodes"
 DISPLAY_MASTER_NAMESPACE = uuid.UUID("899f9541-4354-42f3-9582-fdf66f401235")
 SYNC_STATE_VERSION = 4
+Weight = int | float
+WEIGHT_DECIMAL_PLACES = 6
 
 
 def run(command: list[str], cwd: Path | None = None) -> None:
@@ -122,21 +124,36 @@ def parse_scale(value: str) -> float:
     return scale
 
 
-def parse_weights(value: str) -> tuple[int, ...]:
+def _normalize_weight(value: int | float) -> Weight:
+    number = float(value)
+    if not math.isfinite(number):
+        raise ValueError("weight must be a finite number")
+    rounded = round(number, WEIGHT_DECIMAL_PLACES)
+    return int(rounded) if rounded.is_integer() else rounded
+
+
+def _format_number(value: int | float) -> str:
+    return str(_normalize_weight(value))
+
+
+def parse_weights(value: str) -> tuple[Weight, ...]:
     parts = [part for part in re.split(r"[\s,]+", value.strip()) if part]
     try:
-        return tuple(int(part) for part in parts)
+        numbers = tuple(float(part) for part in parts)
     except ValueError as error:
         raise argparse.ArgumentTypeError(
-            "weights must be comma- or space-separated integers"
+            "weights must be comma- or space-separated numbers"
         ) from error
+    if any(not math.isfinite(number) for number in numbers):
+        raise argparse.ArgumentTypeError("weights must be finite numbers")
+    return tuple(_normalize_weight(number) for number in numbers)
 
 
 def _validate_settings(
     scale: float,
     baseline: float,
-    master_weights: tuple[int, ...],
-    export_weights: tuple[int, ...],
+    master_weights: tuple[Weight, ...],
+    export_weights: tuple[Weight, ...],
 ) -> None:
     if not math.isfinite(scale) or scale <= 0:
         raise ValueError("Inter scale must be greater than zero")
@@ -150,6 +167,11 @@ def _validate_settings(
         raise ValueError(
             f"Expected five export weights, got {len(export_weights)}"
         )
+    if any(
+        not math.isfinite(float(weight))
+        for weight in (*master_weights, *export_weights)
+    ):
+        raise ValueError("Master and export weights must be finite numbers")
     if any(
         left >= right for left, right in zip(master_weights, master_weights[1:])
     ):
@@ -173,9 +195,11 @@ def _validate_settings(
 def _settings_dict(
     scale: float,
     baseline: float,
-    master_weights: tuple[int, ...],
-    export_weights: tuple[int, ...],
+    master_weights: tuple[Weight, ...],
+    export_weights: tuple[Weight, ...],
 ) -> dict:
+    master_weights = tuple(_normalize_weight(value) for value in master_weights)
+    export_weights = tuple(_normalize_weight(value) for value in export_weights)
     _validate_settings(scale, baseline, master_weights, export_weights)
     return {
         "scale": scale,
@@ -191,19 +215,19 @@ def _settings_from_state(state: dict) -> dict:
         float(saved.get("scale", DEFAULT_SCALE)),
         float(saved.get("baseline", DEFAULT_BASELINE)),
         tuple(
-            int(value)
+            _normalize_weight(value)
             for value in saved.get("masterWeights", DEFAULT_MASTER_WEIGHTS)
         ),
         tuple(
-            int(value)
+            _normalize_weight(value)
             for value in saved.get("exportWeights", DEFAULT_EXPORT_WEIGHTS)
         ),
     )
 
 
 def _master_specs(
-    master_weights: tuple[int, ...],
-) -> tuple[tuple[str, str, int], ...]:
+    master_weights: tuple[Weight, ...],
+) -> tuple[tuple[str, str, Weight], ...]:
     return tuple(
         (master_id, name, weight)
         for (master_id, name), weight in zip(TEXT_MASTER_IDENTITIES, master_weights)
@@ -211,7 +235,7 @@ def _master_specs(
 
 
 def _instance_interpolations(
-    export_weight: int, master_weights: tuple[int, ...]
+    export_weight: Weight, master_weights: tuple[Weight, ...]
 ) -> tuple[tuple[str, float], ...]:
     master_specs = _master_specs(master_weights)
     for master_id, _name, master_weight in master_specs:
@@ -234,8 +258,8 @@ def _instance_interpolations(
 
 
 def _instance_specs(
-    master_weights: tuple[int, ...], export_weights: tuple[int, ...]
-) -> tuple[tuple[str, int, int | str, tuple[tuple[str, float], ...]], ...]:
+    master_weights: tuple[Weight, ...], export_weights: tuple[Weight, ...]
+) -> tuple[tuple[str, Weight, int | str, tuple[tuple[str, float], ...]], ...]:
     return tuple(
         (
             name,
@@ -249,7 +273,7 @@ def _instance_specs(
     )
 
 
-def _weight_axis_mapping(export_weights: tuple[int, ...]) -> dict[str, int]:
+def _weight_axis_mapping(export_weights: tuple[Weight, ...]) -> dict[str, Weight]:
     return {
         str(public_weight): design_weight
         for public_weight, design_weight in zip(
@@ -280,12 +304,12 @@ def fetch_latest_inter(repository: str) -> tuple[Path, str]:
     return source, commit
 
 
-def _instance_name(weight: int, optical_size: int) -> str:
-    return f"Inter sync w{weight} o{optical_size}"
+def _instance_name(weight: Weight, optical_size: int) -> str:
+    return f"Inter sync w{_format_number(weight)} o{optical_size}"
 
 
-def _instance_filename(weight: int, optical_size: int) -> str:
-    return f"Inter-w{weight}-o{optical_size}.ufo"
+def _instance_filename(weight: Weight, optical_size: int) -> str:
+    return f"Inter-w{_format_number(weight)}-o{optical_size}.ufo"
 
 
 def _scale_number(value: int | float | None, factor: float) -> int | None:
@@ -497,7 +521,7 @@ def _display_master_id(text_master_id: str) -> str:
     return str(uuid.uuid5(DISPLAY_MASTER_NAMESPACE, text_master_id)).upper()
 
 
-def _ensure_axis_mappings(font, export_weights: tuple[int, ...]) -> None:
+def _ensure_axis_mappings(font, export_weights: tuple[Weight, ...]) -> None:
     mappings = deepcopy(font.customParameters["Axis Mappings"] or {})
     mappings["wght"] = _weight_axis_mapping(export_weights)
     mappings["opsz"] = {
@@ -637,25 +661,29 @@ def _detached_deepcopy(item, parent_attribute: str):
 
 
 def _master_records(
-    font, state: dict, master_weights: tuple[int, ...]
+    font, state: dict, master_weights: tuple[Weight, ...]
 ) -> tuple[list[dict], list[dict], set[str]]:
     text_records = state.get("textMasters")
     display_records = state.get("displayMasters")
     if text_records and display_records:
         previous_weights = {
-            record["id"]: int(round(record["weight"]))
+            record["id"]: _normalize_weight(record["weight"])
             for record in [*text_records, *display_records]
         }
         text_records = [
             {
-                "weight": int(round(font.masters[record["id"]].axes[0])),
+                "weight": _normalize_weight(
+                    font.masters[record["id"]].axes[0]
+                ),
                 "id": record["id"],
             }
             for record in text_records
         ]
         display_records = [
             {
-                "weight": int(round(font.masters[record["id"]].axes[0])),
+                "weight": _normalize_weight(
+                    font.masters[record["id"]].axes[0]
+                ),
                 "id": record["id"],
             }
             for record in display_records
@@ -686,7 +714,7 @@ def _master_records(
             "The first Inter sync expects the original one-axis Aster project"
         )
     masters = list(font.masters)
-    coordinates = [int(round(master.axes[0])) for master in masters]
+    coordinates = [_normalize_weight(master.axes[0]) for master in masters]
     if tuple(coordinates) != master_weights:
         raise ValueError(
             "Expected the six Aster master weights "
@@ -697,7 +725,7 @@ def _master_records(
     text_records = []
     display_records = []
     for master in masters:
-        weight = int(round(master.axes[0]))
+        weight = _normalize_weight(master.axes[0])
         master.axes = [weight, TEXT_OPSZ]
         text_records.append({"weight": weight, "id": master.id})
 
@@ -773,7 +801,11 @@ def _ensure_display_instances(
     font, text_records: list[dict], display_records: list[dict]
 ) -> None:
     existing = {
-        (instance.name, int(round(instance.axes[0])), int(round(instance.axes[1]))): instance
+        (
+            instance.name,
+            _normalize_weight(instance.axes[0]),
+            int(round(instance.axes[1])),
+        ): instance
         for instance in font.instances
         if len(instance.axes) >= 2
     }
@@ -789,7 +821,7 @@ def _ensure_display_instances(
         and instance.active
     ]
     for text_instance in text_instances:
-        weight = int(round(text_instance.axes[0]))
+        weight = _normalize_weight(text_instance.axes[0])
         key = (text_instance.name, weight, DISPLAY_OPSZ)
         display = existing.get(key)
         if display is None:
@@ -1110,7 +1142,10 @@ def merge_into_aster(
     )
     master_map = {}
     for master in inter_font.masters:
-        coordinate = (int(round(master.axes[0])), int(round(master.axes[1])))
+        coordinate = (
+            _normalize_weight(master.axes[0]),
+            int(round(master.axes[1])),
+        )
         master_map[master.id] = target_by_coordinate[coordinate]
 
     # A coordinate-only migration must not replace unchanged master layers.
@@ -1232,10 +1267,14 @@ def _write_if_changed(path: Path, data: bytes) -> bool:
     return True
 
 
-def _replace_xml_attribute(tag: str, name: str, value: int) -> str:
+def _replace_xml_attribute(tag: str, name: str, value: int | float) -> str:
+    rendered_value = _format_number(value)
     pattern = re.compile(rf"(\b{re.escape(name)}\s*=\s*)([\"'])(.*?)(\2)")
     replaced, count = pattern.subn(
-        lambda match: f"{match.group(1)}{match.group(2)}{value}{match.group(4)}",
+        lambda match: (
+            f"{match.group(1)}{match.group(2)}"
+            f"{rendered_value}{match.group(4)}"
+        ),
         tag,
         count=1,
     )
@@ -1249,7 +1288,7 @@ def _xml_attribute(tag: str, name: str) -> str | None:
     return None if match is None else match.group(2)
 
 
-def _replace_weight_dimension(block: str, weight: int) -> str:
+def _replace_weight_dimension(block: str, weight: Weight) -> str:
     dimension_pattern = re.compile(r"<dimension\b[^>]*>")
     replaced = False
 
@@ -1271,7 +1310,7 @@ def _replace_designspace_item_weights(
     xml: str,
     section_name: str,
     item_name: str,
-    weights: tuple[int, ...],
+    weights: tuple[Weight, ...],
 ) -> str:
     section_pattern = re.compile(
         rf"(<{section_name}\b[^>]*>)(.*?)(</{section_name}>)", re.DOTALL
@@ -1305,8 +1344,8 @@ def _replace_designspace_item_weights(
 
 def render_aster_designspace(
     path: Path,
-    master_weights: tuple[int, ...],
-    export_weights: tuple[int, ...],
+    master_weights: tuple[Weight, ...],
+    export_weights: tuple[Weight, ...],
 ) -> bytes:
     xml = path.read_text(encoding="utf-8")
     root = ET.fromstring(xml)
@@ -1375,10 +1414,11 @@ def render_aster_designspace(
     rendered = xml.encode("utf-8")
     document = DesignSpaceDocument.fromstring(rendered)
     actual_sources = tuple(
-        int(round(source.designLocation["Weight"])) for source in document.sources
+        _normalize_weight(source.designLocation["Weight"])
+        for source in document.sources
     )
     actual_instances = tuple(
-        int(round(instance.designLocation["Weight"]))
+        _normalize_weight(instance.designLocation["Weight"])
         for instance in document.instances
     )
     if actual_sources != master_weights + master_weights:
@@ -1591,12 +1631,18 @@ def main() -> None:
     parser.add_argument(
         "--master-weights",
         type=parse_weights,
-        help="six comma- or space-separated Inter/Aster master coordinates",
+        help=(
+            "six comma- or space-separated Inter/Aster master coordinates; "
+            "decimals are accepted"
+        ),
     )
     parser.add_argument(
         "--export-weights",
         type=parse_weights,
-        help="five comma- or space-separated Aster export coordinates",
+        help=(
+            "five comma- or space-separated Aster export coordinates; "
+            "decimals are accepted"
+        ),
     )
     args = parser.parse_args()
 

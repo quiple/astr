@@ -37,6 +37,10 @@ INTER_FORM_CHARACTERS = "HInoOSB8"
 
 STEM_SCORE_WEIGHT = 0.6
 FORM_SCORE_WEIGHT = 0.4
+# Apple mixes SF Pro Latin with SF Pro KR at the same nominal CSS weight, but
+# the Latin is optically heavier.  Applying the same 60:40 stem/form metric
+# used above gives an approximately eight-percent Latin stroke bias.
+LATIN_STROKE_BIAS = 1.08
 TEXT_OPSZ = 14
 DISPLAY_OPSZ = 32
 
@@ -216,7 +220,7 @@ class InterStrokeModel:
         self,
         target_score: float,
         candidate_score: Callable[[float], float],
-    ) -> int:
+    ) -> float:
         minimum_score = candidate_score(self.minimum_weight)
         maximum_score = candidate_score(self.maximum_weight)
         if not minimum_score <= target_score <= maximum_score:
@@ -235,27 +239,21 @@ class InterStrokeModel:
                 high = middle
 
         estimate = (low + high) / 2
-        candidates = {
-            max(
-                int(self.minimum_weight),
-                min(int(self.maximum_weight), math.floor(estimate)),
-            ),
-            max(
-                int(self.minimum_weight),
-                min(int(self.maximum_weight), math.ceil(estimate)),
-            ),
-        }
-        return min(
-            candidates,
-            key=lambda weight: abs(candidate_score(float(weight)) - target_score),
+        return round(
+            max(self.minimum_weight, min(self.maximum_weight, estimate)), 1
         )
 
     def match_shared(
         self, text_score: float, display_score: float, scale: float
-    ) -> int:
+    ) -> float:
         # Uniform Inter scaling multiplies every measured width by this ratio.
-        # Text and Display contribute equally to the single shared weight.
-        target_score = fmean((text_score, display_score)) - math.log(scale)
+        # Text and Display contribute equally to the single shared weight. The
+        # final term retains Apple's slightly heavier Latin/Korean relationship.
+        target_score = (
+            fmean((text_score, display_score))
+            - math.log(scale)
+            + math.log(LATIN_STROKE_BIAS)
+        )
         return self.find_weight(
             target_score,
             lambda weight: fmean(
