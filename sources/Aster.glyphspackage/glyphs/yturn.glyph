@@ -1,0 +1,337 @@
+{
+glyphname = yturn;
+kernLeft = A;
+kernRight = f;
+layers = (
+{
+anchors = (
+{
+name = top;
+pos = (384.15,738.144);
+},
+{
+name = ogonek;
+pos = (246.768,534.042);
+},
+{
+name = bottom;
+pos = (276.237,-11.856);
+}
+);
+layerId = m003;
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (553.449,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 553.44872;
+},
+{
+anchors = (
+{
+name = top;
+pos = (382.424,738.144);
+},
+{
+name = ogonek;
+pos = (239.343,534.042);
+},
+{
+name = bottom;
+pos = (277.792,-11.856);
+}
+);
+layerId = m01;
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (559.838,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 559.83773;
+},
+{
+anchors = (
+{
+name = top;
+pos = (382.98,738.144);
+},
+{
+name = ogonek;
+pos = (235.761,534.042);
+},
+{
+name = bottom;
+pos = (280.388,-11.856);
+}
+);
+layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (565.333,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 565.33328;
+},
+{
+anchors = (
+{
+name = top;
+pos = (385.445,738.144);
+},
+{
+name = ogonek;
+pos = (233.485,534.042);
+},
+{
+name = bottom;
+pos = (284.844,-11.856);
+}
+);
+layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (572.491,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 572.49103;
+},
+{
+anchors = (
+{
+name = top;
+pos = (387.871,738.144);
+},
+{
+name = ogonek;
+pos = (231.245,534.042);
+},
+{
+name = bottom;
+pos = (289.23,-11.856);
+}
+);
+layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (579.537,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 579.5373;
+},
+{
+anchors = (
+{
+name = top;
+pos = (392.323,738.144);
+},
+{
+name = ogonek;
+pos = (227.136,534.042);
+},
+{
+name = bottom;
+pos = (297.277,-11.856);
+}
+);
+layerId = m005;
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (592.464,545.898);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 592.46402;
+},
+{
+anchors = (
+{
+name = top;
+pos = (384.15,707.408);
+},
+{
+name = ogonek;
+pos = (222.557,503.769);
+},
+{
+name = bottom;
+pos = (248.84,-11.856);
+}
+);
+layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (500.147,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 500.14714;
+},
+{
+anchors = (
+{
+name = top;
+pos = (382.424,707.753);
+},
+{
+name = ogonek;
+pos = (217.895,503.769);
+},
+{
+name = bottom;
+pos = (252.984,-11.856);
+}
+);
+layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (508.781,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 508.78092;
+},
+{
+anchors = (
+{
+name = top;
+pos = (382.98,707.871);
+},
+{
+name = ogonek;
+pos = (215.253,503.769);
+},
+{
+name = bottom;
+pos = (256.308,-11.856);
+}
+);
+layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (515.238,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 515.23828;
+},
+{
+anchors = (
+{
+name = top;
+pos = (385.445,707.871);
+},
+{
+name = ogonek;
+pos = (212.977,503.769);
+},
+{
+name = bottom;
+pos = (260.432,-11.856);
+}
+);
+layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (522.823,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 522.82266;
+},
+{
+anchors = (
+{
+name = top;
+pos = (387.871,707.871);
+},
+{
+name = ogonek;
+pos = (210.738,503.769);
+},
+{
+name = bottom;
+pos = (264.492,-11.856);
+}
+);
+layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (530.289,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 530.28891;
+},
+{
+anchors = (
+{
+name = top;
+pos = (392.323,707.871);
+},
+{
+name = ogonek;
+pos = (206.628,503.769);
+},
+{
+name = bottom;
+pos = (271.94,-11.856);
+}
+);
+layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (543.986,515.625);
+ref = y;
+}
+);
+vertWidth = 0;
+width = 543.98609;
+}
+);
+note = "";
+production = uni028E;
+unicode = 654;
+userData = {
+com.quiple.Aster.interGlyph = 1;
+};
+}

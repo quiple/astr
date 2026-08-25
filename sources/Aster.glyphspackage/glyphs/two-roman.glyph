@@ -89,6 +89,19 @@ com.hugojourdan.ColorFlow = {
 width = 492;
 },
 {
+layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
+shapes = (
+{
+ref = i;
+},
+{
+pos = (253,0);
+ref = i;
+}
+);
+width = 506;
+},
+{
 layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
 shapes = (
 {
@@ -147,7 +160,94 @@ com.hugojourdan.ColorFlow = {
 width = 540;
 },
 {
-layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
+layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
+shapes = (
+{
+ref = i;
+},
+{
+pos = (225,0);
+ref = i;
+}
+);
+userData = {
+com.hugojourdan.ColorFlow = {
+"0" = 0;
+"1" = 0;
+"10" = 0;
+"11" = 0;
+"2" = 0;
+"3" = 0;
+"4" = 0;
+"5" = 0;
+"6" = 0;
+"7" = 0;
+"8" = 0;
+"9" = 0;
+};
+};
+width = 450;
+},
+{
+layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
+shapes = (
+{
+ref = i;
+},
+{
+pos = (242,0);
+ref = i;
+}
+);
+userData = {
+com.hugojourdan.ColorFlow = {
+"0" = 0;
+"1" = 0;
+"10" = 0;
+"11" = 0;
+"2" = 0;
+"3" = 0;
+"4" = 0;
+"5" = 0;
+"6" = 0;
+"7" = 0;
+"8" = 0;
+"9" = 0;
+};
+};
+width = 484;
+},
+{
+layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
+shapes = (
+{
+ref = i;
+},
+{
+pos = (246,0);
+ref = i;
+}
+);
+userData = {
+com.hugojourdan.ColorFlow = {
+"0" = 0;
+"1" = 0;
+"10" = 0;
+"11" = 0;
+"2" = 0;
+"3" = 0;
+"4" = 0;
+"5" = 0;
+"6" = 0;
+"7" = 0;
+"8" = 0;
+"9" = 0;
+};
+};
+width = 492;
+},
+{
+layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
 shapes = (
 {
 ref = i;
@@ -158,9 +258,71 @@ ref = i;
 }
 );
 width = 506;
+},
+{
+layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
+shapes = (
+{
+ref = i;
+},
+{
+pos = (260,0);
+ref = i;
+}
+);
+userData = {
+com.hugojourdan.ColorFlow = {
+"0" = 0;
+"1" = 0;
+"10" = 0;
+"11" = 0;
+"2" = 0;
+"3" = 0;
+"4" = 0;
+"5" = 0;
+"6" = 0;
+"7" = 0;
+"8" = 0;
+"9" = 0;
+};
+};
+width = 520;
+},
+{
+layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
+shapes = (
+{
+ref = i;
+},
+{
+pos = (270,0);
+ref = i;
+}
+);
+userData = {
+com.hugojourdan.ColorFlow = {
+"0" = 0;
+"1" = 0;
+"10" = 0;
+"11" = 0;
+"2" = 0;
+"3" = 0;
+"4" = 0;
+"5" = 0;
+"6" = 0;
+"7" = 0;
+"8" = 0;
+"9" = 0;
+};
+};
+width = 540;
 }
 );
 metricLeft = i;
 metricRight = i;
-unicode = 8561;
+userData = {
+com.quiple.Aster.interRemovedUnicodes = (
+"2171"
+);
+};
 }
