@@ -20,6 +20,8 @@ MASTER_DIRECTORY = SOURCES / "masters"
 INSTANCE_DESIGNSPACE = MASTER_DIRECTORY / "Aster-default-instances.designspace"
 BUILD_DESIGNSPACE = MASTER_DIRECTORY / "Aster.designspace"
 STATIC_INSTANCE_DIRECTORY = MASTER_DIRECTORY / "instance_ufos"
+DEFAULT_FAMILY_NAME = "Aster"
+DEFAULT_STYLE_NAME = "Regular"
 
 
 def tool(name: str) -> str:
@@ -116,8 +118,10 @@ def materialize_missing_defaults(
             shutil.rmtree(path)
         instance = InstanceDescriptor()
         instance.name = name
-        instance.familyName = "Aster"
-        instance.styleName = name.removeprefix("Aster ")
+        # `name` must distinguish the two build-only instances, but their
+        # family/style metadata becomes the variable font's default names.
+        instance.familyName = DEFAULT_FAMILY_NAME
+        instance.styleName = DEFAULT_STYLE_NAME
         instance.path = str(path)
         instance.designLocation = location
         instance_document.addInstance(instance)
@@ -147,14 +151,16 @@ def materialize_missing_defaults(
         info_path = path / "fontinfo.plist"
         with info_path.open("rb") as file:
             info = plistlib.load(file)
+        info["familyName"] = DEFAULT_FAMILY_NAME
+        info["styleName"] = DEFAULT_STYLE_NAME
         # The generated defaults are sources, not final static instances. If
         # their instance-only class 400 remains while the editable sources omit
         # this field, fontmake tries to interpolate OS/2 weight classes and can
         # produce a non-integer value. Final static instances receive their
         # explicit 200/300/400/500/600 classes from Aster.designspace instead.
-        if info.pop("openTypeOS2WeightClass", None) is not None:
-            with info_path.open("wb") as file:
-                plistlib.dump(info, file, sort_keys=False)
+        info.pop("openTypeOS2WeightClass", None)
+        with info_path.open("wb") as file:
+            plistlib.dump(info, file, sort_keys=False)
 
 
 def build_designspace(
@@ -172,8 +178,8 @@ def build_designspace(
         if source is None:
             source = SourceDescriptor()
             source.name = name
-            source.familyName = "Aster"
-            source.styleName = name.removeprefix("Aster ")
+            source.familyName = DEFAULT_FAMILY_NAME
+            source.styleName = DEFAULT_STYLE_NAME
             source.path = str(path)
             source.designLocation = location
             document.addSource(source)
