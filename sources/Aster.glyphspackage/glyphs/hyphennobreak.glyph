@@ -1,0 +1,155 @@
+{
+glyphname = hyphennobreak;
+layers = (
+{
+layerId = m003;
+shapes = (
+{
+alignment = -1;
+pos = (-78.555,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 307.48047;
+},
+{
+layerId = m01;
+shapes = (
+{
+alignment = -1;
+pos = (-57.832,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 345.47201;
+},
+{
+layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
+shapes = (
+{
+alignment = -1;
+pos = (-46.431,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 366.35254;
+},
+{
+layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
+shapes = (
+{
+alignment = -1;
+pos = (-37.033,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 383.5334;
+},
+{
+layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
+shapes = (
+{
+alignment = -1;
+pos = (-27.81,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 400.39609;
+},
+{
+layerId = m005;
+shapes = (
+{
+alignment = -1;
+pos = (-10.853,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 431.39941;
+},
+{
+layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
+shapes = (
+{
+alignment = -1;
+pos = (-78.555,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 261.41797;
+},
+{
+layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
+shapes = (
+{
+alignment = -1;
+pos = (-57.832,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 310.46159;
+},
+{
+layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
+shapes = (
+{
+alignment = -1;
+pos = (-46.431,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 335.80566;
+},
+{
+layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
+shapes = (
+{
+alignment = -1;
+pos = (-37.033,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 354.50527;
+},
+{
+layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
+shapes = (
+{
+alignment = -1;
+pos = (-27.81,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 372.85859;
+},
+{
+layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
+shapes = (
+{
+alignment = -1;
+pos = (-10.853,0);
+ref = hyphen;
+}
+);
+vertWidth = 0;
+width = 406.60254;
+}
+);
+note = "";
+production = uni2011;
+unicode = 8209;
+userData = {
+com.quiple.Aster.interGlyph = 1;
+};
+}

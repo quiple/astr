@@ -8,10 +8,11 @@ help:
 	@echo
 	@echo "  make setup:  Installs the font build dependencies"
 	@echo "  make init-aster:  Converts Aster.glyphspackage into the complete Aster source"
-	@echo "    Optional (decimals accepted): INTER_SCALE=101.1% INTER_BASELINE=-14.7 ASTER_MASTER_WEIGHTS=259.6,361.7,419.8,465,509.8,594.1 ASTER_EXPORT_WEIGHTS=259.6,336.2,419.8,537.9,594.1"
+	@echo "    Optional (decimals accepted): INTER_SCALE=100% INTER_BASELINE=-14.7 ASTER_MASTER_WEIGHTS=262.5,365.8,425.2,470.9,516.3,601.5 ASTER_EXPORT_WEIGHTS=262.5,300,400,500,601.5"
 	@echo "  make sync-inter:  Fetches current Inter and updates changed merged data"
 	@echo "  make sync-inter-all:  Fetches current Inter and reapplies every Inter glyph"
 	@echo "  make build:  Builds the fonts and places them in the fonts/ directory"
+	@echo "    Optional: BUILD_JOBS=1 lowers peak memory; default is 2"
 	@echo "  make build-woff2:  Compresses existing variable and static TTFs to WOFF2"
 	@echo "  make test:   Tests the fonts with fontbakery"
 	@echo "  make proof:  Creates HTML proof documents in the proof/ directory"
@@ -25,6 +26,7 @@ INTER_SCALE ?= 100%
 INTER_BASELINE ?= 0
 ASTER_MASTER_WEIGHTS ?= 225,325,400,425,475,550
 ASTER_EXPORT_WEIGHTS ?= 225,300,400,500,550
+BUILD_JOBS ?= 2
 
 sync-inter: venv
 	. venv/bin/activate; python sources/sync_inter.py --source "$(GLYPHS_SOURCE)" --repository "$(INTER_REPOSITORY_URL)"
@@ -47,11 +49,15 @@ venv-test: venv-test/touchfile
 converter: venv
 	find sources/masters -mindepth 1 -maxdepth 1 ! -name .DS_Store -exec rm -rf {} +
 	. venv/bin/activate; glyphs2ufo --generate-GDEF "$(GLYPHS_SOURCE)" -m sources/masters
+	. venv/bin/activate; python sources/prepare_build_sources.py
 
 builder: venv
 	find fonts -mindepth 1 -maxdepth 1 ! -name .DS_Store -exec rm -rf {} +
-	. venv/bin/activate; gftools builder sources/config_variable.yaml
-	. venv/bin/activate; gftools builder sources/config_static.yaml
+	. venv/bin/activate; gftools builder --no-ninja sources/config_variable.yaml
+	. venv/bin/activate; ninja -C sources -f build.ninja -j "$(BUILD_JOBS)"
+	. venv/bin/activate; gftools builder --no-ninja sources/config_static.yaml
+	. venv/bin/activate; python sources/use_prebuilt_static_instances.py sources/build.ninja
+	. venv/bin/activate; ninja -C sources -f build.ninja -j "$(BUILD_JOBS)"
 	. venv/bin/activate; python sources/post.py
 build.stamp: venv converter builder
 

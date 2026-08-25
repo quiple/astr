@@ -185,11 +185,9 @@ def _validate_settings(
         or export_weights[-1] > master_weights[-1]
     ):
         raise ValueError("Every export weight must fall inside the master range")
-    if export_weights[2] != master_weights[2]:
-        raise ValueError(
-            "The Regular master and Regular export weights must match because "
-            "Regular is the variable-font default"
-        )
+    # Regular may intentionally be an interpolated export between masters.
+    # prepare_build_sources.py materializes it at both opsz endpoints so varLib
+    # still has a real source at the variable font's public default (wght=400).
 
 
 def _settings_dict(

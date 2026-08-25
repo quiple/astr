@@ -1,0 +1,168 @@
+{
+glyphname = quoteleft.ss03;
+kernLeft = quotedblleft;
+kernRight = quotedblleft;
+layers = (
+{
+layerId = m003;
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (288.645,1228.166);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 288.64453;
+},
+{
+layerId = m01;
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (296.243,1216.769);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 296.24284;
+},
+{
+layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (300.256,1208.672);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 300.25635;
+},
+{
+layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (303.341,1199.559);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 303.34131;
+},
+{
+layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (306.369,1190.616);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 306.36914;
+},
+{
+layerId = m005;
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (311.936,1174.172);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 311.93604;
+},
+{
+layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (217.866,1228.166);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 217.86621;
+},
+{
+layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (229.091,1216.769);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 229.09098;
+},
+{
+layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (234.844,1208.672);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 234.84375;
+},
+{
+layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (239.02,1199.559);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 239.02031;
+},
+{
+layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (243.12,1190.616);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 243.11953;
+},
+{
+layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
+shapes = (
+{
+alignment = -1;
+angle = 180;
+pos = (250.656,1174.172);
+ref = quoteright.ss03;
+}
+);
+vertWidth = 0;
+width = 250.65625;
+}
+);
+note = "";
+unicode = 61069;
+userData = {
+com.quiple.Aster.interGlyph = 1;
+};
+}

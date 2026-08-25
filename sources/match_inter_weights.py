@@ -38,9 +38,17 @@ INTER_FORM_CHARACTERS = "HInoOSB8"
 STEM_SCORE_WEIGHT = 0.6
 FORM_SCORE_WEIGHT = 0.4
 # Apple mixes SF Pro Latin with SF Pro KR at the same nominal CSS weight, but
-# the Latin is optically heavier.  Applying the same 60:40 stem/form metric
-# used above gives an approximately eight-percent Latin stroke bias.
-LATIN_STROKE_BIAS = 1.08
+# the optical difference is not constant across the range. These anchors are
+# the Latin/Korean ratios measured with the same 60:40 stem/form metric used
+# above. Text and Display measurements are combined where both are available.
+APPLE_LATIN_STROKE_BIAS = (
+    (200.0, 1.03528878),
+    (300.0, 1.08007641),
+    (400.0, 1.07143816),
+    (500.0, 1.08386768),
+    (600.0, 1.08819489),
+    (700.0, 1.08307329),
+)
 TEXT_OPSZ = 14
 DISPLAY_OPSZ = 32
 
@@ -142,6 +150,27 @@ def vertical_stem_width(glyph) -> float:
 
 def weighted_score(stem_score: float, form_score: float) -> float:
     return STEM_SCORE_WEIGHT * stem_score + FORM_SCORE_WEIGHT * form_score
+
+
+def apple_latin_stroke_bias(weight: float) -> float:
+    """Interpolate Apple's weight-dependent Latin/Korean optical ratio."""
+    first_weight, first_bias = APPLE_LATIN_STROKE_BIAS[0]
+    if weight <= first_weight:
+        return first_bias
+
+    for (left_weight, left_bias), (right_weight, right_bias) in zip(
+        APPLE_LATIN_STROKE_BIAS, APPLE_LATIN_STROKE_BIAS[1:]
+    ):
+        if weight <= right_weight:
+            progress = (weight - left_weight) / (right_weight - left_weight)
+            # Stroke scores are logarithmic, so interpolate the ratios in the
+            # same space instead of treating their percentages as distances.
+            return math.exp(
+                math.log(left_bias)
+                + progress * (math.log(right_bias) - math.log(left_bias))
+            )
+
+    return APPLE_LATIN_STROKE_BIAS[-1][1]
 
 
 def ufo_stroke_score(path: Path) -> float:
@@ -247,17 +276,21 @@ class InterStrokeModel:
         self, text_score: float, display_score: float, scale: float
     ) -> float:
         # Uniform Inter scaling multiplies every measured width by this ratio.
-        # Text and Display contribute equally to the single shared weight. The
-        # final term retains Apple's slightly heavier Latin/Korean relationship.
-        target_score = (
-            fmean((text_score, display_score))
-            - math.log(scale)
-            + math.log(LATIN_STROKE_BIAS)
-        )
+        # Text and Display contribute equally to the single shared weight.
+        target_score = fmean((text_score, display_score)) - math.log(scale)
         return self.find_weight(
             target_score,
-            lambda weight: fmean(
-                (self.score(weight, TEXT_OPSZ), self.score(weight, DISPLAY_OPSZ))
+            # Solve the optical correction as part of the weight search. This
+            # makes light Inter instances receive less extra weight than the
+            # medium and semibold instances, following Apple's measured curve.
+            lambda weight: (
+                fmean(
+                    (
+                        self.score(weight, TEXT_OPSZ),
+                        self.score(weight, DISPLAY_OPSZ),
+                    )
+                )
+                - math.log(apple_latin_stroke_bias(weight))
             ),
         )
 

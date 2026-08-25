@@ -1,0 +1,155 @@
+{
+glyphname = raisedcolonmod;
+layers = (
+{
+layerId = m003;
+shapes = (
+{
+alignment = -1;
+pos = (0,216.771);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 279.75391;
+},
+{
+layerId = m01;
+shapes = (
+{
+alignment = -1;
+pos = (0,216.426);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 285.9707;
+},
+{
+layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
+shapes = (
+{
+alignment = -1;
+pos = (0,216.375);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 291.90918;
+},
+{
+layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
+shapes = (
+{
+alignment = -1;
+pos = (0,216.517);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 300.16738;
+},
+{
+layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
+shapes = (
+{
+alignment = -1;
+pos = (0,216.657);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 308.27266;
+},
+{
+layerId = m005;
+shapes = (
+{
+alignment = -1;
+pos = (0,216.914);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 323.1748;
+},
+{
+layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
+shapes = (
+{
+alignment = -1;
+pos = (0,241.623);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 208.1543;
+},
+{
+layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
+shapes = (
+{
+alignment = -1;
+pos = (0,240.587);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 216.78874;
+},
+{
+layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
+shapes = (
+{
+alignment = -1;
+pos = (0,240.015);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 221.79199;
+},
+{
+layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
+shapes = (
+{
+alignment = -1;
+pos = (0,239.54);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 226.25332;
+},
+{
+layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
+shapes = (
+{
+alignment = -1;
+pos = (0,239.074);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 230.63203;
+},
+{
+layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
+shapes = (
+{
+alignment = -1;
+pos = (0,238.218);
+ref = colon;
+}
+);
+vertWidth = 0;
+width = 238.68262;
+}
+);
+note = "";
+production = uni02F8;
+unicode = 760;
+userData = {
+com.quiple.Aster.interGlyph = 1;
+};
+}
