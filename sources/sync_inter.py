@@ -4,6 +4,7 @@ import argparse
 from collections import OrderedDict
 from copy import deepcopy
 from io import BytesIO, StringIO
+import math
 import os
 from pathlib import Path
 import re
@@ -12,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import uuid
+import xml.etree.ElementTree as ET
 
 from fontTools.designspaceLib import (
     AxisDescriptor,
@@ -38,6 +40,7 @@ from ufomerge.scaler import scale_ufo
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_FONT_SOURCE = ROOT / "sources" / "Aster.glyphspackage"
+ASTER_DESIGNSPACE = ROOT / "sources" / "Aster.designspace"
 INTER_CACHE = ROOT / "sources" / "vendor" / "inter"
 INTER_SOURCE_IN_REPOSITORY = Path("src/Inter-Roman.glyphspackage")
 DEFAULT_REPOSITORY = "https://github.com/rsms/inter.git"
@@ -64,38 +67,30 @@ FONT_METADATA = (
     ("manufacturerURL", "https://quiple.dev; https://42dot.ai", False),
     ("vendorID", "QPLE", False),
 )
-WEIGHTS = (225, 325, 400, 425, 475, 550)
+DEFAULT_SCALE = 1.0
+DEFAULT_BASELINE = 0.0
+DEFAULT_MASTER_WEIGHTS = (225, 325, 400, 425, 475, 550)
+DEFAULT_EXPORT_WEIGHTS = (225, 300, 400, 500, 550)
+PUBLIC_EXPORT_WEIGHTS = (200, 300, 400, 500, 600)
 TEXT_OPSZ = 14
 DISPLAY_OPSZ = 32
 DISPLAY_FAMILY = "Aster Display"
 REGULAR_MASTER_ID = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE"
-TEXT_MASTER_SPECS = (
-    ("m003", "ExtraLight", 225),
-    ("m01", "Light", 325),
-    (REGULAR_MASTER_ID, "Regular", 400),
-    ("1E3F0FE2-7EB2-4B39-B562-A9E797F546FD", "Text", 425),
-    ("E7059794-B319-4C6D-9648-9B840A1B2BBD", "Medium", 475),
-    ("m005", "SemiBold", 550),
+TEXT_MASTER_IDENTITIES = (
+    ("m003", "ExtraLight"),
+    ("m01", "Light"),
+    (REGULAR_MASTER_ID, "Regular"),
+    ("1E3F0FE2-7EB2-4B39-B562-A9E797F546FD", "Text"),
+    ("E7059794-B319-4C6D-9648-9B840A1B2BBD", "Medium"),
+    ("m005", "SemiBold"),
 )
-TEXT_INSTANCE_SPECS = (
-    ("ExtraLight", 225, 200, (("m003", 1.0),)),
-    ("Light", 300, 300, (("m003", 0.25), ("m01", 0.75))),
-    ("Regular", 400, "Regular", ((REGULAR_MASTER_ID, 1.0),)),
-    (
-        "Medium",
-        500,
-        500,
-        (("E7059794-B319-4C6D-9648-9B840A1B2BBD", 0.66667), ("m005", 0.33333)),
-    ),
-    ("SemiBold", 550, 600, (("m005", 1.0),)),
+TEXT_INSTANCE_IDENTITIES = (
+    ("ExtraLight", 200),
+    ("Light", 300),
+    ("Regular", "Regular"),
+    ("Medium", 500),
+    ("SemiBold", 600),
 )
-WEIGHT_AXIS_MAPPING = {
-    "200": 225,
-    "300": 300,
-    "400": 400,
-    "500": 500,
-    "600": 550,
-}
 # Keep the original metadata namespace stable. Renaming these keys with the
 # family would make an existing package look unsynchronized and force every
 # imported glyph to be rewritten.
@@ -103,12 +98,164 @@ SYNC_STATE_KEY = "com.quiple.Aster.interSync"
 IMPORTED_GLYPH_KEY = "com.quiple.Aster.interGlyph"
 REMOVED_UNICODES_KEY = "com.quiple.Aster.interRemovedUnicodes"
 DISPLAY_MASTER_NAMESPACE = uuid.UUID("899f9541-4354-42f3-9582-fdf66f401235")
-SYNC_STATE_VERSION = 3
+SYNC_STATE_VERSION = 4
 
 
 def run(command: list[str], cwd: Path | None = None) -> None:
     print("+", " ".join(command), flush=True)
     subprocess.run(command, cwd=cwd, check=True)
+
+
+def parse_scale(value: str) -> float:
+    text = value.strip()
+    is_percent = text.endswith("%")
+    if is_percent:
+        text = text[:-1]
+    try:
+        scale = float(text)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(f"invalid scale: {value!r}") from error
+    if is_percent or scale > 10:
+        scale /= 100
+    if not math.isfinite(scale) or scale <= 0:
+        raise argparse.ArgumentTypeError("scale must be greater than zero")
+    return scale
+
+
+def parse_weights(value: str) -> tuple[int, ...]:
+    parts = [part for part in re.split(r"[\s,]+", value.strip()) if part]
+    try:
+        return tuple(int(part) for part in parts)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(
+            "weights must be comma- or space-separated integers"
+        ) from error
+
+
+def _validate_settings(
+    scale: float,
+    baseline: float,
+    master_weights: tuple[int, ...],
+    export_weights: tuple[int, ...],
+) -> None:
+    if not math.isfinite(scale) or scale <= 0:
+        raise ValueError("Inter scale must be greater than zero")
+    if not math.isfinite(baseline):
+        raise ValueError("Inter baseline must be a finite number")
+    if len(master_weights) != len(TEXT_MASTER_IDENTITIES):
+        raise ValueError(
+            f"Expected six master weights, got {len(master_weights)}"
+        )
+    if len(export_weights) != len(TEXT_INSTANCE_IDENTITIES):
+        raise ValueError(
+            f"Expected five export weights, got {len(export_weights)}"
+        )
+    if any(
+        left >= right for left, right in zip(master_weights, master_weights[1:])
+    ):
+        raise ValueError("Master weights must be strictly increasing")
+    if any(
+        left >= right for left, right in zip(export_weights, export_weights[1:])
+    ):
+        raise ValueError("Export weights must be strictly increasing")
+    if (
+        export_weights[0] < master_weights[0]
+        or export_weights[-1] > master_weights[-1]
+    ):
+        raise ValueError("Every export weight must fall inside the master range")
+    if export_weights[2] != master_weights[2]:
+        raise ValueError(
+            "The Regular master and Regular export weights must match because "
+            "Regular is the variable-font default"
+        )
+
+
+def _settings_dict(
+    scale: float,
+    baseline: float,
+    master_weights: tuple[int, ...],
+    export_weights: tuple[int, ...],
+) -> dict:
+    _validate_settings(scale, baseline, master_weights, export_weights)
+    return {
+        "scale": scale,
+        "baseline": baseline,
+        "masterWeights": list(master_weights),
+        "exportWeights": list(export_weights),
+    }
+
+
+def _settings_from_state(state: dict) -> dict:
+    saved = state.get("settings") or {}
+    return _settings_dict(
+        float(saved.get("scale", DEFAULT_SCALE)),
+        float(saved.get("baseline", DEFAULT_BASELINE)),
+        tuple(
+            int(value)
+            for value in saved.get("masterWeights", DEFAULT_MASTER_WEIGHTS)
+        ),
+        tuple(
+            int(value)
+            for value in saved.get("exportWeights", DEFAULT_EXPORT_WEIGHTS)
+        ),
+    )
+
+
+def _master_specs(
+    master_weights: tuple[int, ...],
+) -> tuple[tuple[str, str, int], ...]:
+    return tuple(
+        (master_id, name, weight)
+        for (master_id, name), weight in zip(TEXT_MASTER_IDENTITIES, master_weights)
+    )
+
+
+def _instance_interpolations(
+    export_weight: int, master_weights: tuple[int, ...]
+) -> tuple[tuple[str, float], ...]:
+    master_specs = _master_specs(master_weights)
+    for master_id, _name, master_weight in master_specs:
+        if export_weight == master_weight:
+            return ((master_id, 1.0),)
+    for left, right in zip(master_specs, master_specs[1:]):
+        left_id, _left_name, left_weight = left
+        right_id, _right_name, right_weight = right
+        if left_weight < export_weight < right_weight:
+            right_ratio = (export_weight - left_weight) / (
+                right_weight - left_weight
+            )
+            return (
+                (left_id, round(1 - right_ratio, 5)),
+                (right_id, round(right_ratio, 5)),
+            )
+    raise ValueError(
+        f"Export weight {export_weight} is outside the master range {master_weights}"
+    )
+
+
+def _instance_specs(
+    master_weights: tuple[int, ...], export_weights: tuple[int, ...]
+) -> tuple[tuple[str, int, int | str, tuple[tuple[str, float], ...]], ...]:
+    return tuple(
+        (
+            name,
+            weight,
+            weight_class,
+            _instance_interpolations(weight, master_weights),
+        )
+        for (name, weight_class), weight in zip(
+            TEXT_INSTANCE_IDENTITIES, export_weights
+        )
+    )
+
+
+def _weight_axis_mapping(export_weights: tuple[int, ...]) -> dict[str, int]:
+    return {
+        str(public_weight): design_weight
+        for public_weight, design_weight in zip(
+            PUBLIC_EXPORT_WEIGHTS, export_weights
+        )
+    }
 
 
 def fetch_latest_inter(repository: str) -> tuple[Path, str]:
@@ -150,6 +297,7 @@ def _scale_number(value: int | float | None, factor: float) -> int | None:
 def scale_feature_geometry(
     node: object,
     factor: float,
+    baseline: float,
     seen: set[int] | None = None,
 ) -> None:
     if seen is None:
@@ -166,7 +314,8 @@ def scale_feature_geometry(
     if isinstance(node, ast.Anchor):
         if node.name is None:
             node.x = _scale_number(node.x, factor)
-            node.y = _scale_number(node.y, factor)
+            scaled_y = _scale_number(node.y, factor)
+            node.y = None if scaled_y is None else round(scaled_y + baseline)
         return
     if isinstance(node, dict):
         values = node.values()
@@ -177,7 +326,23 @@ def scale_feature_geometry(
     else:
         return
     for value in values:
-        scale_feature_geometry(value, factor, seen)
+        scale_feature_geometry(value, factor, baseline, seen)
+
+
+def translate_ufo_geometry(ufo: Font, baseline: float) -> None:
+    if not baseline:
+        return
+    for glyph in ufo:
+        for contour in glyph:
+            for point in contour:
+                point.y += baseline
+        for anchor in glyph.anchors:
+            anchor.y += baseline
+        # Component base glyphs are translated too, so changing component
+        # offsets here would apply the baseline shift twice.
+        for guideline in glyph.guidelines:
+            if guideline.y is not None:
+                guideline.y += baseline
 
 
 def _tool(name: str) -> str:
@@ -189,7 +354,15 @@ def _tool(name: str) -> str:
     return str(path)
 
 
-def prepare_inter_font(inter_source: Path, work: Path, aster_upm: float):
+def prepare_inter_font(
+    inter_source: Path,
+    work: Path,
+    aster_upm: float,
+    settings: dict,
+):
+    scale = float(settings["scale"])
+    baseline = float(settings["baseline"])
+    master_weights = tuple(settings["masterWeights"])
     masters = work / "masters"
     instances = work / "instances"
     masters.mkdir(parents=True)
@@ -213,9 +386,25 @@ def prepare_inter_font(inter_source: Path, work: Path, aster_upm: float):
     )
 
     document = DesignSpaceDocument.fromfile(original_designspace)
+    source_weight_axis = next(
+        (axis for axis in document.axes if axis.tag == "wght"), None
+    )
+    if source_weight_axis is None:
+        raise ValueError("Inter source has no wght axis")
+    unsupported_weights = [
+        weight
+        for weight in master_weights
+        if not source_weight_axis.minimum <= weight <= source_weight_axis.maximum
+    ]
+    if unsupported_weights:
+        raise ValueError(
+            "Inter master weights must be inside the source's "
+            f"{source_weight_axis.minimum:g}–{source_weight_axis.maximum:g} range: "
+            + ", ".join(str(weight) for weight in unsupported_weights)
+        )
     document.instances = []
     for optical_size in (TEXT_OPSZ, DISPLAY_OPSZ):
-        for weight in WEIGHTS:
+        for weight in master_weights:
             instance = InstanceDescriptor()
             instance.name = _instance_name(weight, optical_size)
             instance.familyName = "Inter"
@@ -247,9 +436,9 @@ def prepare_inter_font(inter_source: Path, work: Path, aster_upm: float):
     weight_axis = AxisDescriptor()
     weight_axis.name = "Weight"
     weight_axis.tag = "wght"
-    weight_axis.minimum = min(WEIGHTS)
-    weight_axis.default = 400
-    weight_axis.maximum = max(WEIGHTS)
+    weight_axis.minimum = min(master_weights)
+    weight_axis.default = master_weights[2]
+    weight_axis.maximum = max(master_weights)
     as_masters.addAxis(weight_axis)
     optical_axis = AxisDescriptor()
     optical_axis.name = "Optical size"
@@ -260,20 +449,23 @@ def prepare_inter_font(inter_source: Path, work: Path, aster_upm: float):
     as_masters.addAxis(optical_axis)
 
     for optical_size in (TEXT_OPSZ, DISPLAY_OPSZ):
-        for weight in WEIGHTS:
+        for weight in master_weights:
             path = instances / _instance_filename(weight, optical_size)
             ufo = Font.open(path)
-            factor = aster_upm / float(ufo.info.unitsPerEm)
+            factor = aster_upm / float(ufo.info.unitsPerEm) * scale
             feature_file = Parser(
                 StringIO(ufo.features.text),
                 glyphNames=set(ufo.keys()),
                 includeDir=masters,
             ).parse()
-            scale_feature_geometry(feature_file, factor)
+            scale_feature_geometry(feature_file, factor, baseline)
             scale_ufo(ufo, factor)
+            translate_ufo_geometry(ufo, baseline)
             for glyph in ufo:
                 if glyph.verticalOrigin is not None:
-                    glyph.verticalOrigin *= factor
+                    glyph.verticalOrigin = glyph.verticalOrigin * factor + baseline
+            # The extra visual scale must not change Aster's UPM.
+            ufo.info.unitsPerEm = aster_upm
             ufo.features.text = feature_file.asFea()
             ufo.save(path, overwrite=True)
 
@@ -286,7 +478,7 @@ def prepare_inter_font(inter_source: Path, work: Path, aster_upm: float):
                 "Weight": weight,
                 "Optical size": optical_size,
             }
-            if (weight, optical_size) == (400, TEXT_OPSZ):
+            if (weight, optical_size) == (master_weights[2], TEXT_OPSZ):
                 source.copyLib = True
                 source.copyGroups = True
                 source.copyFeatures = True
@@ -305,9 +497,9 @@ def _display_master_id(text_master_id: str) -> str:
     return str(uuid.uuid5(DISPLAY_MASTER_NAMESPACE, text_master_id)).upper()
 
 
-def _ensure_axis_mappings(font) -> None:
+def _ensure_axis_mappings(font, export_weights: tuple[int, ...]) -> None:
     mappings = deepcopy(font.customParameters["Axis Mappings"] or {})
-    mappings["wght"] = deepcopy(WEIGHT_AXIS_MAPPING)
+    mappings["wght"] = _weight_axis_mapping(export_weights)
     mappings["opsz"] = {
         str(TEXT_OPSZ): TEXT_OPSZ,
         str(DISPLAY_OPSZ): DISPLAY_OPSZ,
@@ -330,8 +522,12 @@ def _set_aster_metadata(font) -> None:
     font.properties = properties
 
 
-def configure_aster_project(font) -> None:
+def configure_aster_project(font, settings: dict) -> None:
     """Turn the original Asta Sans project structure into Aster in place."""
+    master_weights = tuple(settings["masterWeights"])
+    export_weights = tuple(settings["exportWeights"])
+    text_master_specs = _master_specs(master_weights)
+    text_instance_specs = _instance_specs(master_weights, export_weights)
     axis_tags = [axis.axisTag for axis in font.axes]
     if axis_tags not in (["wght"], ["wght", "opsz"]):
         raise ValueError(
@@ -342,7 +538,7 @@ def configure_aster_project(font) -> None:
     masters_by_id = {master.id: master for master in font.masters}
     missing = [
         master_id
-        for master_id, _name, _weight in TEXT_MASTER_SPECS
+        for master_id, _name, _weight in text_master_specs
         if master_id not in masters_by_id
     ]
     if missing:
@@ -352,8 +548,10 @@ def configure_aster_project(font) -> None:
         )
 
     has_opsz = axis_tags == ["wght", "opsz"]
-    text_master_ids = {master_id for master_id, _name, _weight in TEXT_MASTER_SPECS}
-    for master_id, name, weight in TEXT_MASTER_SPECS:
+    text_master_ids = {
+        master_id for master_id, _name, _weight in text_master_specs
+    }
+    for master_id, name, weight in text_master_specs:
         master = masters_by_id[master_id]
         master.name = name
         master.axes = [weight, TEXT_OPSZ] if has_opsz else [weight]
@@ -378,14 +576,14 @@ def configure_aster_project(font) -> None:
         or len(instance.axes) < 2
         or int(round(instance.axes[1])) == TEXT_OPSZ
     ]
-    if len(text_instances) < len(TEXT_INSTANCE_SPECS):
+    if len(text_instances) < len(text_instance_specs):
         raise ValueError(
             "Expected at least five Asta Sans Text export instances, got "
             f"{len(text_instances)}"
         )
-    text_instances = text_instances[: len(TEXT_INSTANCE_SPECS)]
+    text_instances = text_instances[: len(text_instance_specs)]
     for instance, (name, weight, weight_class, interpolations) in zip(
-        text_instances, TEXT_INSTANCE_SPECS
+        text_instances, text_instance_specs
     ):
         instance.name = name
         instance.axes = [weight, TEXT_OPSZ] if has_opsz else [weight]
@@ -400,7 +598,7 @@ def configure_aster_project(font) -> None:
     font.familyName = FAMILY_NAME
     _set_aster_metadata(font)
     font.customParameters["Variable Font Origin"] = REGULAR_MASTER_ID
-    _ensure_axis_mappings(font)
+    _ensure_axis_mappings(font, export_weights)
 
     # When this is run against an already converted package, discard only
     # unexpected masters.  The six Text and six deterministic Display masters
@@ -439,7 +637,7 @@ def _detached_deepcopy(item, parent_attribute: str):
 
 
 def _master_records(
-    font, state: dict
+    font, state: dict, master_weights: tuple[int, ...]
 ) -> tuple[list[dict], list[dict], set[str]]:
     text_records = state.get("textMasters")
     display_records = state.get("displayMasters")
@@ -466,10 +664,13 @@ def _master_records(
         display_coordinates = tuple(
             record["weight"] for record in display_records
         )
-        if text_coordinates != WEIGHTS or display_coordinates != WEIGHTS:
+        if (
+            text_coordinates != master_weights
+            or display_coordinates != master_weights
+        ):
             raise ValueError(
                 "Expected the Text and Display master weights "
-                f"{WEIGHTS}, got {text_coordinates} and {display_coordinates}"
+                f"{master_weights}, got {text_coordinates} and {display_coordinates}"
             )
         state["textMasters"] = text_records
         state["displayMasters"] = display_records
@@ -486,9 +687,10 @@ def _master_records(
         )
     masters = list(font.masters)
     coordinates = [int(round(master.axes[0])) for master in masters]
-    if tuple(coordinates) != WEIGHTS:
+    if tuple(coordinates) != master_weights:
         raise ValueError(
-            f"Expected the six Aster master weights {WEIGHTS}, got {coordinates}"
+            "Expected the six Aster master weights "
+            f"{master_weights}, got {coordinates}"
         )
 
     font.axes.append(GSAxis("Optical size", "opsz"))
@@ -888,13 +1090,16 @@ def merge_into_aster(
     inter_font,
     state: dict,
     commit: str,
+    settings: dict,
     replace_all: bool = False,
 ) -> tuple[int, int]:
+    master_weights = tuple(settings["masterWeights"])
+    export_weights = tuple(settings["exportWeights"])
     same_inter_commit = state.get("repositoryCommit") == commit
-    _ensure_axis_mappings(font)
+    _ensure_axis_mappings(font, export_weights)
     _preserve_imported_component_positions(inter_font)
     text_records, display_records, changed_master_ids = _master_records(
-        font, state
+        font, state, master_weights
     )
     target_by_coordinate = {
         (record["weight"], TEXT_OPSZ): record["id"] for record in text_records
@@ -909,8 +1114,6 @@ def merge_into_aster(
         master_map[master.id] = target_by_coordinate[coordinate]
 
     # A coordinate-only migration must not replace unchanged master layers.
-    # This is used when the Aster Regular masters move from 375 to 400 while
-    # the synchronized Inter commit itself is unchanged.
     if same_inter_commit and changed_master_ids and not replace_all:
         print(
             "Replacing Inter data only in changed Aster masters: "
@@ -929,6 +1132,7 @@ def merge_into_aster(
         _merge_kerning(font, inter_font, master_map, changed_master_ids)
         state["version"] = SYNC_STATE_VERSION
         state["repositoryCommit"] = commit
+        state["settings"] = deepcopy(settings)
         state["kerningKeys"] = sorted(_inter_kerning_keys(inter_font))
         font.userData[SYNC_STATE_KEY] = state
         return 0, 0
@@ -965,6 +1169,7 @@ def merge_into_aster(
 
     state["version"] = SYNC_STATE_VERSION
     state["repositoryCommit"] = commit
+    state["settings"] = deepcopy(settings)
     state["kerningKeys"] = sorted(_inter_kerning_keys(inter_font))
     font.userData[SYNC_STATE_KEY] = state
     return overlap, removed_unicodes
@@ -1027,6 +1232,162 @@ def _write_if_changed(path: Path, data: bytes) -> bool:
     return True
 
 
+def _replace_xml_attribute(tag: str, name: str, value: int) -> str:
+    pattern = re.compile(rf"(\b{re.escape(name)}\s*=\s*)([\"'])(.*?)(\2)")
+    replaced, count = pattern.subn(
+        lambda match: f"{match.group(1)}{match.group(2)}{value}{match.group(4)}",
+        tag,
+        count=1,
+    )
+    if count != 1:
+        raise ValueError(f"Expected XML attribute {name!r} in {tag!r}")
+    return replaced
+
+
+def _xml_attribute(tag: str, name: str) -> str | None:
+    match = re.search(rf"\b{re.escape(name)}\s*=\s*([\"'])(.*?)\1", tag)
+    return None if match is None else match.group(2)
+
+
+def _replace_weight_dimension(block: str, weight: int) -> str:
+    dimension_pattern = re.compile(r"<dimension\b[^>]*>")
+    replaced = False
+
+    def replace_dimension(match: re.Match[str]) -> str:
+        nonlocal replaced
+        tag = match.group(0)
+        if replaced or _xml_attribute(tag, "name") != "Weight":
+            return tag
+        replaced = True
+        return _replace_xml_attribute(tag, "xvalue", weight)
+
+    result = dimension_pattern.sub(replace_dimension, block)
+    if not replaced:
+        raise ValueError("Designspace item has no Weight dimension")
+    return result
+
+
+def _replace_designspace_item_weights(
+    xml: str,
+    section_name: str,
+    item_name: str,
+    weights: tuple[int, ...],
+) -> str:
+    section_pattern = re.compile(
+        rf"(<{section_name}\b[^>]*>)(.*?)(</{section_name}>)", re.DOTALL
+    )
+    section_match = section_pattern.search(xml)
+    if section_match is None:
+        raise ValueError(f"Aster.designspace has no {section_name} section")
+    item_pattern = re.compile(
+        rf"(<{item_name}\b[^>]*>.*?</{item_name}>)", re.DOTALL
+    )
+    index = 0
+
+    def replace_item(match: re.Match[str]) -> str:
+        nonlocal index
+        if index >= len(weights):
+            raise ValueError(
+                f"Aster.designspace has more than {len(weights)} {item_name} items"
+            )
+        result = _replace_weight_dimension(match.group(0), weights[index])
+        index += 1
+        return result
+
+    content = item_pattern.sub(replace_item, section_match.group(2))
+    if index != len(weights):
+        raise ValueError(
+            f"Expected {len(weights)} {item_name} items in Aster.designspace, got {index}"
+        )
+    replacement = section_match.group(1) + content + section_match.group(3)
+    return xml[: section_match.start()] + replacement + xml[section_match.end() :]
+
+
+def render_aster_designspace(
+    path: Path,
+    master_weights: tuple[int, ...],
+    export_weights: tuple[int, ...],
+) -> bytes:
+    xml = path.read_text(encoding="utf-8")
+    root = ET.fromstring(xml)
+    wght_axes = [
+        axis
+        for axis in root.findall("./axes/axis")
+        if axis.get("tag") == "wght"
+    ]
+    if len(wght_axes) != 1:
+        raise ValueError("Aster.designspace must contain exactly one wght axis")
+    if len(root.findall("./sources/source")) != len(master_weights) * 2:
+        raise ValueError("Aster.designspace must contain twelve sources")
+    if len(root.findall("./instances/instance")) != len(export_weights) * 2:
+        raise ValueError("Aster.designspace must contain ten instances")
+
+    axis_pattern = re.compile(r"(<axis\b[^>]*>.*?</axis>)", re.DOTALL)
+    axis_replaced = False
+
+    def replace_axis(match: re.Match[str]) -> str:
+        nonlocal axis_replaced
+        block = match.group(0)
+        opening_tag = block[: block.index(">") + 1]
+        if _xml_attribute(opening_tag, "tag") != "wght":
+            return block
+        axis_replaced = True
+        expected_mapping = _weight_axis_mapping(export_weights)
+        seen: set[str] = set()
+
+        def replace_map(map_match: re.Match[str]) -> str:
+            tag = map_match.group(0)
+            public_weight = _xml_attribute(tag, "input")
+            if public_weight not in expected_mapping:
+                raise ValueError(
+                    f"Unexpected wght map input in Aster.designspace: {public_weight}"
+                )
+            seen.add(public_weight)
+            return _replace_xml_attribute(
+                tag, "output", expected_mapping[public_weight]
+            )
+
+        result = re.sub(r"<map\b[^>]*/>", replace_map, block)
+        if seen != set(expected_mapping):
+            raise ValueError(
+                "Aster.designspace does not have the five expected wght maps"
+            )
+        return result
+
+    xml = axis_pattern.sub(replace_axis, xml)
+    if not axis_replaced:
+        raise ValueError("Could not update the wght axis in Aster.designspace")
+    xml = _replace_designspace_item_weights(
+        xml,
+        "sources",
+        "source",
+        master_weights + master_weights,
+    )
+    xml = _replace_designspace_item_weights(
+        xml,
+        "instances",
+        "instance",
+        export_weights + export_weights,
+    )
+    if not xml.endswith("\n"):
+        xml += "\n"
+
+    rendered = xml.encode("utf-8")
+    document = DesignSpaceDocument.fromstring(rendered)
+    actual_sources = tuple(
+        int(round(source.designLocation["Weight"])) for source in document.sources
+    )
+    actual_instances = tuple(
+        int(round(instance.designLocation["Weight"]))
+        for instance in document.instances
+    )
+    if actual_sources != master_weights + master_weights:
+        raise ValueError("Aster.designspace source weights were not updated correctly")
+    if actual_instances != export_weights + export_weights:
+        raise ValueError("Aster.designspace export weights were not updated correctly")
+    return rendered
+
+
 def write_glyphs_package(
     font, target: Path, removed_names: set[str]
 ) -> tuple[int, int, int]:
@@ -1062,7 +1423,11 @@ def write_glyphs_package(
     return glyphs_written, glyphs_removed, fontinfo_written
 
 
-def validate_merged_font(font, commit: str) -> None:
+def validate_merged_font(font, commit: str, settings: dict) -> None:
+    master_weights = tuple(settings["masterWeights"])
+    export_weights = tuple(settings["exportWeights"])
+    text_master_specs = _master_specs(master_weights)
+    text_instance_specs = _instance_specs(master_weights, export_weights)
     if font.familyName != FAMILY_NAME:
         raise ValueError(
             f"Expected family name {FAMILY_NAME!r}, got {font.familyName!r}"
@@ -1077,14 +1442,17 @@ def validate_merged_font(font, commit: str) -> None:
     axes = [(axis.axisTag, axis.name) for axis in font.axes]
     if [tag for tag, _ in axes] != ["wght", "opsz"]:
         raise ValueError(f"Unexpected axes after sync: {axes}")
-    if len(font.masters) != len(WEIGHTS) * 2:
+    axis_mappings = font.customParameters["Axis Mappings"] or {}
+    if axis_mappings.get("wght") != _weight_axis_mapping(export_weights):
+        raise ValueError("The Aster wght axis mapping does not match its exports")
+    if len(font.masters) != len(master_weights) * 2:
         raise ValueError(f"Expected 12 masters after sync, got {len(font.masters)}")
     expected_masters = [
         (name, [weight, TEXT_OPSZ])
-        for _master_id, name, weight in TEXT_MASTER_SPECS
+        for _master_id, name, weight in text_master_specs
     ] + [
         (f"Display {name}", [weight, DISPLAY_OPSZ])
-        for _master_id, name, weight in TEXT_MASTER_SPECS
+        for _master_id, name, weight in text_master_specs
     ]
     actual_masters = [(master.name, list(master.axes)) for master in font.masters]
     if actual_masters != expected_masters:
@@ -1093,7 +1461,7 @@ def validate_merged_font(font, commit: str) -> None:
             f"{actual_masters}"
         )
     if font.customParameters["Variable Font Origin"] != REGULAR_MASTER_ID:
-        raise ValueError("The 400 Regular master must be the variable-font origin")
+        raise ValueError("The Regular master must be the variable-font origin")
     lower_percent_circle = font.glyphs["_zero_percent1"]
     if lower_percent_circle is None:
         raise ValueError("Imported Inter helper _zero_percent1 is missing")
@@ -1109,6 +1477,7 @@ def validate_merged_font(font, commit: str) -> None:
         not state
         or state.get("repositoryCommit") != commit
         or int(state.get("version", 0)) != SYNC_STATE_VERSION
+        or state.get("settings") != settings
     ):
         raise ValueError("Inter sync metadata was not saved correctly")
     display_instances = [
@@ -1130,11 +1499,16 @@ def validate_merged_font(font, commit: str) -> None:
         and instance.active
     ]
     expected_instances = [
-        (name, [weight, TEXT_OPSZ])
-        for name, weight, _weight_class, _interpolations in TEXT_INSTANCE_SPECS
+        (name, [weight, TEXT_OPSZ], OrderedDict(interpolations))
+        for name, weight, _weight_class, interpolations in text_instance_specs
     ]
     actual_instances = [
-        (instance.name, list(instance.axes)) for instance in text_instances
+        (
+            instance.name,
+            list(instance.axes),
+            OrderedDict(instance.instanceInterpolations),
+        )
+        for instance in text_instances
     ]
     if actual_instances != expected_instances:
         raise ValueError(
@@ -1198,6 +1572,32 @@ def main() -> None:
             "and axes to the Aster project structure"
         ),
     )
+    parser.add_argument(
+        "--scale",
+        type=parse_scale,
+        help=(
+            "Inter outline scale used by --initialize; accepts a ratio or "
+            "percentage such as 0.96, 96, or 96%%"
+        ),
+    )
+    parser.add_argument(
+        "--baseline",
+        type=float,
+        help=(
+            "Inter baseline offset in final Aster units used by --initialize; "
+            "positive values move Inter upward"
+        ),
+    )
+    parser.add_argument(
+        "--master-weights",
+        type=parse_weights,
+        help="six comma- or space-separated Inter/Aster master coordinates",
+    )
+    parser.add_argument(
+        "--export-weights",
+        type=parse_weights,
+        help="five comma- or space-separated Aster export coordinates",
+    )
     args = parser.parse_args()
 
     font_source = Path(args.source).expanduser()
@@ -1207,9 +1607,46 @@ def main() -> None:
     if not font_source.is_dir():
         raise FileNotFoundError(f"Glyphs package not found: {font_source}")
 
+    saved_state = read_sync_state(font_source)
+    supplied_settings = any(
+        value is not None
+        for value in (
+            args.scale,
+            args.baseline,
+            args.master_weights,
+            args.export_weights,
+        )
+    )
+    if supplied_settings and not args.initialize:
+        parser.error(
+            "--scale, --baseline, --master-weights, and --export-weights "
+            "can only be used with --initialize"
+        )
+    if args.initialize:
+        try:
+            settings = _settings_dict(
+                DEFAULT_SCALE if args.scale is None else args.scale,
+                DEFAULT_BASELINE if args.baseline is None else args.baseline,
+                DEFAULT_MASTER_WEIGHTS
+                if args.master_weights is None
+                else args.master_weights,
+                DEFAULT_EXPORT_WEIGHTS
+                if args.export_weights is None
+                else args.export_weights,
+            )
+        except ValueError as error:
+            parser.error(str(error))
+        designspace_data = render_aster_designspace(
+            ASTER_DESIGNSPACE,
+            tuple(settings["masterWeights"]),
+            tuple(settings["exportWeights"]),
+        )
+    else:
+        settings = _settings_from_state(saved_state)
+        designspace_data = None
+
     inter_source, commit = fetch_latest_inter(args.repository)
     print(f"Using Inter commit {commit}", flush=True)
-    saved_state = read_sync_state(font_source)
     if (
         not args.force
         and not args.initialize
@@ -1225,30 +1662,40 @@ def main() -> None:
             "Configuring the Asta Sans package as the Aster source project...",
             flush=True,
         )
-        configure_aster_project(aster)
+        configure_aster_project(aster, settings)
     before_names = {glyph.name for glyph in aster.glyphs}
     state = deepcopy(aster.userData.get(SYNC_STATE_KEY) or {})
     with tempfile.TemporaryDirectory(prefix="aster-inter-sync-") as directory:
-        inter = prepare_inter_font(inter_source, Path(directory), float(aster.upm))
+        inter = prepare_inter_font(
+            inter_source,
+            Path(directory),
+            float(aster.upm),
+            settings,
+        )
         overlap, removed_unicodes = merge_into_aster(
             aster,
             inter,
             state,
             commit,
+            settings,
             replace_all=args.force or args.initialize,
         )
     remove_empty_backgrounds(aster)
-    validate_merged_font(aster, commit)
+    validate_merged_font(aster, commit, settings)
     final_names = {glyph.name for glyph in aster.glyphs}
     glyphs_written, glyphs_removed, fontinfo_written = write_glyphs_package(
         aster, font_source, before_names - final_names
     )
+    designspace_written = False
+    if designspace_data is not None:
+        designspace_written = _write_if_changed(ASTER_DESIGNSPACE, designspace_data)
     print(
         f"Synced {len(inter.glyphs)} Inter glyphs at 12 masters; "
         f"replaced {overlap} Aster glyph names and removed "
         f"{removed_unicodes} conflicting Unicode assignments. "
         f"Wrote {glyphs_written} changed glyph files, removed "
-        f"{glyphs_removed}, and updated fontinfo={bool(fontinfo_written)}."
+        f"{glyphs_removed}, and updated fontinfo={bool(fontinfo_written)}, "
+        f"designspace={designspace_written}."
     )
 
 
