@@ -51,6 +51,7 @@ APPLE_LATIN_STROKE_BIAS = (
 )
 TEXT_OPSZ = 14
 DISPLAY_OPSZ = 32
+OUTPUT_DECIMAL_PLACES = 2
 
 
 def parse_scale(value: str) -> float:
@@ -269,7 +270,8 @@ class InterStrokeModel:
 
         estimate = (low + high) / 2
         return round(
-            max(self.minimum_weight, min(self.maximum_weight, estimate)), 1
+            max(self.minimum_weight, min(self.maximum_weight, estimate)),
+            OUTPUT_DECIMAL_PLACES,
         )
 
     def match_shared(
@@ -336,7 +338,10 @@ def main() -> None:
         for text_target, display_target in zip(text_targets, display_targets)
     )
 
-    print(f"SHARED_INTER_WEIGHTS = {inter_weights}")
+    formatted_weights = ", ".join(
+        f"{weight:.{OUTPUT_DECIMAL_PLACES}f}" for weight in inter_weights
+    )
+    print(f"SHARED_INTER_WEIGHTS = ({formatted_weights})")
 
 
 if __name__ == "__main__":
