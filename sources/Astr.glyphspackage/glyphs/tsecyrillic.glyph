@@ -1,0 +1,325 @@
+{
+glyphname = tsecyrillic;
+kernLeft = m;
+kernRight = ltail;
+layers = (
+{
+anchors = (
+{
+name = cyrtic;
+pos = (495.005,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (290.705,-11.856);
+}
+);
+layerId = m003;
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (439.354,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 575.1819;
+},
+{
+anchors = (
+{
+name = cyrtic;
+pos = (506.747,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (293.123,-11.856);
+}
+);
+layerId = m01;
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (434.692,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 591.5861;
+},
+{
+anchors = (
+{
+name = cyrtic;
+pos = (514.042,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (295.001,-11.856);
+}
+);
+layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (431.412,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 602.07332;
+},
+{
+anchors = (
+{
+name = cyrtic;
+pos = (521.152,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (297.276,-11.856);
+}
+);
+layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (427.762,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 612.64404;
+},
+{
+anchors = (
+{
+name = cyrtic;
+pos = (528.152,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (299.516,-11.856);
+}
+);
+layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (424.169,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 623.05012;
+},
+{
+anchors = (
+{
+name = cyrtic;
+pos = (540.993,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (303.626,-11.856);
+}
+);
+layerId = m005;
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (417.577,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 642.14058;
+},
+{
+anchors = (
+{
+name = cyrtic;
+pos = (469.405,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (266.39,-11.856);
+}
+);
+layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (413.755,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 543.9319;
+},
+{
+anchors = (
+{
+name = cyrtic;
+pos = (484.946,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (273.47,-11.856);
+}
+);
+layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (412.891,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 560.3361;
+},
+{
+anchors = (
+{
+name = cyrtic;
+pos = (494.062,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (277.353,-11.856);
+}
+);
+layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (411.432,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 571.83518;
+},
+{
+anchors = (
+{
+name = cyrtic;
+pos = (502.31,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (280.529,-11.856);
+}
+);
+layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (408.919,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 584.58641;
+},
+{
+anchors = (
+{
+name = cyrtic;
+pos = (510.429,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (283.655,-11.856);
+}
+);
+layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (406.446,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 597.13904;
+},
+{
+anchors = (
+{
+name = cyrtic;
+pos = (525.325,-11.856);
+},
+{
+name = cyrtic_center;
+pos = (289.391,-11.856);
+}
+);
+layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
+shapes = (
+{
+alignment = -1;
+ref = pecyrillicturn;
+},
+{
+alignment = -1;
+pos = (401.909,0);
+ref = _part.cyrtic;
+}
+);
+vertWidth = 0;
+width = 620.16744;
+}
+);
+note = "";
+production = uni0446;
+unicode = 1094;
+userData = {
+com.quiple.Astr.interGlyph = 1;
+};
+}

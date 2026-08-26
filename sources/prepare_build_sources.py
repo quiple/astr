@@ -15,12 +15,12 @@ from fontTools.designspaceLib import (
 
 
 SOURCES = Path(__file__).resolve().parent
-SOURCE_DESIGNSPACE = SOURCES / "Aster.designspace"
+SOURCE_DESIGNSPACE = SOURCES / "Astr.designspace"
 MASTER_DIRECTORY = SOURCES / "masters"
-INSTANCE_DESIGNSPACE = MASTER_DIRECTORY / "Aster-default-instances.designspace"
-BUILD_DESIGNSPACE = MASTER_DIRECTORY / "Aster.designspace"
+INSTANCE_DESIGNSPACE = MASTER_DIRECTORY / "Astr-default-instances.designspace"
+BUILD_DESIGNSPACE = MASTER_DIRECTORY / "Astr.designspace"
 STATIC_INSTANCE_DIRECTORY = MASTER_DIRECTORY / "instance_ufos"
-DEFAULT_FAMILY_NAME = "Aster"
+DEFAULT_FAMILY_NAME = "Astr"
 DEFAULT_STYLE_NAME = "Regular"
 
 
@@ -135,7 +135,7 @@ def materialize_missing_defaults(
             "-o",
             "ufo",
             "-i",
-            "Aster Regular Build.*",
+            "Astr Regular Build.*",
             "--expand-features-to-instances",
         ],
         check=True,
@@ -157,7 +157,7 @@ def materialize_missing_defaults(
         # their instance-only class 400 remains while the editable sources omit
         # this field, fontmake tries to interpolate OS/2 weight classes and can
         # produce a non-integer value. Final static instances receive their
-        # explicit 200/300/400/500/600 classes from Aster.designspace instead.
+        # explicit 200/300/400/500/600 classes from Astr.designspace instead.
         info.pop("openTypeOS2WeightClass", None)
         with info_path.open("wb") as file:
             plistlib.dump(info, file, sort_keys=False)
@@ -242,20 +242,20 @@ def main() -> None:
     text_location, display_location = default_locations(document)
     targets = (
         (
-            "Aster Regular Build Text",
-            MASTER_DIRECTORY / "Aster-VFDefault.ufo",
+            "Astr Regular Build Text",
+            MASTER_DIRECTORY / "Astr-VFDefault.ufo",
             text_location,
         ),
         (
-            "Aster Regular Build Display",
-            MASTER_DIRECTORY / "Aster-DisplayVFDefault.ufo",
+            "Astr Regular Build Display",
+            MASTER_DIRECTORY / "Astr-DisplayVFDefault.ufo",
             display_location,
         ),
     )
     materialize_missing_defaults(document, targets)
     build_designspace(targets)
     # gftools-builder normally starts one fontmake process per instance. With
-    # Aster's large glyph set, those processes each load all 14 sources and can
+    # Astr's large glyph set, those processes each load all 14 sources and can
     # exhaust memory. Generate all ten instances in one process instead; the
     # static build then removes those redundant jobs from its Ninja graph.
     materialize_static_instances()

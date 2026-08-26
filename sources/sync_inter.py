@@ -39,13 +39,13 @@ from ufomerge.scaler import scale_ufo
 
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_FONT_SOURCE = ROOT / "sources" / "Aster.glyphspackage"
-ASTER_DESIGNSPACE = ROOT / "sources" / "Aster.designspace"
+DEFAULT_FONT_SOURCE = ROOT / "sources" / "Astr.glyphspackage"
+ASTR_DESIGNSPACE = ROOT / "sources" / "Astr.designspace"
 INTER_CACHE = ROOT / "sources" / "vendor" / "inter"
 INTER_SOURCE_IN_REPOSITORY = Path("src/Inter-Roman.glyphspackage")
 DEFAULT_REPOSITORY = "https://github.com/rsms/inter.git"
 
-FAMILY_NAME = "Aster"
+FAMILY_NAME = "Astr"
 FONT_METADATA = (
     (
         "copyrights",
@@ -74,7 +74,7 @@ DEFAULT_EXPORT_WEIGHTS = (225, 300, 400, 500, 550)
 PUBLIC_EXPORT_WEIGHTS = (200, 300, 400, 500, 600)
 TEXT_OPSZ = 14
 DISPLAY_OPSZ = 32
-DISPLAY_FAMILY = "Aster Display"
+DISPLAY_FAMILY = "Astr Display"
 REGULAR_MASTER_ID = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE"
 TEXT_MASTER_IDENTITIES = (
     ("m003", "ExtraLight"),
@@ -94,9 +94,9 @@ TEXT_INSTANCE_IDENTITIES = (
 # Keep the original metadata namespace stable. Renaming these keys with the
 # family would make an existing package look unsynchronized and force every
 # imported glyph to be rewritten.
-SYNC_STATE_KEY = "com.quiple.Aster.interSync"
-IMPORTED_GLYPH_KEY = "com.quiple.Aster.interGlyph"
-REMOVED_UNICODES_KEY = "com.quiple.Aster.interRemovedUnicodes"
+SYNC_STATE_KEY = "com.quiple.Astr.interSync"
+IMPORTED_GLYPH_KEY = "com.quiple.Astr.interGlyph"
+REMOVED_UNICODES_KEY = "com.quiple.Astr.interRemovedUnicodes"
 DISPLAY_MASTER_NAMESPACE = uuid.UUID("899f9541-4354-42f3-9582-fdf66f401235")
 SYNC_STATE_VERSION = 4
 Weight = int | float
@@ -379,7 +379,7 @@ def _tool(name: str) -> str:
 def prepare_inter_font(
     inter_source: Path,
     work: Path,
-    aster_upm: float,
+    astr_upm: float,
     settings: dict,
 ):
     scale = float(settings["scale"])
@@ -390,7 +390,7 @@ def prepare_inter_font(
     masters.mkdir(parents=True)
     instances.mkdir(parents=True)
     original_designspace = masters / "Inter-Roman.designspace"
-    instance_designspace = masters / "Inter-Aster-Sync.designspace"
+    instance_designspace = masters / "Inter-Astr-Sync.designspace"
 
     run(
         [
@@ -474,7 +474,7 @@ def prepare_inter_font(
         for weight in master_weights:
             path = instances / _instance_filename(weight, optical_size)
             ufo = Font.open(path)
-            factor = aster_upm / float(ufo.info.unitsPerEm) * scale
+            factor = astr_upm / float(ufo.info.unitsPerEm) * scale
             feature_file = Parser(
                 StringIO(ufo.features.text),
                 glyphNames=set(ufo.keys()),
@@ -486,8 +486,8 @@ def prepare_inter_font(
             for glyph in ufo:
                 if glyph.verticalOrigin is not None:
                     glyph.verticalOrigin = glyph.verticalOrigin * factor + baseline
-            # The extra visual scale must not change Aster's UPM.
-            ufo.info.unitsPerEm = aster_upm
+            # The extra visual scale must not change Astr's UPM.
+            ufo.info.unitsPerEm = astr_upm
             ufo.features.text = feature_file.asFea()
             ufo.save(path, overwrite=True)
 
@@ -507,7 +507,7 @@ def prepare_inter_font(
                 source.copyInfo = True
             as_masters.addSource(source)
 
-    converted_designspace = work / "Inter-Aster-Masters.designspace"
+    converted_designspace = work / "Inter-Astr-Masters.designspace"
     as_masters.write(converted_designspace)
     inter_font = glyphsLib.to_glyphs(as_masters, minimize_ufo_diffs=False)
     for master in inter_font.masters:
@@ -529,7 +529,7 @@ def _ensure_axis_mappings(font, export_weights: tuple[Weight, ...]) -> None:
     font.customParameters["Axis Mappings"] = mappings
 
 
-def _set_aster_metadata(font) -> None:
+def _set_astr_metadata(font) -> None:
     metadata_keys = {key for key, _value, _localized in FONT_METADATA}
     properties = [
         property_value
@@ -544,8 +544,8 @@ def _set_aster_metadata(font) -> None:
     font.properties = properties
 
 
-def configure_aster_project(font, settings: dict) -> None:
-    """Turn the original Asta Sans project structure into Aster in place."""
+def configure_astr_project(font, settings: dict) -> None:
+    """Turn the original Asta Sans project structure into Astr in place."""
     master_weights = tuple(settings["masterWeights"])
     export_weights = tuple(settings["exportWeights"])
     text_master_specs = _master_specs(master_weights)
@@ -618,7 +618,7 @@ def configure_aster_project(font, settings: dict) -> None:
     font.instances = text_instances
 
     font.familyName = FAMILY_NAME
-    _set_aster_metadata(font)
+    _set_astr_metadata(font)
     font.customParameters["Variable Font Origin"] = REGULAR_MASTER_ID
     _ensure_axis_mappings(font, export_weights)
 
@@ -709,13 +709,13 @@ def _master_records(
 
     if [axis.axisTag for axis in font.axes] != ["wght"]:
         raise ValueError(
-            "The first Inter sync expects the original one-axis Aster project"
+            "The first Inter sync expects the original one-axis Astr project"
         )
     masters = list(font.masters)
     coordinates = [_normalize_weight(master.axes[0]) for master in masters]
     if tuple(coordinates) != master_weights:
         raise ValueError(
-            "Expected the six Aster master weights "
+            "Expected the six Astr master weights "
             f"{master_weights}, got {coordinates}"
         )
 
@@ -759,7 +759,7 @@ def _remove_previous_inter_glyphs(font, state: dict) -> None:
             del glyph.userData[REMOVED_UNICODES_KEY]
 
 
-def _mirror_aster_layers(
+def _mirror_astr_layers(
     font, text_records: list[dict], display_records: list[dict]
 ) -> None:
     for glyph in font.glyphs:
@@ -1115,7 +1115,7 @@ def _merge_glyphs(
     return len(overlap_names), removed_unicodes
 
 
-def merge_into_aster(
+def merge_into_astr(
     font,
     inter_font,
     state: dict,
@@ -1149,7 +1149,7 @@ def merge_into_aster(
     # A coordinate-only migration must not replace unchanged master layers.
     if same_inter_commit and changed_master_ids and not replace_all:
         print(
-            "Replacing Inter data only in changed Aster masters: "
+            "Replacing Inter data only in changed Astr masters: "
             + ", ".join(
                 font.masters[master_id].name
                 for master_id in changed_master_ids
@@ -1177,8 +1177,8 @@ def merge_into_aster(
     }
     _restore_layout(font, state)
     _remove_previous_inter_glyphs(font, state)
-    print("Mirroring Aster layers across the opsz endpoints...", flush=True)
-    _mirror_aster_layers(font, text_records, display_records)
+    print("Mirroring Astr layers across the opsz endpoints...", flush=True)
+    _mirror_astr_layers(font, text_records, display_records)
     _ensure_display_instances(font, text_records, display_records)
 
     incoming_names = {glyph.name for glyph in inter_font.glyphs}
@@ -1315,7 +1315,7 @@ def _replace_designspace_item_weights(
     )
     section_match = section_pattern.search(xml)
     if section_match is None:
-        raise ValueError(f"Aster.designspace has no {section_name} section")
+        raise ValueError(f"Astr.designspace has no {section_name} section")
     item_pattern = re.compile(
         rf"(<{item_name}\b[^>]*>.*?</{item_name}>)", re.DOTALL
     )
@@ -1325,7 +1325,7 @@ def _replace_designspace_item_weights(
         nonlocal index
         if index >= len(weights):
             raise ValueError(
-                f"Aster.designspace has more than {len(weights)} {item_name} items"
+                f"Astr.designspace has more than {len(weights)} {item_name} items"
             )
         result = _replace_weight_dimension(match.group(0), weights[index])
         index += 1
@@ -1334,13 +1334,13 @@ def _replace_designspace_item_weights(
     content = item_pattern.sub(replace_item, section_match.group(2))
     if index != len(weights):
         raise ValueError(
-            f"Expected {len(weights)} {item_name} items in Aster.designspace, got {index}"
+            f"Expected {len(weights)} {item_name} items in Astr.designspace, got {index}"
         )
     replacement = section_match.group(1) + content + section_match.group(3)
     return xml[: section_match.start()] + replacement + xml[section_match.end() :]
 
 
-def render_aster_designspace(
+def render_astr_designspace(
     path: Path,
     master_weights: tuple[Weight, ...],
     export_weights: tuple[Weight, ...],
@@ -1353,11 +1353,11 @@ def render_aster_designspace(
         if axis.get("tag") == "wght"
     ]
     if len(wght_axes) != 1:
-        raise ValueError("Aster.designspace must contain exactly one wght axis")
+        raise ValueError("Astr.designspace must contain exactly one wght axis")
     if len(root.findall("./sources/source")) != len(master_weights) * 2:
-        raise ValueError("Aster.designspace must contain twelve sources")
+        raise ValueError("Astr.designspace must contain twelve sources")
     if len(root.findall("./instances/instance")) != len(export_weights) * 2:
-        raise ValueError("Aster.designspace must contain ten instances")
+        raise ValueError("Astr.designspace must contain ten instances")
 
     axis_pattern = re.compile(r"(<axis\b[^>]*>.*?</axis>)", re.DOTALL)
     axis_replaced = False
@@ -1377,7 +1377,7 @@ def render_aster_designspace(
             public_weight = _xml_attribute(tag, "input")
             if public_weight not in expected_mapping:
                 raise ValueError(
-                    f"Unexpected wght map input in Aster.designspace: {public_weight}"
+                    f"Unexpected wght map input in Astr.designspace: {public_weight}"
                 )
             seen.add(public_weight)
             return _replace_xml_attribute(
@@ -1387,13 +1387,13 @@ def render_aster_designspace(
         result = re.sub(r"<map\b[^>]*/>", replace_map, block)
         if seen != set(expected_mapping):
             raise ValueError(
-                "Aster.designspace does not have the five expected wght maps"
+                "Astr.designspace does not have the five expected wght maps"
             )
         return result
 
     xml = axis_pattern.sub(replace_axis, xml)
     if not axis_replaced:
-        raise ValueError("Could not update the wght axis in Aster.designspace")
+        raise ValueError("Could not update the wght axis in Astr.designspace")
     xml = _replace_designspace_item_weights(
         xml,
         "sources",
@@ -1420,9 +1420,9 @@ def render_aster_designspace(
         for instance in document.instances
     )
     if actual_sources != master_weights + master_weights:
-        raise ValueError("Aster.designspace source weights were not updated correctly")
+        raise ValueError("Astr.designspace source weights were not updated correctly")
     if actual_instances != export_weights + export_weights:
-        raise ValueError("Aster.designspace export weights were not updated correctly")
+        raise ValueError("Astr.designspace export weights were not updated correctly")
     return rendered
 
 
@@ -1474,7 +1474,7 @@ def validate_merged_font(font, commit: str, settings: dict) -> None:
         actual = font.properties.get(key)
         if actual != expected:
             raise ValueError(
-                f"Unexpected Aster metadata {key}: expected {expected!r}, "
+                f"Unexpected Astr metadata {key}: expected {expected!r}, "
                 f"got {actual!r}"
             )
     axes = [(axis.axisTag, axis.name) for axis in font.axes]
@@ -1482,7 +1482,7 @@ def validate_merged_font(font, commit: str, settings: dict) -> None:
         raise ValueError(f"Unexpected axes after sync: {axes}")
     axis_mappings = font.customParameters["Axis Mappings"] or {}
     if axis_mappings.get("wght") != _weight_axis_mapping(export_weights):
-        raise ValueError("The Aster wght axis mapping does not match its exports")
+        raise ValueError("The Astr wght axis mapping does not match its exports")
     if len(font.masters) != len(master_weights) * 2:
         raise ValueError(f"Expected 12 masters after sync, got {len(font.masters)}")
     expected_masters = [
@@ -1495,7 +1495,7 @@ def validate_merged_font(font, commit: str, settings: dict) -> None:
     actual_masters = [(master.name, list(master.axes)) for master in font.masters]
     if actual_masters != expected_masters:
         raise ValueError(
-            "Unexpected Aster master names or coordinates: "
+            "Unexpected Astr master names or coordinates: "
             f"{actual_masters}"
         )
     if font.customParameters["Variable Font Origin"] != REGULAR_MASTER_ID:
@@ -1550,7 +1550,7 @@ def validate_merged_font(font, commit: str, settings: dict) -> None:
     ]
     if actual_instances != expected_instances:
         raise ValueError(
-            "Unexpected Aster Text exports after sync: "
+            "Unexpected Astr Text exports after sync: "
             f"{actual_instances}"
         )
     expected_layers = {master.id for master in font.masters}
@@ -1582,14 +1582,14 @@ def read_sync_state(path: Path) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Fetch current Inter and merge it into the Aster Glyphs package"
+        description="Fetch current Inter and merge it into the Astr Glyphs package"
     )
     parser.add_argument(
         "--source",
         default=str(DEFAULT_FONT_SOURCE),
         help=(
             "Glyphs package to update "
-            "(default: sources/Aster.glyphspackage)"
+            "(default: sources/Astr.glyphspackage)"
         ),
     )
     parser.add_argument(
@@ -1607,7 +1607,7 @@ def main() -> None:
         action="store_true",
         help=(
             "first convert the original Asta Sans masters, exports, family name, "
-            "and axes to the Aster project structure"
+            "and axes to the Astr project structure"
         ),
     )
     parser.add_argument(
@@ -1622,7 +1622,7 @@ def main() -> None:
         "--baseline",
         type=float,
         help=(
-            "Inter baseline offset in final Aster units used by --initialize; "
+            "Inter baseline offset in final Astr units used by --initialize; "
             "positive values move Inter upward"
         ),
     )
@@ -1630,7 +1630,7 @@ def main() -> None:
         "--master-weights",
         type=parse_weights,
         help=(
-            "six comma- or space-separated Inter/Aster master coordinates; "
+            "six comma- or space-separated Inter/Astr master coordinates; "
             "decimals are accepted"
         ),
     )
@@ -1638,7 +1638,7 @@ def main() -> None:
         "--export-weights",
         type=parse_weights,
         help=(
-            "five comma- or space-separated Aster export coordinates; "
+            "five comma- or space-separated Astr export coordinates; "
             "decimals are accepted"
         ),
     )
@@ -1680,8 +1680,8 @@ def main() -> None:
             )
         except ValueError as error:
             parser.error(str(error))
-        designspace_data = render_aster_designspace(
-            ASTER_DESIGNSPACE,
+        designspace_data = render_astr_designspace(
+            ASTR_DESIGNSPACE,
             tuple(settings["masterWeights"]),
             tuple(settings["exportWeights"]),
         )
@@ -1697,45 +1697,45 @@ def main() -> None:
         and int(saved_state.get("version", 0)) >= SYNC_STATE_VERSION
         and saved_state.get("repositoryCommit") == commit
     ):
-        print("Aster already contains this Inter commit; nothing to update.")
+        print("Astr already contains this Inter commit; nothing to update.")
         return
 
-    aster = glyphsLib.GSFont(str(font_source))
+    astr = glyphsLib.GSFont(str(font_source))
     if args.initialize:
         print(
-            "Configuring the Asta Sans package as the Aster source project...",
+            "Configuring the Asta Sans package as the Astr source project...",
             flush=True,
         )
-        configure_aster_project(aster, settings)
-    before_names = {glyph.name for glyph in aster.glyphs}
-    state = deepcopy(aster.userData.get(SYNC_STATE_KEY) or {})
-    with tempfile.TemporaryDirectory(prefix="aster-inter-sync-") as directory:
+        configure_astr_project(astr, settings)
+    before_names = {glyph.name for glyph in astr.glyphs}
+    state = deepcopy(astr.userData.get(SYNC_STATE_KEY) or {})
+    with tempfile.TemporaryDirectory(prefix="astr-inter-sync-") as directory:
         inter = prepare_inter_font(
             inter_source,
             Path(directory),
-            float(aster.upm),
+            float(astr.upm),
             settings,
         )
-        overlap, removed_unicodes = merge_into_aster(
-            aster,
+        overlap, removed_unicodes = merge_into_astr(
+            astr,
             inter,
             state,
             commit,
             settings,
             replace_all=args.force or args.initialize,
         )
-    remove_empty_backgrounds(aster)
-    validate_merged_font(aster, commit, settings)
-    final_names = {glyph.name for glyph in aster.glyphs}
+    remove_empty_backgrounds(astr)
+    validate_merged_font(astr, commit, settings)
+    final_names = {glyph.name for glyph in astr.glyphs}
     glyphs_written, glyphs_removed, fontinfo_written = write_glyphs_package(
-        aster, font_source, before_names - final_names
+        astr, font_source, before_names - final_names
     )
     designspace_written = False
     if designspace_data is not None:
-        designspace_written = _write_if_changed(ASTER_DESIGNSPACE, designspace_data)
+        designspace_written = _write_if_changed(ASTR_DESIGNSPACE, designspace_data)
     print(
         f"Synced {len(inter.glyphs)} Inter glyphs at 12 masters; "
-        f"replaced {overlap} Aster glyph names and removed "
+        f"replaced {overlap} Astr glyph names and removed "
         f"{removed_unicodes} conflicting Unicode assignments. "
         f"Wrote {glyphs_written} changed glyph files, removed "
         f"{glyphs_removed}, and updated fontinfo={bool(fontinfo_written)}, "

@@ -176,7 +176,7 @@ def apple_latin_stroke_bias(weight: float) -> float:
 
 def ufo_stroke_score(path: Path) -> float:
     if not path.is_dir():
-        raise FileNotFoundError(f"Aster master not found: {path}")
+        raise FileNotFoundError(f"Astr master not found: {path}")
 
     font = Font.open(path, lazy=True)
     required_glyphs = (*KOREAN_FORM_GLYPHS, KOREAN_STEM_GLYPH)
@@ -298,14 +298,14 @@ class InterStrokeModel:
 
 
 def master_path(master_name: str, display: bool) -> Path:
-    prefix = "Aster-Display" if display else "Aster-"
+    prefix = "Astr-Display" if display else "Astr-"
     return ROOT / "sources" / "masters" / f"{prefix}{master_name}.ufo"
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
-            "Match one shared set of Inter weights to the Aster Text and "
+            "Match one shared set of Inter weights to the Astr Text and "
             "Display masters."
         )
     )

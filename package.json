@@ -1,21 +1,21 @@
 {
-  "name": "@quiple/aster",
+  "name": "@quiple/astr",
   "version": "1.0.2",
-  "description": "Aster webfonts, combining Asta Sans and Inter",
+  "description": "Astr webfonts, combining Asta Sans and Inter",
   "license": "OFL-1.1",
   "author": "quiple",
-  "homepage": "https://github.com/quiple/aster#readme",
+  "homepage": "https://github.com/quiple/astr#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/quiple/aster.git"
+    "url": "git+https://github.com/quiple/astr.git"
   },
   "bugs": {
-    "url": "https://github.com/quiple/aster/issues"
+    "url": "https://github.com/quiple/astr/issues"
   },
-  "style": "./fonts/webfonts/aster.css",
+  "style": "./fonts/webfonts/astr.css",
   "exports": {
-    ".": "./fonts/webfonts/aster.css",
-    "./aster.css": "./fonts/webfonts/aster.css",
+    ".": "./fonts/webfonts/astr.css",
+    "./astr.css": "./fonts/webfonts/astr.css",
     "./static.css": "./fonts/webfonts/static.css",
     "./fonts/*": "./fonts/webfonts/*"
   },
