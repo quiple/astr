@@ -8,7 +8,7 @@ help:
 	@echo
 	@echo "  make setup:  Installs the font build dependencies"
 	@echo "  make init-astr:  Converts Astr.glyphspackage into the complete Astr source"
-	@echo "    Optional (decimals accepted): INTER_SCALE=100% INTER_BASELINE=-14.7 ASTR_MASTER_WEIGHTS=262.5,365.8,425.2,470.9,516.3,601.5 ASTR_EXPORT_WEIGHTS=262.5,300,400,500,601.5"
+	@echo "    Optional (decimals accepted): INTER_SCALE=100% ASTR_BASELINE=11.856 ASTR_MASTER_WEIGHTS=262.5,365.8,425.2,470.9,516.3,601.5 ASTR_EXPORT_WEIGHTS=262.5,300,400,500,601.5"
 	@echo "  make sync-inter:  Fetches current Inter and updates changed merged data"
 	@echo "  make sync-inter-all:  Fetches current Inter and reapplies every Inter glyph"
 	@echo "  make build:  Builds the fonts and places them in the fonts/ directory"
@@ -23,7 +23,7 @@ build: build.stamp
 INTER_REPOSITORY_URL ?= https://github.com/rsms/inter.git
 GLYPHS_SOURCE ?= sources/Astr.glyphspackage
 INTER_SCALE ?= 100%
-INTER_BASELINE ?= 0
+ASTR_BASELINE ?= 0
 ASTR_MASTER_WEIGHTS ?= 225,325,400,425,475,550
 ASTR_EXPORT_WEIGHTS ?= 225,300,400,500,550
 BUILD_JOBS ?= 2
@@ -35,7 +35,7 @@ sync-inter-all: venv
 	. venv/bin/activate; python sources/sync_inter.py --source "$(GLYPHS_SOURCE)" --repository "$(INTER_REPOSITORY_URL)" --force
 
 init-astr: venv
-	. venv/bin/activate; python sources/sync_inter.py --source "$(GLYPHS_SOURCE)" --repository "$(INTER_REPOSITORY_URL)" --initialize --force --scale "$(INTER_SCALE)" --baseline "$(INTER_BASELINE)" --master-weights "$(ASTR_MASTER_WEIGHTS)" --export-weights "$(ASTR_EXPORT_WEIGHTS)"
+	. venv/bin/activate; python sources/sync_inter.py --source "$(GLYPHS_SOURCE)" --repository "$(INTER_REPOSITORY_URL)" --initialize --force --scale "$(INTER_SCALE)" --astr-baseline "$(ASTR_BASELINE)" --master-weights "$(ASTR_MASTER_WEIGHTS)" --export-weights "$(ASTR_EXPORT_WEIGHTS)"
 
 build-woff2: venv
 	. venv/bin/activate; python sources/build_woff2.py
