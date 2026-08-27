@@ -24874,7 +24874,7 @@ code = "featureNames {
     sub nine.numr by nine.numr.ss01;
     sub nine.sups by nine.sups.ss01;
     sub nine.subs by nine.subs.ss01;";
-notes = "Name: 
+notes = "Name:
 ";
 tag = ss01;
 },
@@ -24940,7 +24940,7 @@ code = "featureNames {
     sub zero.tf by zero.tf.slash;
     sub zero.squared by zero.slash.squared;
     sub zero.circled by zero.slash.circled;";
-notes = "Name: 
+notes = "Name:
 ";
 tag = ss02;
 },
@@ -25034,7 +25034,7 @@ code = "featureNames {
     sub uni1FDB by uni1FDB.1;
     sub afii10055 by afii10055.1;
     sub Yi-cy by Yi-cy.1;";
-notes = "Name: 
+notes = "Name:
 ";
 tag = ss04;
 },
@@ -73699,5 +73699,5 @@ version = 6;
 };
 };
 versionMajor = 1;
-versionMinor = 0;
+versionMinor = 4;
 }
