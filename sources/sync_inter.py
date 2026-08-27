@@ -32,6 +32,7 @@ from glyphsLib.classes import (
     GSFeaturePrefix,
     GSFontInfoValue,
 )
+from glyphsLib.types import Point
 from glyphsLib.writer import Writer
 import openstep_plist
 from ufoLib2 import Font
@@ -755,7 +756,7 @@ def _normalize_geometry(value: int | float) -> int | float:
 
 def _shift_position(item, delta_x: float, delta_y: float) -> None:
     position = item.position
-    item.position = (
+    item.position = Point(
         _normalize_geometry(position[0] + delta_x),
         _normalize_geometry(position[1] + delta_y),
     )
