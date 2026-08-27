@@ -68,7 +68,8 @@ FONT_METADATA = (
     ("vendorID", "QPLE", False),
 )
 DEFAULT_SCALE = 1.0
-DEFAULT_BASELINE = 0.0
+DEFAULT_ASTR_BASELINE = 0.0
+BASELINE_REFERENCE_UPM = 1000.0
 DEFAULT_MASTER_WEIGHTS = (225, 325, 400, 425, 475, 550)
 DEFAULT_EXPORT_WEIGHTS = (225, 300, 400, 500, 550)
 PUBLIC_EXPORT_WEIGHTS = (200, 300, 400, 500, 600)
@@ -98,9 +99,10 @@ SYNC_STATE_KEY = "com.quiple.Astr.interSync"
 IMPORTED_GLYPH_KEY = "com.quiple.Astr.interGlyph"
 REMOVED_UNICODES_KEY = "com.quiple.Astr.interRemovedUnicodes"
 DISPLAY_MASTER_NAMESPACE = uuid.UUID("899f9541-4354-42f3-9582-fdf66f401235")
-SYNC_STATE_VERSION = 4
+SYNC_STATE_VERSION = 6
 Weight = int | float
 WEIGHT_DECIMAL_PLACES = 6
+GEOMETRY_DECIMAL_PLACES = 6
 
 
 def run(command: list[str], cwd: Path | None = None) -> None:
@@ -151,14 +153,14 @@ def parse_weights(value: str) -> tuple[Weight, ...]:
 
 def _validate_settings(
     scale: float,
-    baseline: float,
+    astr_baseline: float,
     master_weights: tuple[Weight, ...],
     export_weights: tuple[Weight, ...],
 ) -> None:
     if not math.isfinite(scale) or scale <= 0:
         raise ValueError("Inter scale must be greater than zero")
-    if not math.isfinite(baseline):
-        raise ValueError("Inter baseline must be a finite number")
+    if not math.isfinite(astr_baseline):
+        raise ValueError("Astr baseline must be a finite number")
     if len(master_weights) != len(TEXT_MASTER_IDENTITIES):
         raise ValueError(
             f"Expected six master weights, got {len(master_weights)}"
@@ -192,16 +194,16 @@ def _validate_settings(
 
 def _settings_dict(
     scale: float,
-    baseline: float,
+    astr_baseline: float,
     master_weights: tuple[Weight, ...],
     export_weights: tuple[Weight, ...],
 ) -> dict:
     master_weights = tuple(_normalize_weight(value) for value in master_weights)
     export_weights = tuple(_normalize_weight(value) for value in export_weights)
-    _validate_settings(scale, baseline, master_weights, export_weights)
+    _validate_settings(scale, astr_baseline, master_weights, export_weights)
     return {
         "scale": scale,
-        "baseline": baseline,
+        "astrBaseline": astr_baseline,
         "masterWeights": list(master_weights),
         "exportWeights": list(export_weights),
     }
@@ -209,9 +211,16 @@ def _settings_dict(
 
 def _settings_from_state(state: dict) -> dict:
     saved = state.get("settings") or {}
+    # Version 4 and 5 sources moved Inter by a signed `baseline` value. Moving
+    # Astr by the opposite amount preserves the relative alignment while
+    # restoring Inter to its native baseline.
+    if "astrBaseline" in saved:
+        astr_baseline = float(saved["astrBaseline"])
+    else:
+        astr_baseline = -float(saved.get("baseline", 0))
     return _settings_dict(
         float(saved.get("scale", DEFAULT_SCALE)),
-        float(saved.get("baseline", DEFAULT_BASELINE)),
+        astr_baseline,
         tuple(
             _normalize_weight(value)
             for value in saved.get("masterWeights", DEFAULT_MASTER_WEIGHTS)
@@ -319,7 +328,6 @@ def _scale_number(value: int | float | None, factor: float) -> int | None:
 def scale_feature_geometry(
     node: object,
     factor: float,
-    baseline: float,
     seen: set[int] | None = None,
 ) -> None:
     if seen is None:
@@ -336,8 +344,7 @@ def scale_feature_geometry(
     if isinstance(node, ast.Anchor):
         if node.name is None:
             node.x = _scale_number(node.x, factor)
-            scaled_y = _scale_number(node.y, factor)
-            node.y = None if scaled_y is None else round(scaled_y + baseline)
+            node.y = _scale_number(node.y, factor)
         return
     if isinstance(node, dict):
         values = node.values()
@@ -348,23 +355,7 @@ def scale_feature_geometry(
     else:
         return
     for value in values:
-        scale_feature_geometry(value, factor, baseline, seen)
-
-
-def translate_ufo_geometry(ufo: Font, baseline: float) -> None:
-    if not baseline:
-        return
-    for glyph in ufo:
-        for contour in glyph:
-            for point in contour:
-                point.y += baseline
-        for anchor in glyph.anchors:
-            anchor.y += baseline
-        # Component base glyphs are translated too, so changing component
-        # offsets here would apply the baseline shift twice.
-        for guideline in glyph.guidelines:
-            if guideline.y is not None:
-                guideline.y += baseline
+        scale_feature_geometry(value, factor, seen)
 
 
 def _tool(name: str) -> str:
@@ -383,7 +374,6 @@ def prepare_inter_font(
     settings: dict,
 ):
     scale = float(settings["scale"])
-    baseline = float(settings["baseline"])
     master_weights = tuple(settings["masterWeights"])
     masters = work / "masters"
     instances = work / "instances"
@@ -480,12 +470,11 @@ def prepare_inter_font(
                 glyphNames=set(ufo.keys()),
                 includeDir=masters,
             ).parse()
-            scale_feature_geometry(feature_file, factor, baseline)
+            scale_feature_geometry(feature_file, factor)
             scale_ufo(ufo, factor)
-            translate_ufo_geometry(ufo, baseline)
             for glyph in ufo:
                 if glyph.verticalOrigin is not None:
-                    glyph.verticalOrigin = glyph.verticalOrigin * factor + baseline
+                    glyph.verticalOrigin *= factor
             # The extra visual scale must not change Astr's UPM.
             ufo.info.unitsPerEm = astr_upm
             ufo.features.text = feature_file.asFea()
@@ -757,6 +746,134 @@ def _remove_previous_inter_glyphs(font, state: dict) -> None:
         if removed:
             glyph.unicodes = list(dict.fromkeys([*glyph.unicodes, *removed]))
             del glyph.userData[REMOVED_UNICODES_KEY]
+
+
+def _normalize_geometry(value: int | float) -> int | float:
+    rounded = round(float(value), GEOMETRY_DECIMAL_PLACES)
+    return int(rounded) if rounded.is_integer() else rounded
+
+
+def _shift_position(item, delta_x: float, delta_y: float) -> None:
+    position = item.position
+    item.position = (
+        _normalize_geometry(position[0] + delta_x),
+        _normalize_geometry(position[1] + delta_y),
+    )
+
+
+def _component_baseline_compensation(
+    component,
+    baseline: float,
+    base_is_inter: bool,
+) -> tuple[float, float]:
+    if base_is_inter:
+        return 0, baseline
+    _xx, _xy, yx, yy, _dx, _dy = component.transform
+    return -yx * baseline, baseline - yy * baseline
+
+
+def _shift_astr_layer(
+    layer,
+    previous_baseline: float,
+    target_baseline: float,
+    previous_inter_names: set[str],
+    inter_names: set[str],
+) -> None:
+    delta = target_baseline - previous_baseline
+    for path in layer.paths:
+        for node in path.nodes:
+            _shift_position(node, 0, delta)
+    for anchor in layer.anchors:
+        _shift_position(anchor, 0, delta)
+    for guide in layer.guides:
+        _shift_position(guide, 0, delta)
+
+    for component in layer.components:
+        previous_compensation = _component_baseline_compensation(
+            component,
+            previous_baseline,
+            component.name in previous_inter_names,
+        )
+        target_compensation = _component_baseline_compensation(
+            component,
+            target_baseline,
+            component.name in inter_names,
+        )
+        _shift_position(
+            component,
+            target_compensation[0] - previous_compensation[0],
+            target_compensation[1] - previous_compensation[1],
+        )
+        if component.name in inter_names and target_baseline:
+            # The Inter base stays at its native baseline, so this Astr-owned
+            # composite needs an explicit offset. Disable automatic alignment
+            # so Glyphs does not discard it when opening or saving the package.
+            component.alignment = -1
+
+    if layer.hasBackground:
+        _shift_astr_layer(
+            layer.background,
+            previous_baseline,
+            target_baseline,
+            previous_inter_names,
+            inter_names,
+        )
+
+
+def _previous_astr_baseline(state: dict) -> float:
+    saved = state.get("settings") or {}
+    if "astrBaseline" not in saved:
+        # Legacy sources moved Inter instead, so no Astr baseline shift has
+        # been applied even when their saved `baseline` value is non-zero.
+        return 0.0
+    return float(saved["astrBaseline"])
+
+
+def _astr_baseline_in_font_units(baseline: float, upm: float) -> float:
+    return baseline * upm / BASELINE_REFERENCE_UPM
+
+
+def _shift_astr_owned_glyphs(
+    font,
+    state: dict,
+    settings: dict,
+    inter_names: set[str],
+) -> int:
+    previous = _astr_baseline_in_font_units(
+        _previous_astr_baseline(state),
+        float(font.upm),
+    )
+    target = _astr_baseline_in_font_units(
+        float(settings["astrBaseline"]),
+        float(font.upm),
+    )
+    previous_inter_names = set(state.get("importedGlyphs", []))
+    baseline_changed = not math.isclose(
+        previous,
+        target,
+        abs_tol=10**-GEOMETRY_DECIMAL_PLACES,
+    )
+    ownership_changed = previous_inter_names != inter_names
+    if not baseline_changed and not ownership_changed:
+        return 0
+
+    if baseline_changed:
+        print(
+            "Moving Astr-owned glyphs by "
+            f"{_normalize_geometry(target - previous):g} units "
+            f"at UPM {font.upm}...",
+            flush=True,
+        )
+    for glyph in font.glyphs:
+        for layer in glyph.layers:
+            _shift_astr_layer(
+                layer,
+                previous,
+                target,
+                previous_inter_names,
+                inter_names,
+            )
+    return len(font.glyphs)
 
 
 def _mirror_astr_layers(
@@ -1126,6 +1243,11 @@ def merge_into_astr(
     master_weights = tuple(settings["masterWeights"])
     export_weights = tuple(settings["exportWeights"])
     same_inter_commit = state.get("repositoryCommit") == commit
+    baseline_changed = not math.isclose(
+        _previous_astr_baseline(state),
+        float(settings["astrBaseline"]),
+        abs_tol=10**-GEOMETRY_DECIMAL_PLACES,
+    )
     _ensure_axis_mappings(font, export_weights)
     _preserve_imported_component_positions(inter_font)
     text_records, display_records, changed_master_ids = _master_records(
@@ -1147,7 +1269,12 @@ def merge_into_astr(
         master_map[master.id] = target_by_coordinate[coordinate]
 
     # A coordinate-only migration must not replace unchanged master layers.
-    if same_inter_commit and changed_master_ids and not replace_all:
+    if (
+        same_inter_commit
+        and changed_master_ids
+        and not replace_all
+        and not baseline_changed
+    ):
         print(
             "Replacing Inter data only in changed Astr masters: "
             + ", ".join(
@@ -1177,11 +1304,17 @@ def merge_into_astr(
     }
     _restore_layout(font, state)
     _remove_previous_inter_glyphs(font, state)
+    incoming_names = {glyph.name for glyph in inter_font.glyphs}
+    _shift_astr_owned_glyphs(
+        font,
+        state,
+        settings,
+        incoming_names,
+    )
     print("Mirroring Astr layers across the opsz endpoints...", flush=True)
     _mirror_astr_layers(font, text_records, display_records)
     _ensure_display_instances(font, text_records, display_records)
 
-    incoming_names = {glyph.name for glyph in inter_font.glyphs}
     old_overlap_glyphs = [
         glyph for glyph in font.glyphs if glyph.name in incoming_names
     ]
@@ -1518,6 +1651,22 @@ def validate_merged_font(font, commit: str, settings: dict) -> None:
         or state.get("settings") != settings
     ):
         raise ValueError("Inter sync metadata was not saved correctly")
+    if settings.get("astrBaseline") and state.get("importedGlyphs"):
+        imported_names = set(state["importedGlyphs"])
+        for glyph in font.glyphs:
+            if glyph.userData.get(IMPORTED_GLYPH_KEY):
+                continue
+            for layer in glyph.layers:
+                for component in layer.components:
+                    if (
+                        component.name in imported_names
+                        and component.alignment != -1
+                    ):
+                        raise ValueError(
+                            "Astr component referencing an Inter glyph must keep "
+                            "its baseline offset: "
+                            f"{glyph.name}, {layer.name}, {component.name}"
+                        )
     display_instances = [
         instance
         for instance in font.instances
@@ -1619,11 +1768,11 @@ def main() -> None:
         ),
     )
     parser.add_argument(
-        "--baseline",
+        "--astr-baseline",
         type=float,
         help=(
-            "Inter baseline offset in final Astr units used by --initialize; "
-            "positive values move Inter upward"
+            "Astr-owned glyph baseline offset used by --initialize, expressed "
+            "in 1000-UPM units; positive values move Astr glyphs upward"
         ),
     )
     parser.add_argument(
@@ -1656,21 +1805,23 @@ def main() -> None:
         value is not None
         for value in (
             args.scale,
-            args.baseline,
+            args.astr_baseline,
             args.master_weights,
             args.export_weights,
         )
     )
     if supplied_settings and not args.initialize:
         parser.error(
-            "--scale, --baseline, --master-weights, and --export-weights "
+            "--scale, --astr-baseline, --master-weights, and --export-weights "
             "can only be used with --initialize"
         )
     if args.initialize:
         try:
             settings = _settings_dict(
                 DEFAULT_SCALE if args.scale is None else args.scale,
-                DEFAULT_BASELINE if args.baseline is None else args.baseline,
+                DEFAULT_ASTR_BASELINE
+                if args.astr_baseline is None
+                else args.astr_baseline,
                 DEFAULT_MASTER_WEIGHTS
                 if args.master_weights is None
                 else args.master_weights,
