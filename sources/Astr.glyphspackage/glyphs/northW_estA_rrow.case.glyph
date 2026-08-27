@@ -1,0 +1,154 @@
+{
+glyphname = northWestArrow.case;
+layers = (
+{
+layerId = m003;
+shapes = (
+{
+alignment = -1;
+pos = (0,78.148);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 760.57896;
+},
+{
+layerId = m01;
+shapes = (
+{
+alignment = -1;
+pos = (0,81.774);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 771.63021;
+},
+{
+layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
+shapes = (
+{
+alignment = -1;
+pos = (0,83.25);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 775.98455;
+},
+{
+layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
+shapes = (
+{
+alignment = -1;
+pos = (0,83.771);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 777.26441;
+},
+{
+layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
+shapes = (
+{
+alignment = -1;
+pos = (0,84.285);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 778.52434;
+},
+{
+layerId = m005;
+shapes = (
+{
+alignment = -1;
+pos = (0,85.226);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 780.83574;
+},
+{
+layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
+shapes = (
+{
+alignment = -1;
+pos = (0,102.821);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 706.60849;
+},
+{
+layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
+shapes = (
+{
+alignment = -1;
+pos = (0,103.339);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 720.7679;
+},
+{
+layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
+shapes = (
+{
+alignment = -1;
+pos = (0,103.538);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 724.77205;
+},
+{
+layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
+shapes = (
+{
+alignment = -1;
+pos = (0,103.585);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 723.01816;
+},
+{
+layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
+shapes = (
+{
+alignment = -1;
+pos = (0,103.632);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 721.29159;
+},
+{
+layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
+shapes = (
+{
+alignment = -1;
+pos = (0,103.717);
+ref = northWestArrow;
+}
+);
+vertWidth = 0;
+width = 718.12411;
+}
+);
+note = "";
+production = uni2196.case;
+userData = {
+com.quiple.Astr.interGlyph = 1;
+};
+}
