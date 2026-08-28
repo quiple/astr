@@ -1,0 +1,13 @@
+cleanUp: True
+recipe:
+  "../test/Astr[opsz,wght].woff2":
+    - source: masters/Astr.designspace
+    - operation: buildVariable
+      args: >-
+        --filter ... --filter FlattenComponentsFilter
+        --filter DecomposeTransformedComponentsFilter --keep-overlaps
+    - operation: fix
+      args: ""
+    - operation: buildStat
+      args: ""
+    - operation: compress

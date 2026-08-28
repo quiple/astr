@@ -5,7 +5,7 @@ layers = (
 anchors = (
 {
 name = _top;
-pos = (169.448,545.898);
+pos = (168.664,545.898);
 }
 );
 layerId = m003;
@@ -16,18 +16,18 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (174.906,0);
+pos = (174.826,0);
 ref = varia;
 }
 );
 vertWidth = 0;
-width = 292.40818;
+width = 290.91951;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (182.917,545.898);
+pos = (181.961,545.898);
 }
 );
 layerId = m01;
@@ -38,18 +38,18 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (176.288,0);
+pos = (176.19,0);
 ref = varia;
 }
 );
 vertWidth = 0;
-width = 317.96419;
+width = 316.15105;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (188.6,545.898);
+pos = (188.123,545.898);
 }
 );
 layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
@@ -60,19 +60,19 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (178.056,-1.122);
+pos = (177.493,-0.635);
 ref = varia;
-scale = (0.994,1.002);
+scale = (0.997,1.001);
 }
 );
 vertWidth = 0;
-width = 329.84973;
+width = 328.46685;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (190.97,545.898);
+pos = (190.403,545.898);
 }
 );
 layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
@@ -83,19 +83,19 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (180.852,-3.539);
+pos = (180.184,-2.961);
 ref = varia;
-scale = (0.981,1.006);
+scale = (0.984,1.005);
 }
 );
 vertWidth = 0;
-width = 336.72307;
+width = 335.07936;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (193.303,545.898);
+pos = (192.705,545.898);
 }
 );
 layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
@@ -106,19 +106,19 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (183.606,-5.919);
+pos = (182.899,-5.309);
 ref = varia;
-scale = (0.968,1.01);
+scale = (0.971,1.009);
 }
 );
 vertWidth = 0;
-width = 343.48936;
+width = 341.75375;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (197.584,545.898);
+pos = (197.111,545.898);
 }
 );
 layerId = m005;
@@ -129,19 +129,19 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (188.656,-10.285);
+pos = (188.099,-9.804);
 ref = varia;
-scale = (0.944,1.017);
+scale = (0.947,1.016);
 }
 );
 vertWidth = 0;
-width = 355.90244;
+width = 354.53329;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (151.204,515.625);
+pos = (150.56,515.625);
 }
 );
 layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
@@ -152,19 +152,19 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (158.714,-14.64);
+pos = (158.503,-14.067);
 ref = varia;
-scale = (0.985,1.022);
+scale = (0.985,1.021);
 }
 );
 vertWidth = 0;
-width = 270.2576;
+width = 268.90975;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (162.255,515.625);
+pos = (161.471,515.625);
 }
 );
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
@@ -175,19 +175,19 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (162.34,-24.483);
+pos = (162.083,-23.785);
 ref = varia;
-scale = (0.975,1.037);
+scale = (0.975,1.036);
 }
 );
 vertWidth = 0;
-width = 293.39616;
+width = 291.75453;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (167.555,515.625);
+pos = (166.888,515.625);
 }
 );
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
@@ -198,19 +198,19 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (164.058,-29.526);
+pos = (163.848,-28.791);
 ref = varia;
-scale = (0.966,1.044);
+scale = (0.968,1.043);
 }
 );
 vertWidth = 0;
-width = 304.04116;
+width = 302.83949;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (170.874,515.625);
+pos = (170.08,515.625);
 }
 );
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
@@ -221,19 +221,19 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (165.101,-33.176);
+pos = (164.852,-32.303);
 ref = varia;
-scale = (0.954,1.051);
+scale = (0.957,1.049);
 }
 );
 vertWidth = 0;
-width = 310.01386;
+width = 308.58553;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (174.14,515.625);
+pos = (173.302,515.625);
 }
 );
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
@@ -244,19 +244,19 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (166.128,-36.769);
+pos = (165.864,-35.847);
 ref = varia;
-scale = (0.942,1.057);
+scale = (0.945,1.055);
 }
 );
 vertWidth = 0;
-width = 315.89353;
+width = 314.38534;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (180.133,515.625);
+pos = (179.472,515.625);
 }
 );
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
@@ -267,13 +267,13 @@ ref = psili;
 },
 {
 alignment = -1;
-pos = (168.011,-43.361);
+pos = (167.803,-42.634);
 ref = varia;
-scale = (0.921,1.068);
+scale = (0.923,1.067);
 }
 );
 vertWidth = 0;
-width = 326.68006;
+width = 325.49032;
 }
 );
 note = "";

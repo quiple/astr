@@ -7,9 +7,7 @@ import math
 from pathlib import Path
 from statistics import fmean
 
-from fontTools.pens.areaPen import AreaPen
 from fontTools.pens.boundsPen import BoundsPen
-from fontTools.pens.perimeterPen import PerimeterPen
 from fontTools.pens.recordingPen import RecordingPen
 from fontTools.ttLib import TTFont
 from ufoLib2 import Font
@@ -21,33 +19,22 @@ DEFAULT_INTER_FONT = (
 )
 MASTER_NAMES = ("ExtraLight", "Light", "Regular", "Text", "Medium", "SemiBold")
 
-# A straight vertical stroke anchors the physical stem-width comparison.
+# Use straight vertical strokes exclusively so different counters, curves, and
+# glyph proportions do not distort the physical stem-width comparison.
 KOREAN_STEM_GLYPH = "iCompa-ko"
 INTER_STEM_CHARACTERS = "HI"
 
-# These broader samples keep curves, counters, lowercase, and numerals from
-# drifting away from the perceived Korean weight when the stems alone match.
-KOREAN_FORM_GLYPHS = (
-    "iCompa-ko",
-    "euCompa-ko",
-    "mieumCompa-ko",
-    "ieungCompa-ko",
-)
-INTER_FORM_CHARACTERS = "HInoOSB8"
-
-STEM_SCORE_WEIGHT = 0.6
-FORM_SCORE_WEIGHT = 0.4
 # Apple mixes SF Pro Latin with SF Pro KR at the same nominal CSS weight, but
 # the optical difference is not constant across the range. These anchors are
-# the Latin/Korean ratios measured with the same 60:40 stem/form metric used
-# above. Text and Display measurements are combined where both are available.
+# the geometric means of the SF Pro Text and Display H/I vertical-stem ratios
+# against the SF Pro KR compatibility-jamo ㅣ vertical stem.
 APPLE_LATIN_STROKE_BIAS = (
-    (200.0, 1.03528878),
-    (300.0, 1.08007641),
-    (400.0, 1.07143816),
-    (500.0, 1.08386768),
-    (600.0, 1.08819489),
-    (700.0, 1.08307329),
+    (200.0, 1.01282051282),
+    (300.0, 1.04999295574),
+    (400.0, 1.04046242775),
+    (500.0, 1.06042455156),
+    (600.0, 1.06846271603),
+    (700.0, 1.06713780919),
 )
 TEXT_OPSZ = 14
 DISPLAY_OPSZ = 32
@@ -69,18 +56,6 @@ def parse_scale(value: str) -> float:
     if not math.isfinite(scale) or scale <= 0:
         raise argparse.ArgumentTypeError("scale must be greater than zero")
     return scale
-
-
-def average_stroke(glyph, glyph_set) -> float:
-    area_pen = AreaPen(glyph_set)
-    glyph.draw(area_pen)
-    perimeter_pen = PerimeterPen(glyph_set, tolerance=0.01)
-    glyph.draw(perimeter_pen)
-    if not perimeter_pen.value:
-        raise ValueError("sample glyph has no measurable outline")
-
-    # For a long rectangular stem, 2A/P approaches its thickness.
-    return 2 * abs(area_pen.value) / perimeter_pen.value
 
 
 def bounding_width(glyph, glyph_set) -> float:
@@ -149,10 +124,6 @@ def vertical_stem_width(glyph) -> float:
     return min(spans)
 
 
-def weighted_score(stem_score: float, form_score: float) -> float:
-    return STEM_SCORE_WEIGHT * stem_score + FORM_SCORE_WEIGHT * form_score
-
-
 def apple_latin_stroke_bias(weight: float) -> float:
     """Interpolate Apple's weight-dependent Latin/Korean optical ratio."""
     first_weight, first_bias = APPLE_LATIN_STROKE_BIAS[0]
@@ -179,7 +150,7 @@ def ufo_stroke_score(path: Path) -> float:
         raise FileNotFoundError(f"Astr master not found: {path}")
 
     font = Font.open(path, lazy=True)
-    required_glyphs = (*KOREAN_FORM_GLYPHS, KOREAN_STEM_GLYPH)
+    required_glyphs = (KOREAN_STEM_GLYPH,)
     missing = [name for name in required_glyphs if name not in font]
     if missing:
         raise ValueError(
@@ -187,14 +158,9 @@ def ufo_stroke_score(path: Path) -> float:
         )
 
     upm = float(font.info.unitsPerEm or 1000)
-    stem_score = math.log(
+    return math.log(
         bounding_width(font[KOREAN_STEM_GLYPH], font) / upm
     )
-    form_score = fmean(
-        math.log(average_stroke(font[name], font) / upm)
-        for name in KOREAN_FORM_GLYPHS
-    )
-    return weighted_score(stem_score, form_score)
 
 
 class InterStrokeModel:
@@ -214,7 +180,7 @@ class InterStrokeModel:
         self.upm = float(self.font["head"].unitsPerEm)
 
         cmap = self.font.getBestCmap() or {}
-        required_characters = INTER_FORM_CHARACTERS + INTER_STEM_CHARACTERS
+        required_characters = INTER_STEM_CHARACTERS
         missing = [
             character
             for character in required_characters
@@ -224,9 +190,6 @@ class InterStrokeModel:
             raise ValueError(
                 f"Inter font is missing sample characters: {''.join(missing)}"
             )
-        self.form_glyph_names = tuple(
-            cmap[ord(character)] for character in INTER_FORM_CHARACTERS
-        )
         self.stem_glyph_names = tuple(
             cmap[ord(character)] for character in INTER_STEM_CHARACTERS
         )
@@ -236,15 +199,10 @@ class InterStrokeModel:
         glyph_set = self.font.getGlyphSet(
             location={"wght": weight, "opsz": optical_size}
         )
-        stem_score = fmean(
+        return fmean(
             math.log(vertical_stem_width(glyph_set[name]) / self.upm)
             for name in self.stem_glyph_names
         )
-        form_score = fmean(
-            math.log(average_stroke(glyph_set[name], glyph_set) / self.upm)
-            for name in self.form_glyph_names
-        )
-        return weighted_score(stem_score, form_score)
 
     def find_weight(
         self,

@@ -7,19 +7,19 @@ layers = (
 anchors = (
 {
 name = bottom;
-pos = (843.584,0);
+pos = (842.749,0);
 },
 {
 name = top;
-pos = (843.584,545.898);
+pos = (842.749,545.898);
 },
 {
 name = cedilla;
-pos = (842.351,0);
+pos = (841.526,0);
 },
 {
 name = rthook;
-pos = (640.879,128.853);
+pos = (640.678,128.702);
 }
 );
 layerId = m003;
@@ -30,30 +30,30 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (581.665,0);
+pos = (581.182,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1093.06503;
+width = 1091.86805;
 },
 {
 anchors = (
 {
 name = bottom;
-pos = (857.916,0);
+pos = (856.899,0);
 },
 {
 name = top;
-pos = (857.916,545.898);
+pos = (856.899,545.898);
 },
 {
 name = cedilla;
-pos = (856.51,0);
+pos = (855.506,0);
 },
 {
 name = rthook;
-pos = (644.333,131.443);
+pos = (644.088,131.259);
 }
 );
 layerId = m01;
@@ -64,30 +64,30 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (589.953,0);
+pos = (589.365,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1113.61344;
+width = 1112.15558;
 },
 {
 anchors = (
 {
 name = bottom;
-pos = (865.565,0);
+pos = (864.363,0);
 },
 {
 name = top;
-pos = (865.477,545.898);
+pos = (864.313,545.898);
 },
 {
 name = cedilla;
-pos = (864.32,0);
+pos = (863.023,0);
 },
 {
 name = rthook;
-pos = (645.992,133.732);
+pos = (645.782,133.122);
 }
 );
 layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
@@ -98,30 +98,30 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (594.489,0);
+pos = (593.745,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1125.02688;
+width = 1123.10992;
 },
 {
 anchors = (
 {
 name = bottom;
-pos = (871.537,0);
+pos = (870.109,0);
 },
 {
 name = top;
-pos = (871.26,545.898);
+pos = (869.877,545.898);
 },
 {
 name = cedilla;
-pos = (870.766,0);
+pos = (869.225,0);
 },
 {
 name = rthook;
-pos = (647.035,136.766);
+pos = (646.785,136.04);
 }
 );
 layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
@@ -132,30 +132,30 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (598.187,0);
+pos = (597.302,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1134.55475;
+width = 1132.27623;
 },
 {
 anchors = (
 {
 name = bottom;
-pos = (877.417,0);
+pos = (875.909,0);
 },
 {
 name = top;
-pos = (876.953,545.898);
+pos = (875.492,545.898);
 },
 {
 name = cedilla;
-pos = (877.113,0);
+pos = (875.485,0);
 },
 {
 name = rthook;
-pos = (648.061,139.752);
+pos = (647.798,138.986);
 }
 );
 layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
@@ -166,30 +166,30 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (601.826,0);
+pos = (600.893,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1143.93423;
+width = 1141.52831;
 },
 {
 anchors = (
 {
 name = bottom;
-pos = (888.204,0);
+pos = (887.014,0);
 },
 {
 name = top;
-pos = (887.397,545.898);
+pos = (886.245,545.898);
 },
 {
 name = cedilla;
-pos = (888.755,0);
+pos = (887.471,0);
 },
 {
 name = rthook;
-pos = (649.945,145.231);
+pos = (649.737,144.627);
 }
 );
 layerId = m005;
@@ -200,30 +200,30 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (608.504,0);
+pos = (607.767,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1161.14132;
+width = 1159.2434;
 },
 {
 anchors = (
 {
 name = bottom;
-pos = (813.44,0);
+pos = (812.696,0);
 },
 {
 name = top;
-pos = (813.44,515.625);
+pos = (812.696,515.625);
 },
 {
 name = cedilla;
-pos = (813.387,0);
+pos = (812.492,0);
 },
 {
 name = rthook;
-pos = (619.7,154.297);
+pos = (619.257,154.297);
 }
 );
 layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
@@ -234,30 +234,30 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (581.665,0);
+pos = (581.182,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1043.08242;
+width = 1042.02627;
 },
 {
 anchors = (
 {
 name = bottom;
-pos = (826.218,0);
+pos = (825.312,0);
 },
 {
 name = top;
-pos = (826.218,515.625);
+pos = (825.312,515.625);
 },
 {
 name = cedilla;
-pos = (828.755,0);
+pos = (827.665,0);
 },
 {
 name = rthook;
-pos = (627.298,154.297);
+pos = (626.758,154.297);
 }
 );
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
@@ -268,30 +268,30 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (589.953,0);
+pos = (589.365,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1061.21338;
+width = 1059.92703;
 },
 {
 anchors = (
 {
 name = bottom;
-pos = (834.24,0);
+pos = (832.647,0);
 },
 {
 name = top;
-pos = (834.24,515.625);
+pos = (832.647,515.625);
 },
 {
 name = cedilla;
-pos = (837.438,0);
+pos = (835.941,0);
 },
 {
 name = rthook;
-pos = (630.719,154.935);
+pos = (630.356,154.658);
 }
 );
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
@@ -302,30 +302,30 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (594.489,0);
+pos = (593.745,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1072.88208;
+width = 1070.4978;
 },
 {
 anchors = (
 {
 name = bottom;
-pos = (842.156,0);
+pos = (840.263,0);
 },
 {
 name = top;
-pos = (842.156,515.625);
+pos = (840.263,515.625);
 },
 {
 name = cedilla;
-pos = (844.88,0);
+pos = (843.1,0);
 },
 {
 name = rthook;
-pos = (632.52,156.309);
+pos = (632.089,155.981);
 }
 );
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
@@ -336,30 +336,30 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (598.187,0);
+pos = (597.302,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1084.73267;
+width = 1081.89868;
 },
 {
 anchors = (
 {
 name = bottom;
-pos = (849.949,0);
+pos = (847.95,0);
 },
 {
 name = top;
-pos = (849.949,515.625);
+pos = (847.95,515.625);
 },
 {
 name = cedilla;
-pos = (852.206,0);
+pos = (850.327,0);
 },
 {
 name = rthook;
-pos = (634.293,157.663);
+pos = (633.838,157.316);
 }
 );
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
@@ -370,30 +370,30 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (601.826,0);
+pos = (600.893,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1096.39868;
+width = 1093.40625;
 },
 {
 anchors = (
 {
 name = bottom;
-pos = (864.245,0);
+pos = (862.669,0);
 },
 {
 name = top;
-pos = (864.245,515.625);
+pos = (862.669,515.625);
 },
 {
 name = cedilla;
-pos = (865.647,0);
+pos = (864.164,0);
 },
 {
 name = rthook;
-pos = (637.546,160.145);
+pos = (637.187,159.872);
 }
 );
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
@@ -404,12 +404,12 @@ ref = R;
 },
 {
 alignment = -1;
-pos = (608.504,0);
+pos = (607.767,0);
 ref = s;
 }
 );
 vertWidth = 0;
-width = 1117.80054;
+width = 1115.43994;
 }
 );
 note = "";

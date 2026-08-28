@@ -1,5 +1,5 @@
 
-.PHONY: help setup sync-inter sync-inter-all init-astr build-woff2 converter builder test proof clean update-project-template update
+.PHONY: help setup sync-inter sync-inter-all init-astr build-test build-woff2 converter builder test proof clean update-project-template update
 
 help:
 	@echo "###"
@@ -8,11 +8,12 @@ help:
 	@echo
 	@echo "  make setup:  Installs the font build dependencies"
 	@echo "  make init-astr:  Converts Astr.glyphspackage into the complete Astr source"
-	@echo "    Optional (decimals accepted): INTER_SCALE=100% ASTR_BASELINE=12 ASTR_MASTER_WEIGHTS=254.632,360.072,417.614,465.238,512.639,601.722 ASTR_EXPORT_WEIGHTS=254.632,300,400,500,601.722"
+	@echo "    Optional (decimals accepted): INTER_SCALE=100% ASTR_BASELINE=12 ASTR_MASTER_WEIGHTS=251.628,356.373,412.759,459.457,506.592,596.842 ASTR_EXPORT_WEIGHTS=251.628,300,400,500,596.842"
 	@echo "  make sync-inter:  Fetches current Inter and updates changed merged data"
 	@echo "  make sync-inter-all:  Fetches current Inter and reapplies every Inter glyph"
 	@echo "  make build:  Builds the fonts and places them in the fonts/ directory"
 	@echo "    Optional: BUILD_JOBS=1 lowers peak memory; default is 2"
+	@echo "  make build-test:  Builds only test/Astr[opsz,wght].woff2"
 	@echo "  make build-woff2:  Compresses existing variable and static TTFs to WOFF2"
 	@echo "  make test:   Tests the fonts with fontbakery"
 	@echo "  make proof:  Creates HTML proof documents in the proof/ directory"
@@ -24,8 +25,8 @@ INTER_REPOSITORY_URL ?= https://github.com/rsms/inter.git
 GLYPHS_SOURCE ?= sources/Astr.glyphspackage
 INTER_SCALE ?= 100%
 ASTR_BASELINE ?= 12
-ASTR_MASTER_WEIGHTS ?= 254.632,360.072,417.614,465.238,512.639,601.722
-ASTR_EXPORT_WEIGHTS ?= 254.632,300,400,500,601.722
+ASTR_MASTER_WEIGHTS ?= 251.628,356.373,412.759,459.457,506.592,596.842
+ASTR_EXPORT_WEIGHTS ?= 251.628,300,400,500,596.842
 BUILD_JOBS ?= 2
 
 sync-inter: venv
@@ -36,6 +37,10 @@ sync-inter-all: venv
 
 init-astr: venv
 	. venv/bin/activate; python sources/sync_inter.py --source "$(GLYPHS_SOURCE)" --repository "$(INTER_REPOSITORY_URL)" --initialize --force --scale "$(INTER_SCALE)" --astr-baseline "$(ASTR_BASELINE)" --master-weights "$(ASTR_MASTER_WEIGHTS)" --export-weights "$(ASTR_EXPORT_WEIGHTS)"
+
+build-test: venv converter
+	mkdir -p test
+	. venv/bin/activate; gftools builder sources/config_test_variable.yaml
 
 build-woff2: venv
 	. venv/bin/activate; python sources/build_woff2.py
