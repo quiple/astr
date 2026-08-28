@@ -100,10 +100,24 @@ SYNC_STATE_KEY = "com.quiple.Astr.interSync"
 IMPORTED_GLYPH_KEY = "com.quiple.Astr.interGlyph"
 REMOVED_UNICODES_KEY = "com.quiple.Astr.interRemovedUnicodes"
 DISPLAY_MASTER_NAMESPACE = uuid.UUID("899f9541-4354-42f3-9582-fdf66f401235")
-SYNC_STATE_VERSION = 6
+SYNC_STATE_VERSION = 7
 Weight = int | float
 WEIGHT_DECIMAL_PLACES = 6
 GEOMETRY_DECIMAL_PLACES = 6
+
+# These Glyphs predicate tokens keep the Unicode ranges compact in the editable
+# source. glyphsLib/Glyphs expands them only while compiling features.
+HANGUL_COMPATIBILITY_JAMO_TOKEN = (
+    '$[unicode matches "^(?:313(?:1|2|3|4|5|6|7|8|9|A|B|C|D|E|F)|'
+    '31(?:4|5|6|7).|318(?:0|1|2|3|4|5|6|7|8|9|A|B|C|D|E))$"]'
+)
+HANGUL_SYLLABLE_TOKEN = (
+    '$[unicode matches "^(?:A(?:C|D|E|F)..|B...|C...|'
+    'D(?:0|1|2|3|4|5|6)..|D7(?:0|1|2|3|4|5|6|7|8|9).|'
+    'D7A(?:0|1|2|3))$"]'
+)
+ASTR_CONTEXTUAL_UPPERCASE_CLASS = "ASTR_UC"
+ASTR_CONTEXTUAL_LOWERCASE_CLASS = "ASTR_LC"
 
 
 def run(command: list[str], cwd: Path | None = None) -> None:
@@ -1062,6 +1076,65 @@ def _replace_layout(font, inter_font, state: dict) -> None:
     )
 
 
+def _extend_inter_contextual_class(
+    calt,
+    source_name: str,
+    target_name: str,
+    predicate_token: str,
+    comment: str,
+) -> None:
+    if re.search(rf"(?<![\w.])@{re.escape(target_name)}(?![\w.])", calt.code):
+        return
+
+    # Keep Inter's local class untouched, define a compact Astr union beside
+    # it, and use the union in every later rule that referred to that class.
+    match = re.search(
+        rf"(?ms)^(?P<indent>[ \t]*)@{re.escape(source_name)}"
+        r"\s*=\s*\[.*?\];[ \t]*$",
+        calt.code,
+    )
+    if match is None:
+        raise ValueError(
+            f"Inter calt no longer defines the expected @{source_name} class"
+        )
+
+    indent = match.group("indent")
+    astr_class = (
+        f"\n{indent}# Astr: {comment}"
+        f"\n{indent}@{target_name} = [@{source_name}"
+        f"\n{indent}    {predicate_token}"
+        f"\n{indent}];"
+    )
+    tail = re.sub(
+        rf"(?<![\w.])@{re.escape(source_name)}(?![\w.])",
+        f"@{target_name}",
+        calt.code[match.end() :],
+    )
+    calt.code = calt.code[: match.end()] + astr_class + tail
+
+
+def _extend_inter_contextual_case(font) -> None:
+    """Map Hangul syllables and compatibility jamo to Inter calt casing."""
+    calt = next((feature for feature in font.features if feature.name == "calt"), None)
+    if calt is None:
+        raise ValueError("Inter calt feature is missing")
+
+    _extend_inter_contextual_class(
+        calt,
+        "UC",
+        ASTR_CONTEXTUAL_UPPERCASE_CLASS,
+        HANGUL_SYLLABLE_TOKEN,
+        "Hangul syllables behave like capitals in contextual punctuation.",
+    )
+    _extend_inter_contextual_class(
+        calt,
+        "LC",
+        ASTR_CONTEXTUAL_LOWERCASE_CLASS,
+        HANGUL_COMPATIBILITY_JAMO_TOKEN,
+        "Hangul compatibility jamo behave like lowercase in contextual punctuation.",
+    )
+
+
 def _kerning_group_keys(glyph) -> set[str]:
     keys: set[str] = set()
     for group in (glyph.leftKerningGroup, glyph.rightKerningGroup):
@@ -1291,6 +1364,7 @@ def merge_into_astr(
         kerning_keys.update(_inter_kerning_keys(inter_font))
         _purge_kerning(font, kerning_keys, changed_master_ids)
         _merge_kerning(font, inter_font, master_map, changed_master_ids)
+        _extend_inter_contextual_case(font)
         state["version"] = SYNC_STATE_VERSION
         state["repositoryCommit"] = commit
         state["settings"] = deepcopy(settings)
@@ -1333,6 +1407,7 @@ def merge_into_astr(
     )
     _merge_kerning(font, inter_font, master_map)
     _replace_layout(font, inter_font, state)
+    _extend_inter_contextual_case(font)
 
     state["version"] = SYNC_STATE_VERSION
     state["repositoryCommit"] = commit
@@ -1614,6 +1689,18 @@ def validate_merged_font(font, commit: str, settings: dict) -> None:
     axes = [(axis.axisTag, axis.name) for axis in font.axes]
     if [tag for tag, _ in axes] != ["wght", "opsz"]:
         raise ValueError(f"Unexpected axes after sync: {axes}")
+    calt = next((feature for feature in font.features if feature.name == "calt"), None)
+    expected_contextual_code = (
+        f"@{ASTR_CONTEXTUAL_UPPERCASE_CLASS}",
+        f"@{ASTR_CONTEXTUAL_LOWERCASE_CLASS}",
+        HANGUL_SYLLABLE_TOKEN,
+        HANGUL_COMPATIBILITY_JAMO_TOKEN,
+    )
+    if calt is None or any(item not in calt.code for item in expected_contextual_code):
+        raise ValueError(
+            "Inter calt does not map Hangul syllables to contextual uppercase "
+            "and compatibility jamo to contextual lowercase"
+        )
     axis_mappings = font.customParameters["Axis Mappings"] or {}
     if axis_mappings.get("wght") != _weight_axis_mapping(export_weights):
         raise ValueError("The Astr wght axis mapping does not match its exports")
