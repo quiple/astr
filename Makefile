@@ -8,7 +8,7 @@ help:
 	@echo
 	@echo "  make setup:  Installs the font build dependencies"
 	@echo "  make init-astr:  Converts Astr.glyphspackage into the complete Astr source"
-	@echo "    Optional (decimals accepted): INTER_SCALE=100% ASTR_BASELINE=12 ASTR_MASTER_WEIGHTS=251.628,356.373,412.759,459.457,506.592,596.842 ASTR_EXPORT_WEIGHTS=251.628,300,400,500,596.842"
+	@echo "    Optional (decimals accepted): INTER_SCALE=100% ASTR_BASELINE=12 ASTR_MASTER_WEIGHTS=248.644,341.182,394.255,433.839,477.542,555.116 ASTR_EXPORT_WEIGHTS=248.644,300,400,500,555.116"
 	@echo "  make sync-inter:  Fetches current Inter and updates changed merged data"
 	@echo "  make sync-inter-all:  Fetches current Inter and reapplies every Inter glyph"
 	@echo "  make build:  Builds the fonts and places them in the fonts/ directory"
@@ -25,8 +25,8 @@ INTER_REPOSITORY_URL ?= https://github.com/rsms/inter.git
 GLYPHS_SOURCE ?= sources/Astr.glyphspackage
 INTER_SCALE ?= 100%
 ASTR_BASELINE ?= 12
-ASTR_MASTER_WEIGHTS ?= 251.628,356.373,412.759,459.457,506.592,596.842
-ASTR_EXPORT_WEIGHTS ?= 251.628,300,400,500,596.842
+ASTR_MASTER_WEIGHTS ?= 248.644,341.182,394.255,433.839,477.542,555.116
+ASTR_EXPORT_WEIGHTS ?= 248.644,300,400,500,555.116
 BUILD_JOBS ?= 2
 
 sync-inter: venv

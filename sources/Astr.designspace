@@ -3,11 +3,11 @@
   <axes>
     <!-- `input` is the public OpenType value; `output` is Glyphs' design coordinate. -->
     <axis tag="wght" name="Weight" minimum="200" maximum="600" default="400">
-      <map input="200" output="251.628"/>
+      <map input="200" output="248.644"/>
       <map input="300" output="300"/>
       <map input="400" output="400"/>
       <map input="500" output="500"/>
-      <map input="600" output="596.842"/>
+      <map input="600" output="555.116"/>
     </axis>
     <axis tag="opsz" name="Optical size" minimum="14" maximum="32" default="14"/>
   </axes>
@@ -15,43 +15,43 @@
   <sources>
     <!-- Editable Text masters from Astr.glyphspackage. -->
     <source filename="masters/Astr-ExtraLight.ufo" name="Astr ExtraLight Text" familyname="Astr" stylename="ExtraLight">
-      <location><dimension name="Weight" xvalue="251.628"/><dimension name="Optical size" xvalue="14"/></location>
+      <location><dimension name="Weight" xvalue="248.644"/><dimension name="Optical size" xvalue="14"/></location>
     </source>
     <source filename="masters/Astr-Light.ufo" name="Astr Light Text" familyname="Astr" stylename="Light">
-      <location><dimension name="Weight" xvalue="356.373"/><dimension name="Optical size" xvalue="14"/></location>
+      <location><dimension name="Weight" xvalue="341.182"/><dimension name="Optical size" xvalue="14"/></location>
     </source>
     <source filename="masters/Astr-Regular.ufo" name="Astr Regular Text Master" familyname="Astr" stylename="Regular">
       <lib copy="1"/><groups copy="1"/><features copy="1"/><info copy="1"/>
-      <location><dimension name="Weight" xvalue="412.759"/><dimension name="Optical size" xvalue="14"/></location>
+      <location><dimension name="Weight" xvalue="394.255"/><dimension name="Optical size" xvalue="14"/></location>
     </source>
     <source filename="masters/Astr-Text.ufo" name="Astr Text" familyname="Astr" stylename="Text">
-      <location><dimension name="Weight" xvalue="459.457"/><dimension name="Optical size" xvalue="14"/></location>
+      <location><dimension name="Weight" xvalue="433.839"/><dimension name="Optical size" xvalue="14"/></location>
     </source>
     <source filename="masters/Astr-Medium.ufo" name="Astr Medium Text" familyname="Astr" stylename="Medium">
-      <location><dimension name="Weight" xvalue="506.592"/><dimension name="Optical size" xvalue="14"/></location>
+      <location><dimension name="Weight" xvalue="477.542"/><dimension name="Optical size" xvalue="14"/></location>
     </source>
     <source filename="masters/Astr-SemiBold.ufo" name="Astr SemiBold Text" familyname="Astr" stylename="SemiBold">
-      <location><dimension name="Weight" xvalue="596.842"/><dimension name="Optical size" xvalue="14"/></location>
+      <location><dimension name="Weight" xvalue="555.116"/><dimension name="Optical size" xvalue="14"/></location>
     </source>
 
     <!-- Display masters created by `make init-astr`/`make sync-inter`. -->
     <source filename="masters/Astr-DisplayExtraLight.ufo" name="Astr Display ExtraLight" familyname="Astr" stylename="Display ExtraLight">
-      <location><dimension name="Weight" xvalue="251.628"/><dimension name="Optical size" xvalue="32"/></location>
+      <location><dimension name="Weight" xvalue="248.644"/><dimension name="Optical size" xvalue="32"/></location>
     </source>
     <source filename="masters/Astr-DisplayLight.ufo" name="Astr Display Light" familyname="Astr" stylename="Display Light">
-      <location><dimension name="Weight" xvalue="356.373"/><dimension name="Optical size" xvalue="32"/></location>
+      <location><dimension name="Weight" xvalue="341.182"/><dimension name="Optical size" xvalue="32"/></location>
     </source>
     <source filename="masters/Astr-DisplayRegular.ufo" name="Astr Display Regular" familyname="Astr" stylename="Display Regular">
-      <location><dimension name="Weight" xvalue="412.759"/><dimension name="Optical size" xvalue="32"/></location>
+      <location><dimension name="Weight" xvalue="394.255"/><dimension name="Optical size" xvalue="32"/></location>
     </source>
     <source filename="masters/Astr-DisplayText.ufo" name="Astr Display Text" familyname="Astr" stylename="Display Text">
-      <location><dimension name="Weight" xvalue="459.457"/><dimension name="Optical size" xvalue="32"/></location>
+      <location><dimension name="Weight" xvalue="433.839"/><dimension name="Optical size" xvalue="32"/></location>
     </source>
     <source filename="masters/Astr-DisplayMedium.ufo" name="Astr Display Medium" familyname="Astr" stylename="Display Medium">
-      <location><dimension name="Weight" xvalue="506.592"/><dimension name="Optical size" xvalue="32"/></location>
+      <location><dimension name="Weight" xvalue="477.542"/><dimension name="Optical size" xvalue="32"/></location>
     </source>
     <source filename="masters/Astr-DisplaySemiBold.ufo" name="Astr Display SemiBold" familyname="Astr" stylename="Display SemiBold">
-      <location><dimension name="Weight" xvalue="596.842"/><dimension name="Optical size" xvalue="32"/></location>
+      <location><dimension name="Weight" xvalue="555.116"/><dimension name="Optical size" xvalue="32"/></location>
     </source>
 
   </sources>
@@ -59,7 +59,7 @@
   <instances>
     <!-- Static exports use the Text optical size. Locations are design coordinates. -->
     <instance name="Astr ExtraLight" familyname="Astr" stylename="ExtraLight" filename="instance_ufos/Astr-ExtraLight.ufo">
-      <location><dimension name="Weight" xvalue="251.628"/><dimension name="Optical size" xvalue="14"/></location>
+      <location><dimension name="Weight" xvalue="248.644"/><dimension name="Optical size" xvalue="14"/></location>
       <lib><dict><key>com.schriftgestaltung.export</key><true/><key>com.schriftgestaltung.weight</key><integer>200</integer><key>com.schriftgestaltung.width</key><string>Medium (normal)</string></dict></lib>
     </instance>
     <instance name="Astr Light" familyname="Astr" stylename="Light" filename="instance_ufos/Astr-Light.ufo">
@@ -75,13 +75,13 @@
       <lib><dict><key>com.schriftgestaltung.export</key><true/><key>com.schriftgestaltung.weight</key><integer>500</integer><key>com.schriftgestaltung.width</key><string>Medium (normal)</string></dict></lib>
     </instance>
     <instance name="Astr SemiBold" familyname="Astr" stylename="SemiBold" filename="instance_ufos/Astr-SemiBold.ufo">
-      <location><dimension name="Weight" xvalue="596.842"/><dimension name="Optical size" xvalue="14"/></location>
+      <location><dimension name="Weight" xvalue="555.116"/><dimension name="Optical size" xvalue="14"/></location>
       <lib><dict><key>com.schriftgestaltung.export</key><true/><key>com.schriftgestaltung.weight</key><integer>600</integer><key>com.schriftgestaltung.width</key><string>Medium (normal)</string></dict></lib>
     </instance>
 
     <!-- Inter-style Display exports: same style names, separate family, opsz=32. -->
     <instance name="Astr Display ExtraLight" familyname="Astr Display" stylename="ExtraLight" filename="instance_ufos/AstrDisplay-ExtraLight.ufo">
-      <location><dimension name="Weight" xvalue="251.628"/><dimension name="Optical size" xvalue="32"/></location>
+      <location><dimension name="Weight" xvalue="248.644"/><dimension name="Optical size" xvalue="32"/></location>
       <lib><dict><key>com.schriftgestaltung.export</key><true/><key>com.schriftgestaltung.weight</key><integer>200</integer><key>com.schriftgestaltung.width</key><string>Medium (normal)</string></dict></lib>
     </instance>
     <instance name="Astr Display Light" familyname="Astr Display" stylename="Light" filename="instance_ufos/AstrDisplay-Light.ufo">
@@ -97,7 +97,7 @@
       <lib><dict><key>com.schriftgestaltung.export</key><true/><key>com.schriftgestaltung.weight</key><integer>500</integer><key>com.schriftgestaltung.width</key><string>Medium (normal)</string></dict></lib>
     </instance>
     <instance name="Astr Display SemiBold" familyname="Astr Display" stylename="SemiBold" filename="instance_ufos/AstrDisplay-SemiBold.ufo">
-      <location><dimension name="Weight" xvalue="596.842"/><dimension name="Optical size" xvalue="32"/></location>
+      <location><dimension name="Weight" xvalue="555.116"/><dimension name="Optical size" xvalue="32"/></location>
       <lib><dict><key>com.schriftgestaltung.export</key><true/><key>com.schriftgestaltung.weight</key><integer>600</integer><key>com.schriftgestaltung.width</key><string>Medium (normal)</string></dict></lib>
     </instance>
   </instances>

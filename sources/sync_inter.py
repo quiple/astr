@@ -100,10 +100,13 @@ SYNC_STATE_KEY = "com.quiple.Astr.interSync"
 IMPORTED_GLYPH_KEY = "com.quiple.Astr.interGlyph"
 REMOVED_UNICODES_KEY = "com.quiple.Astr.interRemovedUnicodes"
 DISPLAY_MASTER_NAMESPACE = uuid.UUID("899f9541-4354-42f3-9582-fdf66f401235")
-SYNC_STATE_VERSION = 7
+SYNC_STATE_VERSION = 8
 Weight = int | float
 WEIGHT_DECIMAL_PLACES = 6
 GEOMETRY_DECIMAL_PLACES = 6
+HANGUL_DISPLAY_SIDE_REDUCTIONS = (16, 14, 13, 13, 12, 11)
+HANGUL_DISPLAY_MIN_SIDE_BEARING = 8
+HANGUL_DISPLAY_SPACING_KEY = "com.quiple.Astr.hangulDisplaySideReduction"
 
 # These Glyphs predicate tokens keep the Unicode ranges compact in the editable
 # source. glyphsLib/Glyphs expands them only while compiling features.
@@ -920,6 +923,120 @@ def _mirror_astr_layers(
             )
 
 
+def _is_hangul_syllable(glyph) -> bool:
+    for value in glyph.unicodes:
+        try:
+            codepoint = int(value, 16)
+        except (TypeError, ValueError):
+            continue
+        if 0xAC00 <= codepoint <= 0xD7A3:
+            return True
+    return False
+
+
+def _shift_layer_horizontally(layer, delta_x: float) -> None:
+    for path in layer.paths:
+        for node in path.nodes:
+            _shift_position(node, delta_x, 0)
+    for anchor in layer.anchors:
+        _shift_position(anchor, delta_x, 0)
+    for guide in layer.guides:
+        _shift_position(guide, delta_x, 0)
+    for component in layer.components:
+        _shift_position(component, delta_x, 0)
+    if layer.hasBackground:
+        _shift_layer_horizontally(layer.background, delta_x)
+
+
+def _adjust_hangul_display_spacing(
+    font, text_records: list[dict], display_records: list[dict]
+) -> None:
+    if len(display_records) != len(HANGUL_DISPLAY_SIDE_REDUCTIONS):
+        raise ValueError(
+            "Hangul Display spacing must have one reduction for every master"
+        )
+
+    statistics = [
+        {"full": 0, "capped": 0, "unchanged": 0}
+        for _record in display_records
+    ]
+    unit_scale = float(font.upm) / BASELINE_REFERENCE_UPM
+    minimum_bearing = HANGUL_DISPLAY_MIN_SIDE_BEARING * unit_scale
+    for glyph in font.glyphs:
+        if not _is_hangul_syllable(glyph):
+            continue
+        layers = {layer.layerId: layer for layer in glyph.layers}
+        for index, (text, display, reference_ideal) in enumerate(
+            zip(
+                text_records,
+                display_records,
+                HANGUL_DISPLAY_SIDE_REDUCTIONS,
+            )
+        ):
+            ideal = reference_ideal * unit_scale
+            text_layer = layers.get(text["id"])
+            display_layer = layers.get(display["id"])
+            if text_layer is None or display_layer is None:
+                raise ValueError(
+                    f"Hangul glyph {glyph.name} is missing a Text or Display layer"
+                )
+            bounds = display_layer.bounds
+            if bounds is None:
+                statistics[index]["unchanged"] += 1
+                continue
+
+            previous = float(
+                display_layer.userData.get(HANGUL_DISPLAY_SPACING_KEY) or 0
+            )
+            current_left = float(bounds.origin.x)
+            current_right = float(
+                display_layer.width - bounds.origin.x - bounds.size.width
+            )
+            original_left = current_left + previous
+            original_right = current_right + previous
+            available = max(
+                0.0,
+                min(original_left, original_right)
+                - minimum_bearing,
+            )
+            target = _normalize_geometry(min(float(ideal), available))
+            delta = float(target) - previous
+            if not math.isclose(
+                delta, 0, abs_tol=10**-GEOMETRY_DECIMAL_PLACES
+            ):
+                _shift_layer_horizontally(display_layer, -delta)
+                display_layer.width = _normalize_geometry(
+                    display_layer.width - 2 * delta
+                )
+                display_layer.metricLeft = None
+                display_layer.metricRight = None
+                display_layer.metricWidth = None
+
+            if target:
+                display_layer.userData[HANGUL_DISPLAY_SPACING_KEY] = target
+            elif HANGUL_DISPLAY_SPACING_KEY in display_layer.userData:
+                del display_layer.userData[HANGUL_DISPLAY_SPACING_KEY]
+
+            if target == ideal:
+                statistics[index]["full"] += 1
+            elif target:
+                statistics[index]["capped"] += 1
+            else:
+                statistics[index]["unchanged"] += 1
+
+    print("Adjusted Display Hangul sidebearings:", flush=True)
+    for record, reference_ideal, counts in zip(
+        display_records, HANGUL_DISPLAY_SIDE_REDUCTIONS, statistics
+    ):
+        ideal = reference_ideal * unit_scale
+        print(
+            f"  {font.masters[record['id']].name}: target {ideal:g}/side; "
+            f"full={counts['full']}, capped={counts['capped']}, "
+            f"unchanged={counts['unchanged']}",
+            flush=True,
+        )
+
+
 def _display_property(key: str, value: str, localized: bool = False):
     prop = GSFontInfoValue(key, value)
     if localized:
@@ -1360,6 +1477,9 @@ def merge_into_astr(
         _replace_master_layers(
             font, inter_font, master_map, changed_master_ids
         )
+        _adjust_hangul_display_spacing(
+            font, text_records, display_records
+        )
         kerning_keys = set(state.get("kerningKeys", []))
         kerning_keys.update(_inter_kerning_keys(inter_font))
         _purge_kerning(font, kerning_keys, changed_master_ids)
@@ -1388,6 +1508,7 @@ def merge_into_astr(
     )
     print("Mirroring Astr layers across the opsz endpoints...", flush=True)
     _mirror_astr_layers(font, text_records, display_records)
+    _adjust_hangul_display_spacing(font, text_records, display_records)
     _ensure_display_instances(font, text_records, display_records)
 
     old_overlap_glyphs = [

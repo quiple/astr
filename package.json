@@ -1,6 +1,6 @@
 {
   "name": "@quiple/aster",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Astr webfonts, combining Asta Sans and Inter",
   "license": "OFL-1.1",
   "author": "quiple",
@@ -34,5 +34,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "pnpm@11.22.0"
+  "packageManager": "pnpm@11.24.0"
 }
