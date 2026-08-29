@@ -19,23 +19,12 @@ DEFAULT_INTER_FONT = (
 )
 MASTER_NAMES = ("ExtraLight", "Light", "Regular", "Text", "Medium", "SemiBold")
 
-# Use straight vertical strokes exclusively so different counters, curves, and
-# glyph proportions do not distort the physical stem-width comparison.
-KOREAN_STEM_GLYPH = "iCompa-ko"
-INTER_STEM_CHARACTERS = "HI"
-
-# Apple mixes SF Pro Latin with SF Pro KR at the same nominal CSS weight, but
-# the optical difference is not constant across the range. These anchors are
-# the geometric means of the SF Pro Text and Display H/I vertical-stem ratios
-# against the SF Pro KR compatibility-jamo ㅣ vertical stem.
-APPLE_LATIN_STROKE_BIAS = (
-    (200.0, 1.01282051282),
-    (300.0, 1.04999295574),
-    (400.0, 1.04046242775),
-    (500.0, 1.06042455156),
-    (600.0, 1.06846271603),
-    (700.0, 1.06713780919),
-)
+# Compare only long, straight strokes so curves, counters, and glyph
+# proportions do not distort the physical stem-width match.
+KOREAN_VERTICAL_STEM_GLYPH = "iCompa-ko"
+KOREAN_HORIZONTAL_STEM_GLYPH = "euCompa-ko"
+INTER_VERTICAL_STEM_CHARACTERS = "HI"
+INTER_HORIZONTAL_STEM_CHARACTERS = "H"
 TEXT_OPSZ = 14
 DISPLAY_OPSZ = 32
 OUTPUT_DECIMAL_PLACES = 3
@@ -67,11 +56,23 @@ def bounding_width(glyph, glyph_set) -> float:
     return x_max - x_min
 
 
-def vertical_stem_width(glyph) -> float:
-    """Measure the narrow repeated vertical span in an upright H or I."""
+def bounding_height(glyph, glyph_set) -> float:
+    pen = BoundsPen(glyph_set)
+    glyph.draw(pen)
+    if pen.bounds is None:
+        raise ValueError("sample glyph has no measurable bounds")
+    _x_min, y_min, _x_max, y_max = pen.bounds
+    return y_max - y_min
+
+
+def straight_stem_width(glyph, orientation: str) -> float:
+    """Measure a long straight vertical or horizontal Latin stem."""
+    if orientation not in {"vertical", "horizontal"}:
+        raise ValueError(f"unsupported stem orientation: {orientation}")
+
     pen = RecordingPen()
     glyph.draw(pen)
-    vertical_lengths: dict[float, float] = {}
+    edge_lengths: dict[float, float] = {}
     points: list[tuple[float, float]] = []
     contour_start = None
     current = None
@@ -82,10 +83,10 @@ def vertical_stem_width(glyph) -> float:
         x1, y1 = start
         x2, y2 = end
         points.extend((start, end))
-        if abs(x1 - x2) < 1e-6 and y1 != y2:
-            vertical_lengths[x1] = vertical_lengths.get(x1, 0) + abs(
-                y2 - y1
-            )
+        if orientation == "vertical" and abs(x1 - x2) < 1e-6 and y1 != y2:
+            edge_lengths[x1] = edge_lengths.get(x1, 0) + abs(y2 - y1)
+        elif orientation == "horizontal" and abs(y1 - y2) < 1e-6 and x1 != x2:
+            edge_lengths[y1] = edge_lengths.get(y1, 0) + abs(x2 - x1)
 
     for operator, operands in pen.value:
         if operator == "moveTo":
@@ -107,12 +108,13 @@ def vertical_stem_width(glyph) -> float:
 
     if not points:
         raise ValueError("stem sample glyph has no measurable outline")
-    y_values = [point[1] for point in points]
-    height = max(y_values) - min(y_values)
+    axis = 1 if orientation == "vertical" else 0
+    values = [point[axis] for point in points]
+    extent = max(values) - min(values)
     edge_positions = sorted(
-        x
-        for x, length in vertical_lengths.items()
-        if length >= height * 0.45
+        position
+        for position, length in edge_lengths.items()
+        if length >= extent * 0.45
     )
     spans = [
         right - left
@@ -120,37 +122,19 @@ def vertical_stem_width(glyph) -> float:
         if right > left
     ]
     if not spans:
-        raise ValueError("could not identify the H/I vertical stems")
+        raise ValueError(f"could not identify a long {orientation} stem")
     return min(spans)
 
 
-def apple_latin_stroke_bias(weight: float) -> float:
-    """Interpolate Apple's weight-dependent Latin/Korean optical ratio."""
-    first_weight, first_bias = APPLE_LATIN_STROKE_BIAS[0]
-    if weight <= first_weight:
-        return first_bias
-
-    for (left_weight, left_bias), (right_weight, right_bias) in zip(
-        APPLE_LATIN_STROKE_BIAS, APPLE_LATIN_STROKE_BIAS[1:]
-    ):
-        if weight <= right_weight:
-            progress = (weight - left_weight) / (right_weight - left_weight)
-            # Stroke scores are logarithmic, so interpolate the ratios in the
-            # same space instead of treating their percentages as distances.
-            return math.exp(
-                math.log(left_bias)
-                + progress * (math.log(right_bias) - math.log(left_bias))
-            )
-
-    return APPLE_LATIN_STROKE_BIAS[-1][1]
-
-
-def ufo_stroke_score(path: Path) -> float:
+def ufo_stroke_scores(path: Path) -> tuple[float, float]:
     if not path.is_dir():
         raise FileNotFoundError(f"Astr master not found: {path}")
 
     font = Font.open(path, lazy=True)
-    required_glyphs = (KOREAN_STEM_GLYPH,)
+    required_glyphs = (
+        KOREAN_VERTICAL_STEM_GLYPH,
+        KOREAN_HORIZONTAL_STEM_GLYPH,
+    )
     missing = [name for name in required_glyphs if name not in font]
     if missing:
         raise ValueError(
@@ -158,8 +142,13 @@ def ufo_stroke_score(path: Path) -> float:
         )
 
     upm = float(font.info.unitsPerEm or 1000)
-    return math.log(
-        bounding_width(font[KOREAN_STEM_GLYPH], font) / upm
+    return (
+        math.log(
+            bounding_width(font[KOREAN_VERTICAL_STEM_GLYPH], font) / upm
+        ),
+        math.log(
+            bounding_height(font[KOREAN_HORIZONTAL_STEM_GLYPH], font) / upm
+        ),
     )
 
 
@@ -180,7 +169,10 @@ class InterStrokeModel:
         self.upm = float(self.font["head"].unitsPerEm)
 
         cmap = self.font.getBestCmap() or {}
-        required_characters = INTER_STEM_CHARACTERS
+        required_characters = (
+            INTER_VERTICAL_STEM_CHARACTERS
+            + INTER_HORIZONTAL_STEM_CHARACTERS
+        )
         missing = [
             character
             for character in required_characters
@@ -190,19 +182,33 @@ class InterStrokeModel:
             raise ValueError(
                 f"Inter font is missing sample characters: {''.join(missing)}"
             )
-        self.stem_glyph_names = tuple(
-            cmap[ord(character)] for character in INTER_STEM_CHARACTERS
+        self.vertical_stem_glyph_names = tuple(
+            cmap[ord(character)]
+            for character in INTER_VERTICAL_STEM_CHARACTERS
+        )
+        self.horizontal_stem_glyph_names = tuple(
+            cmap[ord(character)]
+            for character in INTER_HORIZONTAL_STEM_CHARACTERS
         )
 
     @lru_cache(maxsize=None)
-    def score(self, weight: float, optical_size: int) -> float:
+    def scores(self, weight: float, optical_size: int) -> tuple[float, float]:
         glyph_set = self.font.getGlyphSet(
             location={"wght": weight, "opsz": optical_size}
         )
-        return fmean(
-            math.log(vertical_stem_width(glyph_set[name]) / self.upm)
-            for name in self.stem_glyph_names
+        vertical_score = fmean(
+            math.log(
+                straight_stem_width(glyph_set[name], "vertical") / self.upm
+            )
+            for name in self.vertical_stem_glyph_names
         )
+        horizontal_score = fmean(
+            math.log(
+                straight_stem_width(glyph_set[name], "horizontal") / self.upm
+            )
+            for name in self.horizontal_stem_glyph_names
+        )
+        return vertical_score, horizontal_score
 
     def find_weight(
         self,
@@ -226,33 +232,52 @@ class InterStrokeModel:
             else:
                 high = middle
 
-        estimate = (low + high) / 2
-        return round(
-            max(self.minimum_weight, min(self.maximum_weight, estimate)),
-            OUTPUT_DECIMAL_PLACES,
+        estimate = max(
+            self.minimum_weight,
+            min(self.maximum_weight, (low + high) / 2),
         )
+        precision = 10**OUTPUT_DECIMAL_PLACES
+        # Keep the reported precision from rounding a matched stem
+        # infinitesimally thinner than its Korean target.
+        return math.ceil(estimate * precision) / precision
 
     def match_shared(
-        self, text_score: float, display_score: float, scale: float
+        self,
+        text_scores: tuple[float, float],
+        display_scores: tuple[float, float],
+        scale: float,
     ) -> float:
-        # Uniform Inter scaling multiplies every measured width by this ratio.
-        # Text and Display contribute equally to the single shared weight.
-        target_score = fmean((text_score, display_score)) - math.log(scale)
-        return self.find_weight(
-            target_score,
-            # Solve the optical correction as part of the weight search. This
-            # makes light Inter instances receive less extra weight than the
-            # medium and semibold instances, following Apple's measured curve.
-            lambda weight: (
-                fmean(
-                    (
-                        self.score(weight, TEXT_OPSZ),
-                        self.score(weight, DISPLAY_OPSZ),
-                    )
+        # Uniform Inter scaling multiplies both measured widths by this ratio.
+        # Text and Display contribute equally to each directional match.
+        scale_score = math.log(scale)
+        target_vertical = fmean(
+            (text_scores[0], display_scores[0])
+        ) - scale_score
+        target_horizontal = fmean(
+            (text_scores[1], display_scores[1])
+        ) - scale_score
+        vertical_weight = self.find_weight(
+            target_vertical,
+            lambda weight: fmean(
+                (
+                    self.scores(weight, TEXT_OPSZ)[0],
+                    self.scores(weight, DISPLAY_OPSZ)[0],
                 )
-                - math.log(apple_latin_stroke_bias(weight))
             ),
         )
+        horizontal_weight = self.find_weight(
+            target_horizontal,
+            lambda weight: fmean(
+                (
+                    self.scores(weight, TEXT_OPSZ)[1],
+                    self.scores(weight, DISPLAY_OPSZ)[1],
+                )
+            ),
+        )
+        # When the Korean and Latin horizontal/vertical ratios differ, select
+        # the heavier solution so Inter never resolves the mismatch by becoming
+        # thinner in the other direction.
+        return max(vertical_weight, horizontal_weight)
 
 
 def master_path(master_name: str, display: bool) -> Path:
@@ -285,10 +310,12 @@ def main() -> None:
 
     model = InterStrokeModel(args.font)
     text_targets = tuple(
-        ufo_stroke_score(master_path(name, display=False)) for name in MASTER_NAMES
+        ufo_stroke_scores(master_path(name, display=False))
+        for name in MASTER_NAMES
     )
     display_targets = tuple(
-        ufo_stroke_score(master_path(name, display=True)) for name in MASTER_NAMES
+        ufo_stroke_scores(master_path(name, display=True))
+        for name in MASTER_NAMES
     )
 
     inter_weights = tuple(
