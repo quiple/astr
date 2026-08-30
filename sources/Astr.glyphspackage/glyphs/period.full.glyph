@@ -177,10 +177,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(456,12,l),
-(545,12,l),
-(545,105,l),
-(456,105,l)
+(437.30841,12,l),
+(526.30841,12,l),
+(526.30841,105,l),
+(437.30841,105,l)
 );
 }
 );
@@ -199,8 +199,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 18.69159;
 };
-width = 1000;
+width = 962.61682;
 },
 {
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
@@ -208,10 +209,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(446,12,l),
-(554,12,l),
-(554,122,l),
-(446,122,l)
+(429.64486,12,l),
+(537.64486,12,l),
+(537.64486,122,l),
+(429.64486,122,l)
 );
 }
 );
@@ -230,8 +231,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 16.35514;
 };
-width = 1000;
+width = 967.28972;
 },
 {
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
@@ -239,10 +241,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(441,12,l),
-(560,12,l),
-(560,132,l),
-(441,132,l)
+(425.81308,12,l),
+(544.81308,12,l),
+(544.81308,132,l),
+(425.81308,132,l)
 );
 }
 );
@@ -261,8 +263,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 15.18692;
 };
-width = 1000;
+width = 969.62617;
 },
 {
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
@@ -270,14 +273,17 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(437,12,l),
-(565,12,l),
-(565,141,l),
-(437,141,l)
+(421.81308,12,l),
+(549.81308,12,l),
+(549.81308,141,l),
+(421.81308,141,l)
 );
 }
 );
-width = 1000;
+userData = {
+com.quiple.Astr.displaySideReduction = 15.18692;
+};
+width = 969.62617;
 },
 {
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
@@ -285,10 +291,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(432,12,l),
-(569,12,l),
-(569,149,l),
-(432,149,l)
+(417.98131,12,l),
+(554.98131,12,l),
+(554.98131,149,l),
+(417.98131,149,l)
 );
 }
 );
@@ -307,8 +313,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 14.01869;
 };
-width = 1000;
+width = 971.96262;
 },
 {
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
@@ -316,10 +323,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(427,12,l),
-(573,12,l),
-(573,156,l),
-(427,156,l)
+(414.14953,12,l),
+(560.14953,12,l),
+(560.14953,156,l),
+(414.14953,156,l)
 );
 }
 );
@@ -338,8 +345,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 12.85047;
 };
-width = 1000;
+width = 974.29907;
 }
 );
 unicode = 65294;

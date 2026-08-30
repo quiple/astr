@@ -212,17 +212,17 @@ layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-22.43,12);
 ref = one;
 },
 {
 alignment = -1;
-pos = (390,12);
+pos = (367.57,12);
 ref = nine;
 },
 {
 alignment = -1;
-pos = (955,12);
+pos = (932.57,12);
 ref = period;
 }
 );
@@ -241,25 +241,26 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 22.42991;
 };
-width = 1200;
+width = 1155.14019;
 },
 {
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-19.626,12);
 ref = one;
 },
 {
 alignment = -1;
-pos = (390,12);
+pos = (370.374,12);
 ref = nine;
 },
 {
 alignment = -1;
-pos = (955,12);
+pos = (935.374,12);
 ref = period;
 }
 );
@@ -278,25 +279,26 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 19.62617;
 };
-width = 1200;
+width = 1160.74766;
 },
 {
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-18.224,12);
 ref = one;
 },
 {
 alignment = -1;
-pos = (390,12);
+pos = (371.776,12);
 ref = nine;
 },
 {
 alignment = -1;
-pos = (955,12);
+pos = (936.776,12);
 ref = period;
 }
 );
@@ -315,46 +317,50 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 18.2243;
 };
-width = 1200;
+width = 1163.5514;
 },
 {
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-18.224,12);
 ref = one;
 },
 {
 alignment = -1;
-pos = (390,12);
+pos = (371.776,12);
 ref = nine;
 },
 {
 alignment = -1;
-pos = (955,12);
+pos = (936.776,12);
 ref = period;
 }
 );
-width = 1200;
+userData = {
+com.quiple.Astr.displaySideReduction = 18.2243;
+};
+width = 1163.5514;
 },
 {
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-16.822,12);
 ref = one;
 },
 {
 alignment = -1;
-pos = (390,12);
+pos = (373.178,12);
 ref = nine;
 },
 {
 alignment = -1;
-pos = (955,12);
+pos = (938.178,12);
 ref = period;
 }
 );
@@ -373,25 +379,26 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 16.82243;
 };
-width = 1200;
+width = 1166.35514;
 },
 {
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-15.421,12);
 ref = one;
 },
 {
 alignment = -1;
-pos = (390,12);
+pos = (374.579,12);
 ref = nine;
 },
 {
 alignment = -1;
-pos = (955,12);
+pos = (939.579,12);
 ref = period;
 }
 );
@@ -410,8 +417,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 15.42056;
 };
-width = 1200;
+width = 1169.15888;
 }
 );
 metricLeft = one;

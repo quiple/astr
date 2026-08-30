@@ -100,13 +100,14 @@ SYNC_STATE_KEY = "com.quiple.Astr.interSync"
 IMPORTED_GLYPH_KEY = "com.quiple.Astr.interGlyph"
 REMOVED_UNICODES_KEY = "com.quiple.Astr.interRemovedUnicodes"
 DISPLAY_MASTER_NAMESPACE = uuid.UUID("899f9541-4354-42f3-9582-fdf66f401235")
-SYNC_STATE_VERSION = 8
+SYNC_STATE_VERSION = 10
 Weight = int | float
 WEIGHT_DECIMAL_PLACES = 6
 GEOMETRY_DECIMAL_PLACES = 6
-HANGUL_DISPLAY_SIDE_REDUCTIONS = (16, 14, 13, 13, 12, 11)
-HANGUL_DISPLAY_MIN_SIDE_BEARING = 8
-HANGUL_DISPLAY_SPACING_KEY = "com.quiple.Astr.hangulDisplaySideReduction"
+ASTR_DISPLAY_SIDE_REDUCTIONS = (16, 14, 13, 13, 12, 11)
+ASTR_DISPLAY_REFERENCE_ADVANCE = 856
+ASTR_DISPLAY_MIN_SIDE_BEARING = 0
+ASTR_DISPLAY_SPACING_KEY = "com.quiple.Astr.displaySideReduction"
 
 # These Glyphs predicate tokens keep the Unicode ranges compact in the editable
 # source. glyphsLib/Glyphs expands them only while compiling features.
@@ -923,115 +924,196 @@ def _mirror_astr_layers(
             )
 
 
-def _is_hangul_syllable(glyph) -> bool:
-    for value in glyph.unicodes:
-        try:
-            codepoint = int(value, 16)
-        except (TypeError, ValueError):
-            continue
-        if 0xAC00 <= codepoint <= 0xD7A3:
-            return True
-    return False
+def _spacing_component_offset(
+    component,
+    glyph_shift: float,
+    plans: dict[tuple[str, str], dict],
+    display_master_id: str,
+    key: str,
+) -> tuple[float, float]:
+    base_plan = plans.get((component.name, display_master_id))
+    base_shift = 0.0 if base_plan is None else float(base_plan[key])
+    xx, xy, _yx, _yy, _dx, _dy = component.transform
+    return (-glyph_shift + xx * base_shift, xy * base_shift)
 
 
-def _shift_layer_horizontally(layer, delta_x: float) -> None:
+def _apply_display_spacing_geometry(
+    layer,
+    previous_shift: float,
+    target_shift: float,
+    plans: dict[tuple[str, str], dict],
+    display_master_id: str,
+) -> None:
+    delta = target_shift - previous_shift
     for path in layer.paths:
         for node in path.nodes:
-            _shift_position(node, delta_x, 0)
+            _shift_position(node, -delta, 0)
     for anchor in layer.anchors:
-        _shift_position(anchor, delta_x, 0)
+        _shift_position(anchor, -delta, 0)
     for guide in layer.guides:
-        _shift_position(guide, delta_x, 0)
+        _shift_position(guide, -delta, 0)
     for component in layer.components:
-        _shift_position(component, delta_x, 0)
-    if layer.hasBackground:
-        _shift_layer_horizontally(layer.background, delta_x)
+        previous_offset = _spacing_component_offset(
+            component,
+            previous_shift,
+            plans,
+            display_master_id,
+            "previous_geometry_shift",
+        )
+        target_offset = _spacing_component_offset(
+            component,
+            target_shift,
+            plans,
+            display_master_id,
+            "target_geometry_shift",
+        )
+        delta_x = target_offset[0] - previous_offset[0]
+        delta_y = target_offset[1] - previous_offset[1]
+        if delta_x or delta_y:
+            _shift_position(component, delta_x, delta_y)
+            component.alignment = -1
+    if layer._background is not None:
+        _apply_display_spacing_geometry(
+            layer.background,
+            previous_shift,
+            target_shift,
+            plans,
+            display_master_id,
+        )
 
 
-def _adjust_hangul_display_spacing(
-    font, text_records: list[dict], display_records: list[dict]
+def _adjust_astr_display_spacing(
+    font,
+    text_records: list[dict],
+    display_records: list[dict],
+    inter_names: set[str],
 ) -> None:
-    if len(display_records) != len(HANGUL_DISPLAY_SIDE_REDUCTIONS):
+    """Tighten Display metrics for exported glyphs owned by Astr.
+
+    Outlined glyphs keep their visual center while both sidebearings shrink.
+    Blank positive-width glyphs use the same proportional advance reduction;
+    zero-width marks and controls remain zero. Inter-owned glyphs are excluded
+    because their native Text/Display layers already carry Inter's opsz design.
+    """
+    if len(display_records) != len(ASTR_DISPLAY_SIDE_REDUCTIONS):
         raise ValueError(
-            "Hangul Display spacing must have one reduction for every master"
+            "Astr Display spacing must have one reduction for every master"
         )
 
     statistics = [
-        {"full": 0, "capped": 0, "unchanged": 0}
+        {"adjusted": 0, "capped": 0, "spacing_only": 0, "unchanged": 0}
         for _record in display_records
     ]
     unit_scale = float(font.upm) / BASELINE_REFERENCE_UPM
-    minimum_bearing = HANGUL_DISPLAY_MIN_SIDE_BEARING * unit_scale
+    minimum_bearing = ASTR_DISPLAY_MIN_SIDE_BEARING * unit_scale
+    plans: dict[tuple[str, str], dict] = {}
     for glyph in font.glyphs:
-        if not _is_hangul_syllable(glyph):
+        if (
+            not glyph.export
+            or glyph.name in inter_names
+            or glyph.userData.get(IMPORTED_GLYPH_KEY)
+        ):
             continue
         layers = {layer.layerId: layer for layer in glyph.layers}
         for index, (text, display, reference_ideal) in enumerate(
             zip(
                 text_records,
                 display_records,
-                HANGUL_DISPLAY_SIDE_REDUCTIONS,
+                ASTR_DISPLAY_SIDE_REDUCTIONS,
             )
         ):
-            ideal = reference_ideal * unit_scale
-            text_layer = layers.get(text["id"])
             display_layer = layers.get(display["id"])
-            if text_layer is None or display_layer is None:
+            if text["id"] not in layers or display_layer is None:
                 raise ValueError(
-                    f"Hangul glyph {glyph.name} is missing a Text or Display layer"
+                    f"Astr glyph {glyph.name} is missing a Text or Display layer"
                 )
+            previous = float(
+                display_layer.userData.get(ASTR_DISPLAY_SPACING_KEY) or 0
+            )
+            original_width = float(display_layer.width) + 2 * previous
+            ideal = max(
+                0.0,
+                reference_ideal
+                * original_width
+                / ASTR_DISPLAY_REFERENCE_ADVANCE,
+            )
             bounds = display_layer.bounds
             if bounds is None:
-                statistics[index]["unchanged"] += 1
-                continue
-
-            previous = float(
-                display_layer.userData.get(HANGUL_DISPLAY_SPACING_KEY) or 0
-            )
-            current_left = float(bounds.origin.x)
-            current_right = float(
-                display_layer.width - bounds.origin.x - bounds.size.width
-            )
-            original_left = current_left + previous
-            original_right = current_right + previous
-            available = max(
-                0.0,
-                min(original_left, original_right)
-                - minimum_bearing,
-            )
-            target = _normalize_geometry(min(float(ideal), available))
-            delta = float(target) - previous
-            if not math.isclose(
-                delta, 0, abs_tol=10**-GEOMETRY_DECIMAL_PLACES
-            ):
-                _shift_layer_horizontally(display_layer, -delta)
-                display_layer.width = _normalize_geometry(
-                    display_layer.width - 2 * delta
-                )
-                display_layer.metricLeft = None
-                display_layer.metricRight = None
-                display_layer.metricWidth = None
-
-            if target:
-                display_layer.userData[HANGUL_DISPLAY_SPACING_KEY] = target
-            elif HANGUL_DISPLAY_SPACING_KEY in display_layer.userData:
-                del display_layer.userData[HANGUL_DISPLAY_SPACING_KEY]
-
-            if target == ideal:
-                statistics[index]["full"] += 1
-            elif target:
-                statistics[index]["capped"] += 1
+                target = ideal if original_width > 0 else 0.0
+                target_geometry = 0.0
             else:
-                statistics[index]["unchanged"] += 1
+                current_left = float(bounds.origin.x)
+                current_right = float(
+                    display_layer.width - bounds.origin.x - bounds.size.width
+                )
+                original_left = current_left + previous
+                original_right = current_right + previous
+                available = max(
+                    0.0,
+                    min(original_left, original_right) - minimum_bearing,
+                )
+                target = min(ideal, available)
+            target = _normalize_geometry(target)
+            target_geometry = target if bounds is not None else 0.0
+            plans[(glyph.name, display["id"])] = {
+                "glyph": glyph,
+                "layer": display_layer,
+                "statistics": statistics[index],
+                "ideal": ideal,
+                "previous": previous,
+                "target": target,
+                "previous_geometry_shift": previous if bounds is not None else 0,
+                "target_geometry_shift": target_geometry,
+                "has_bounds": bounds is not None,
+            }
 
-    print("Adjusted Display Hangul sidebearings:", flush=True)
+    for (_glyph_name, display_master_id), plan in plans.items():
+        display_layer = plan["layer"]
+        previous = float(plan["previous"])
+        target = float(plan["target"])
+        delta = target - previous
+        if plan["has_bounds"]:
+            _apply_display_spacing_geometry(
+                display_layer,
+                float(plan["previous_geometry_shift"]),
+                float(plan["target_geometry_shift"]),
+                plans,
+                display_master_id,
+            )
+        if not math.isclose(delta, 0, abs_tol=10**-GEOMETRY_DECIMAL_PLACES):
+            display_layer.width = _normalize_geometry(
+                display_layer.width - 2 * delta
+            )
+            display_layer.metricLeft = None
+            display_layer.metricRight = None
+            display_layer.metricWidth = None
+            if target:
+                display_layer.userData[ASTR_DISPLAY_SPACING_KEY] = target
+            elif ASTR_DISPLAY_SPACING_KEY in display_layer.userData:
+                del display_layer.userData[ASTR_DISPLAY_SPACING_KEY]
+
+        counts = plan["statistics"]
+        if not target:
+            counts["unchanged"] += 1
+        else:
+            counts["adjusted"] += 1
+            if not plan["has_bounds"]:
+                counts["spacing_only"] += 1
+            elif target < float(plan["ideal"]):
+                counts["capped"] += 1
+
+    print("Adjusted Astr-owned Display spacing:", flush=True)
     for record, reference_ideal, counts in zip(
-        display_records, HANGUL_DISPLAY_SIDE_REDUCTIONS, statistics
+        display_records, ASTR_DISPLAY_SIDE_REDUCTIONS, statistics
     ):
-        ideal = reference_ideal * unit_scale
+        reduction_percent = (
+            2 * reference_ideal / ASTR_DISPLAY_REFERENCE_ADVANCE * 100
+        )
         print(
-            f"  {font.masters[record['id']].name}: target {ideal:g}/side; "
-            f"full={counts['full']}, capped={counts['capped']}, "
+            f"  {font.masters[record['id']].name}: "
+            f"target {reduction_percent:.3f}% total; "
+            f"adjusted={counts['adjusted']}, capped={counts['capped']}, "
+            f"spacing-only={counts['spacing_only']}, "
             f"unchanged={counts['unchanged']}",
             flush=True,
         )
@@ -1458,6 +1540,7 @@ def merge_into_astr(
             int(round(master.axes[1])),
         )
         master_map[master.id] = target_by_coordinate[coordinate]
+    incoming_names = {glyph.name for glyph in inter_font.glyphs}
 
     # A coordinate-only migration must not replace unchanged master layers.
     if (
@@ -1477,8 +1560,8 @@ def merge_into_astr(
         _replace_master_layers(
             font, inter_font, master_map, changed_master_ids
         )
-        _adjust_hangul_display_spacing(
-            font, text_records, display_records
+        _adjust_astr_display_spacing(
+            font, text_records, display_records, incoming_names
         )
         kerning_keys = set(state.get("kerningKeys", []))
         kerning_keys.update(_inter_kerning_keys(inter_font))
@@ -1499,7 +1582,6 @@ def merge_into_astr(
     }
     _restore_layout(font, state)
     _remove_previous_inter_glyphs(font, state)
-    incoming_names = {glyph.name for glyph in inter_font.glyphs}
     _shift_astr_owned_glyphs(
         font,
         state,
@@ -1508,7 +1590,9 @@ def merge_into_astr(
     )
     print("Mirroring Astr layers across the opsz endpoints...", flush=True)
     _mirror_astr_layers(font, text_records, display_records)
-    _adjust_hangul_display_spacing(font, text_records, display_records)
+    _adjust_astr_display_spacing(
+        font, text_records, display_records, incoming_names
+    )
     _ensure_display_instances(font, text_records, display_records)
 
     old_overlap_glyphs = [

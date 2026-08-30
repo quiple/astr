@@ -212,17 +212,17 @@ layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-16.841,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (249,12);
+pos = (232.159,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (498,12);
+pos = (481.159,12);
 ref = I;
 }
 );
@@ -241,25 +241,26 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 16.84112;
 };
-width = 901;
+width = 867.31776;
 },
 {
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-15.014,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (249,12);
+pos = (233.986,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (498,12);
+pos = (482.986,12);
 ref = I;
 }
 );
@@ -278,25 +279,26 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 15.01402;
 };
-width = 918;
+width = 887.97196;
 },
 {
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-14.093,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (249,12);
+pos = (234.907,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (498,12);
+pos = (483.907,12);
 ref = I;
 }
 );
@@ -315,46 +317,50 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 14.09346;
 };
-width = 928;
+width = 899.81308;
 },
 {
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-14.169,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (249,12);
+pos = (234.831,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (498,12);
+pos = (483.831,12);
 ref = I;
 }
 );
-width = 933;
+userData = {
+com.quiple.Astr.displaySideReduction = 14.16939;
+};
+width = 904.66121;
 },
 {
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-13.136,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (249,12);
+pos = (235.864,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (498,12);
+pos = (484.864,12);
 ref = I;
 }
 );
@@ -373,25 +379,26 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 13.13551;
 };
-width = 937;
+width = 910.72897;
 },
 {
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
 shapes = (
 {
 alignment = -1;
-pos = (0,12);
+pos = (-12.028,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (249,12);
+pos = (236.972,12);
 ref = I;
 },
 {
 alignment = -1;
-pos = (498,12);
+pos = (485.972,12);
 ref = I;
 }
 );
@@ -410,8 +417,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 12.02804;
 };
-width = 936;
+width = 911.94393;
 }
 );
 metricLeft = I;

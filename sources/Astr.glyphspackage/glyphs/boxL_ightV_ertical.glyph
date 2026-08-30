@@ -323,10 +323,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(479,-188,l),
-(521,-188,l),
-(521,812,l),
-(479,812,l)
+(460.30841,-188,l),
+(502.30841,-188,l),
+(502.30841,812,l),
+(460.30841,812,l)
 );
 }
 );
@@ -345,9 +345,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 18.69159;
 };
 vertWidth = 1000;
-width = 1000;
+width = 962.61682;
 },
 {
 hints = (
@@ -375,10 +376,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(479,-188,l),
-(521,-188,l),
-(521,812,l),
-(479,812,l)
+(462.64486,-188,l),
+(504.64486,-188,l),
+(504.64486,812,l),
+(462.64486,812,l)
 );
 }
 );
@@ -397,9 +398,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 16.35514;
 };
 vertWidth = 1000;
-width = 1000;
+width = 967.28972;
 },
 {
 hints = (
@@ -427,10 +429,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(479,-188,l),
-(521,-188,l),
-(521,812,l),
-(479,812,l)
+(463.81308,-188,l),
+(505.81308,-188,l),
+(505.81308,812,l),
+(463.81308,812,l)
 );
 }
 );
@@ -449,9 +451,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 15.18692;
 };
 vertWidth = 1000;
-width = 1000;
+width = 969.62617;
 },
 {
 hints = (
@@ -479,15 +482,18 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(479,-188,l),
-(521,-188,l),
-(521,812,l),
-(479,812,l)
+(463.81308,-188,l),
+(505.81308,-188,l),
+(505.81308,812,l),
+(463.81308,812,l)
 );
 }
 );
+userData = {
+com.quiple.Astr.displaySideReduction = 15.18692;
+};
 vertWidth = 1000;
-width = 1000;
+width = 969.62617;
 },
 {
 hints = (
@@ -515,10 +521,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(479,-188,l),
-(521,-188,l),
-(521,812,l),
-(479,812,l)
+(464.98131,-188,l),
+(506.98131,-188,l),
+(506.98131,812,l),
+(464.98131,812,l)
 );
 }
 );
@@ -537,9 +543,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 14.01869;
 };
 vertWidth = 1000;
-width = 1000;
+width = 971.96262;
 },
 {
 hints = (
@@ -567,10 +574,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(479,-188,l),
-(521,-188,l),
-(521,812,l),
-(479,812,l)
+(466.14953,-188,l),
+(508.14953,-188,l),
+(508.14953,812,l),
+(466.14953,812,l)
 );
 }
 );
@@ -589,9 +596,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 12.85047;
 };
 vertWidth = 1000;
-width = 1000;
+width = 974.29907;
 }
 );
 unicode = 9474;

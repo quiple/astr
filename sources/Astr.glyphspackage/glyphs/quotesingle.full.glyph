@@ -177,10 +177,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(561,769,l),
-(496,769,l),
-(440,522,l),
-(496,522,l)
+(542.30841,769,l),
+(477.30841,769,l),
+(421.30841,522,l),
+(477.30841,522,l)
 );
 }
 );
@@ -199,8 +199,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 18.69159;
 };
-width = 1000;
+width = 962.61682;
 },
 {
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
@@ -208,10 +209,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(569,769,l),
-(486,769,l),
-(432,504,l),
-(504,504,l)
+(552.64486,769,l),
+(469.64486,769,l),
+(415.64486,504,l),
+(487.64486,504,l)
 );
 }
 );
@@ -230,8 +231,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 16.35514;
 };
-width = 1000;
+width = 967.28972;
 },
 {
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
@@ -239,10 +241,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(574,769,l),
-(480,769,l),
-(427,495,l),
-(513,495,l)
+(558.81308,769,l),
+(464.81308,769,l),
+(411.81308,495,l),
+(497.81308,495,l)
 );
 }
 );
@@ -261,8 +263,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 15.18692;
 };
-width = 1000;
+width = 969.62617;
 },
 {
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
@@ -270,14 +273,17 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(577,769,l),
-(476,769,l),
-(425,491,l),
-(516,491,l)
+(561.81308,769,l),
+(460.81308,769,l),
+(409.81308,491,l),
+(500.81308,491,l)
 );
 }
 );
-width = 1000;
+userData = {
+com.quiple.Astr.displaySideReduction = 15.18692;
+};
+width = 969.62617;
 },
 {
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
@@ -285,10 +291,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(579,769,l),
-(471,769,l),
-(422,486,l),
-(518,486,l)
+(564.98131,769,l),
+(456.98131,769,l),
+(407.98131,486,l),
+(503.98131,486,l)
 );
 }
 );
@@ -307,8 +313,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 14.01869;
 };
-width = 1000;
+width = 971.96262;
 },
 {
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
@@ -316,10 +323,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(581,769,l),
-(467,769,l),
-(419,477,l),
-(518,477,l)
+(568.14953,769,l),
+(454.14953,769,l),
+(406.14953,477,l),
+(505.14953,477,l)
 );
 }
 );
@@ -338,8 +345,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 12.85047;
 };
-width = 1000;
+width = 974.29907;
 }
 );
 unicode = 65287;

@@ -183,10 +183,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(848,80,l),
-(848,131,l),
-(16,131,l),
-(16,80,l)
+(832,80,l),
+(832,131,l),
+(0,131,l),
+(0,80,l)
 );
 }
 );
@@ -205,9 +205,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 16;
 };
 vertWidth = 1000;
-width = 864;
+width = 832;
 },
 {
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
@@ -215,10 +216,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(852,79,l),
-(852,147,l),
-(13,147,l),
-(13,79,l)
+(840,79,l),
+(840,147,l),
+(1,147,l),
+(1,79,l)
 );
 }
 );
@@ -237,9 +238,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 12;
 };
 vertWidth = 1000;
-width = 864;
+width = 840;
 },
 {
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
@@ -247,10 +249,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(853,78,l),
-(853,155,l),
-(11,155,l),
-(11,78,l)
+(842,78,l),
+(842,155,l),
+(0,155,l),
+(0,78,l)
 );
 }
 );
@@ -269,9 +271,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 11;
 };
 vertWidth = 1000;
-width = 864;
+width = 842;
 },
 {
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
@@ -279,15 +282,18 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(855,77,l),
-(855,162,l),
-(10,162,l),
-(10,77,l)
+(846,77,l),
+(846,162,l),
+(1,162,l),
+(1,77,l)
 );
 }
 );
+userData = {
+com.quiple.Astr.displaySideReduction = 9;
+};
 vertWidth = 1000;
-width = 864;
+width = 846;
 },
 {
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
@@ -295,10 +301,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(856,76,l),
-(856,168,l),
-(8,168,l),
-(8,76,l)
+(848,76,l),
+(848,168,l),
+(0,168,l),
+(0,76,l)
 );
 }
 );
@@ -317,9 +323,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 8;
 };
 vertWidth = 1000;
-width = 864;
+width = 848;
 },
 {
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
@@ -327,10 +334,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(858,75,l),
-(858,178,l),
-(6,178,l),
-(6,75,l)
+(852,75,l),
+(852,178,l),
+(0,178,l),
+(0,75,l)
 );
 }
 );
@@ -349,9 +356,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 6;
 };
 vertWidth = 1000;
-width = 864;
+width = 852;
 }
 );
 note = cid00406;

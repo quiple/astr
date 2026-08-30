@@ -808,7 +808,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 16;
+com.quiple.Astr.displaySideReduction = 16;
 };
 vertWidth = 1193;
 width = 824;
@@ -927,7 +927,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 14;
+com.quiple.Astr.displaySideReduction = 14;
 };
 vertWidth = 1193;
 width = 828;
@@ -1046,7 +1046,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 13;
+com.quiple.Astr.displaySideReduction = 13;
 };
 vertWidth = 1193;
 width = 830;
@@ -1151,7 +1151,7 @@ nodes = (
 }
 );
 userData = {
-com.quiple.Astr.hangulDisplaySideReduction = 13;
+com.quiple.Astr.displaySideReduction = 13;
 };
 vertWidth = 1193;
 width = 830;
@@ -1270,7 +1270,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 12;
+com.quiple.Astr.displaySideReduction = 12;
 };
 vertWidth = 1193;
 width = 832;
@@ -1281,96 +1281,96 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(300,36,l),
-(212,36,l),
-(212,293,l),
-(102,293,l),
-(102,-59,l),
-(411,-59,l),
-(411,293,l),
-(300,293,l)
+(299,36,l),
+(211,36,l),
+(211,293,l),
+(101,293,l),
+(101,-59,l),
+(410,-59,l),
+(410,293,l),
+(299,293,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(125,211,l),
-(125,119,l),
-(391,119,l),
-(391,211,l)
+(124,211,l),
+(124,119,l),
+(390,119,l),
+(390,211,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(555,202,ls),
-(555,118,o),
-(531,79,o),
-(408,7,c),
-(463,-78,l),
-(597,1,o),
-(621,51,o),
-(657,191,c),
-(578,191,l),
-(595,67,o),
-(634,-2,o),
-(775,-80,c),
-(824,13,l),
-(700,82,o),
-(678,118,o),
-(678,202,cs),
-(678,293,l),
-(555,293,l)
+(554,202,ls),
+(554,118,o),
+(530,79,o),
+(407,7,c),
+(462,-78,l),
+(596,1,o),
+(620,51,o),
+(656,191,c),
+(577,191,l),
+(594,67,o),
+(633,-2,o),
+(774,-80,c),
+(823,13,l),
+(699,82,o),
+(677,118,o),
+(677,202,cs),
+(677,293,l),
+(554,293,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(759,800,l),
-(635,800,l),
-(635,334,l),
-(759,334,l)
+(758,800,l),
+(634,800,l),
+(634,334,l),
+(758,334,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(476,514,l),
-(698,514,l),
-(698,615,l),
-(476,615,l)
+(475,514,l),
+(697,514,l),
+(697,615,l),
+(475,615,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(508,653,l),
-(508,752,l),
-(48,752,l),
-(48,653,l)
+(507,653,l),
+(507,752,l),
+(47,752,l),
+(47,653,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(217,407,o),
-(272,464,o),
-(317,603,c),
-(239,603,l),
-(277,480,o),
-(331,413,o),
-(496,343,c),
-(543,440,l),
-(375,512,o),
-(340,567,o),
-(340,648,cs),
-(340,698,l),
-(215,698,l),
-(215,648,ls),
-(215,557,o),
-(172,506,o),
-(8,418,c),
-(62,320,l)
+(216,407,o),
+(271,464,o),
+(316,603,c),
+(238,603,l),
+(276,480,o),
+(330,413,o),
+(495,343,c),
+(542,440,l),
+(374,512,o),
+(339,567,o),
+(339,648,cs),
+(339,698,l),
+(214,698,l),
+(214,648,ls),
+(214,557,o),
+(171,506,o),
+(7,418,c),
+(61,320,l)
 );
 }
 );
@@ -1389,10 +1389,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 10;
+com.quiple.Astr.displaySideReduction = 11;
 };
 vertWidth = 1193;
-width = 836;
+width = 834;
 }
 );
 unicode = 51218;

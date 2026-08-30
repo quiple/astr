@@ -177,10 +177,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(139,777,l),
-(85,777,l),
-(85,518,l),
-(132,518,l)
+(134.79439,777,l),
+(80.79439,777,l),
+(80.79439,518,l),
+(127.79439,518,l)
 );
 }
 );
@@ -199,8 +199,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 4.20561;
 };
-width = 225;
+width = 216.58879;
 },
 {
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
@@ -208,10 +209,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(156,787,l),
-(81,787,l),
-(81,519,l),
-(144,519,l)
+(152.12383,787,l),
+(77.12383,787,l),
+(77.12383,519,l),
+(140.12383,519,l)
 );
 }
 );
@@ -230,8 +231,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 3.87617;
 };
-width = 237;
+width = 229.24766;
 },
 {
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
@@ -239,10 +241,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(165,792,l),
-(78,792,l),
-(78,519,l),
-(149,519,l)
+(161.30958,792,l),
+(74.30958,792,l),
+(74.30958,519,l),
+(145.30958,519,l)
 );
 }
 );
@@ -261,8 +263,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 3.69042;
 };
-width = 243;
+width = 235.61916;
 },
 {
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
@@ -270,14 +273,17 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(172,796,l),
-(77,796,l),
-(77,520,l),
-(154,520,l)
+(168.23364,796,l),
+(73.23364,796,l),
+(73.23364,520,l),
+(150.23364,520,l)
 );
 }
 );
-width = 248;
+userData = {
+com.quiple.Astr.displaySideReduction = 3.76635;
+};
+width = 240.46729;
 },
 {
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
@@ -285,10 +291,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(179,800,l),
-(75,800,l),
-(75,520,l),
-(158,520,l)
+(175.45327,800,l),
+(71.45327,800,l),
+(71.45327,520,l),
+(154.45327,520,l)
 );
 }
 );
@@ -307,8 +313,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 3.54673;
 };
-width = 253;
+width = 245.90654;
 },
 {
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
@@ -316,10 +323,10 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(190,807,l),
-(72,807,l),
-(72,521,l),
-(166,521,l)
+(186.63318,807,l),
+(68.63318,807,l),
+(68.63318,521,l),
+(162.63318,521,l)
 );
 }
 );
@@ -338,8 +345,9 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
+com.quiple.Astr.displaySideReduction = 3.36682;
 };
-width = 262;
+width = 255.26636;
 }
 );
 note = minute;

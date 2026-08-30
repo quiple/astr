@@ -514,7 +514,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 16;
+com.quiple.Astr.displaySideReduction = 16;
 };
 vertWidth = 1193;
 width = 824;
@@ -591,7 +591,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 14;
+com.quiple.Astr.displaySideReduction = 14;
 };
 vertWidth = 1193;
 width = 828;
@@ -668,7 +668,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 13;
+com.quiple.Astr.displaySideReduction = 13;
 };
 vertWidth = 1193;
 width = 830;
@@ -731,7 +731,7 @@ nodes = (
 }
 );
 userData = {
-com.quiple.Astr.hangulDisplaySideReduction = 13;
+com.quiple.Astr.displaySideReduction = 13;
 };
 vertWidth = 1193;
 width = 830;
@@ -808,7 +808,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 12;
+com.quiple.Astr.displaySideReduction = 12;
 };
 vertWidth = 1193;
 width = 832;
@@ -819,54 +819,54 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(588,786,l),
-(471,786,l),
-(471,-28,l),
-(588,-28,l)
+(586,786,l),
+(469,786,l),
+(469,-28,l),
+(586,-28,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(785,795,l),
-(666,795,l),
-(666,-62,l),
-(785,-62,l)
+(783,795,l),
+(664,795,l),
+(664,-62,l),
+(783,-62,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(534,505,l),
-(729,505,l),
-(729,608,l),
-(534,608,l)
+(532,505,l),
+(727,505,l),
+(727,608,l),
+(532,608,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(534,213,l),
-(729,213,l),
-(729,316,l),
-(534,316,l)
+(532,213,l),
+(727,213,l),
+(727,316,l),
+(532,316,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(315,259,o),
-(408,375,o),
-(408,553,cs),
-(408,695,l),
-(50,695,l),
-(50,593,l),
-(284,593,l),
-(284,545,ls),
-(284,427,o),
-(228,332,o),
-(8,206,c),
-(71,111,l)
+(313,259,o),
+(406,375,o),
+(406,553,cs),
+(406,695,l),
+(48,695,l),
+(48,593,l),
+(282,593,l),
+(282,545,ls),
+(282,427,o),
+(226,332,o),
+(6,206,c),
+(69,111,l)
 );
 }
 );
@@ -885,10 +885,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 9;
+com.quiple.Astr.displaySideReduction = 11;
 };
 vertWidth = 1193;
-width = 838;
+width = 834;
 }
 );
 unicode = 44116;

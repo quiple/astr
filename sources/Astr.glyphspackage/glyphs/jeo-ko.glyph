@@ -493,7 +493,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 16;
+com.quiple.Astr.displaySideReduction = 16;
 };
 vertWidth = 1193;
 width = 824;
@@ -567,7 +567,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 14;
+com.quiple.Astr.displaySideReduction = 14;
 };
 vertWidth = 1193;
 width = 828;
@@ -641,7 +641,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 13;
+com.quiple.Astr.displaySideReduction = 13;
 };
 vertWidth = 1193;
 width = 830;
@@ -701,7 +701,7 @@ nodes = (
 }
 );
 userData = {
-com.quiple.Astr.hangulDisplaySideReduction = 13;
+com.quiple.Astr.displaySideReduction = 13;
 };
 vertWidth = 1193;
 width = 830;
@@ -775,7 +775,7 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 12;
+com.quiple.Astr.displaySideReduction = 12;
 };
 vertWidth = 1193;
 width = 832;
@@ -786,51 +786,51 @@ shapes = (
 {
 closed = 1;
 nodes = (
-(764,800,l),
-(640,800,l),
-(640,-66,l),
-(764,-66,l)
+(757,800,l),
+(633,800,l),
+(633,-66,l),
+(757,-66,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(471,393,l),
-(698,393,l),
-(698,494,l),
-(471,494,l)
+(464,393,l),
+(691,393,l),
+(691,494,l),
+(464,494,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(528,612,l),
-(528,713,l),
-(58,713,l),
-(58,612,l)
+(521,612,l),
+(521,713,l),
+(51,713,l),
+(51,612,l)
 );
 },
 {
 closed = 1;
 nodes = (
-(218,209,o),
-(285,304,o),
-(326,470,c),
-(260,470,l),
-(294,311,o),
-(360,224,o),
-(500,105,c),
-(577,193,l),
-(400,335,o),
-(355,431,o),
-(355,574,cs),
-(355,694,l),
-(231,694,l),
-(231,574,ls),
-(231,430,o),
-(185,331,o),
-(8,187,c),
-(86,95,l)
+(211,209,o),
+(278,304,o),
+(319,470,c),
+(253,470,l),
+(287,311,o),
+(353,224,o),
+(493,105,c),
+(570,193,l),
+(393,335,o),
+(348,431,o),
+(348,574,cs),
+(348,694,l),
+(224,694,l),
+(224,574,ls),
+(224,430,o),
+(178,331,o),
+(1,187,c),
+(79,95,l)
 );
 }
 );
@@ -849,10 +849,10 @@ com.hugojourdan.ColorFlow = {
 "8" = 0;
 "9" = 0;
 };
-com.quiple.Astr.hangulDisplaySideReduction = 4;
+com.quiple.Astr.displaySideReduction = 11;
 };
 vertWidth = 1193;
-width = 848;
+width = 834;
 }
 );
 unicode = 51200;
