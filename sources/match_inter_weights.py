@@ -19,11 +19,11 @@ DEFAULT_INTER_FONT = (
 )
 MASTER_NAMES = ("ExtraLight", "Light", "Regular", "Text", "Medium", "SemiBold")
 
-# Compare the round strokes of the ieung in 아/오/의/이 with Inter's O/o/0.
+# Compare the round strokes of the ieung in 아/으/의/이 with Inter's O/o/0.
 # These samples cover right-side, lower, and compound-vowel layouts. For each
 # ring, left/right thicknesses form the vertical score and top/bottom
 # thicknesses form the horizontal score.
-KOREAN_RING_GLYPHS = ("a-ko", "o-ko", "yi-ko", "i-ko")
+KOREAN_RING_GLYPHS = ("a-ko", "eu-ko", "yi-ko", "i-ko")
 INTER_RING_CHARACTERS = "Oo0"
 TEXT_OPSZ = 14
 DISPLAY_OPSZ = 32
