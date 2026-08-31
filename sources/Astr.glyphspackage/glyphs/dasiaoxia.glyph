@@ -5,7 +5,7 @@ layers = (
 anchors = (
 {
 name = _top;
-pos = (177.258,545.898);
+pos = (175.923,545.898);
 }
 );
 layerId = m003;
@@ -16,18 +16,18 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (155.256,0);
+pos = (155.154,0);
 ref = oxia;
 }
 );
 vertWidth = 0;
-width = 319.89316;
+width = 317.47734;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (193.073,545.898);
+pos = (194.228,545.898);
 }
 );
 layerId = m01;
@@ -38,18 +38,18 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (156.461,0);
+pos = (156.549,0);
 ref = oxia;
 }
 );
 vertWidth = 0;
-width = 348.51006;
+width = 350.59993;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (202.143,545.898);
+pos = (203.276,545.898);
 }
 );
 layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
@@ -60,18 +60,19 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (157.152,0);
+pos = (157.291,-0.094);
 ref = oxia;
+scale = (0.999,1);
 }
 );
 vertWidth = 0;
-width = 364.92261;
+width = 367.04107;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (205.835,545.898);
+pos = (207.063,545.898);
 }
 );
 layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
@@ -82,19 +83,19 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (158.383,-1.685);
+pos = (158.907,-2.449);
 ref = oxia;
-scale = (0.991,1.003);
+scale = (0.987,1.004);
 }
 );
 vertWidth = 0;
-width = 372.84576;
+width = 375.63067;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (209.334,545.898);
+pos = (210.8,545.898);
 }
 );
 layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
@@ -105,19 +106,19 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (159.877,-3.862);
+pos = (160.502,-4.773);
 ref = oxia;
-scale = (0.979,1.006);
+scale = (0.974,1.008);
 }
 );
 vertWidth = 0;
-width = 380.784;
+width = 384.10838;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (215.546,545.898);
+pos = (216.997,545.898);
 }
 );
 layerId = m005;
@@ -128,19 +129,19 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (162.528,-7.726);
+pos = (163.147,-8.628);
 ref = oxia;
-scale = (0.958,1.013);
+scale = (0.953,1.014);
 }
 );
 vertWidth = 0;
-width = 394.87459;
+width = 398.16446;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (163.939,515.625);
+pos = (163.227,515.625);
 }
 );
 layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
@@ -151,19 +152,19 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (163.487,-13.79);
+pos = (164.39,-13.065);
 ref = oxia;
-scale = (0.986,1.021);
+scale = (0.986,1.02);
 }
 );
 vertWidth = 0;
-width = 297.59555;
+width = 296.12063;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (172.373,515.625);
+pos = (172.989,515.625);
 }
 );
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
@@ -174,19 +175,19 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (152.793,-22.375);
+pos = (152.012,-23.002);
 ref = oxia;
-scale = (0.977,1.033);
+scale = (0.976,1.034);
 }
 );
 vertWidth = 0;
-width = 315.06691;
+width = 316.34284;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (177.211,515.625);
+pos = (177.892,515.625);
 }
 );
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
@@ -197,19 +198,19 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (146.66,-27.299);
+pos = (146.007,-27.974);
 ref = oxia;
-scale = (0.972,1.041);
+scale = (0.971,1.042);
 }
 );
 vertWidth = 0;
-width = 325.08721;
+width = 326.52843;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (180.576,515.625);
+pos = (181.864,515.625);
 }
 );
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
@@ -220,19 +221,19 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (146.194,-30.377);
+pos = (146.284,-31.529);
 ref = oxia;
-scale = (0.963,1.046);
+scale = (0.959,1.048);
 }
 );
 vertWidth = 0;
-width = 332.58278;
+width = 335.48747;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (184.247,515.625);
+pos = (185.784,515.625);
 }
 );
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
@@ -243,19 +244,19 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (146.45,-33.663);
+pos = (146.558,-35.039);
 ref = oxia;
-scale = (0.952,1.052);
+scale = (0.948,1.054);
 }
 );
 vertWidth = 0;
-width = 340.86245;
+width = 344.32982;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (190.762,515.625);
+pos = (192.283,515.625);
 }
 );
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
@@ -266,13 +267,13 @@ ref = dasia;
 },
 {
 alignment = -1;
-pos = (146.905,-39.496);
+pos = (147.011,-40.858);
 ref = oxia;
-scale = (0.933,1.061);
+scale = (0.929,1.064);
 }
 );
 vertWidth = 0;
-width = 355.55909;
+width = 358.99046;
 }
 );
 note = "";

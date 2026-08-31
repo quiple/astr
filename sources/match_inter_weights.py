@@ -8,7 +8,7 @@ from pathlib import Path
 from statistics import fmean
 
 from fontTools.pens.boundsPen import BoundsPen
-from fontTools.pens.recordingPen import RecordingPen
+from fontTools.pens.recordingPen import DecomposingRecordingPen, RecordingPen
 from fontTools.ttLib import TTFont
 from ufoLib2 import Font
 
@@ -19,12 +19,12 @@ DEFAULT_INTER_FONT = (
 )
 MASTER_NAMES = ("ExtraLight", "Light", "Regular", "Text", "Medium", "SemiBold")
 
-# Compare only long, straight strokes so curves, counters, and glyph
-# proportions do not distort the physical stem-width match.
-KOREAN_VERTICAL_STEM_GLYPH = "iCompa-ko"
-KOREAN_HORIZONTAL_STEM_GLYPH = "euCompa-ko"
-INTER_VERTICAL_STEM_CHARACTERS = "HI"
-INTER_HORIZONTAL_STEM_CHARACTERS = "H"
+# Compare the round strokes of the ieung in 아/오/의/이 with Inter's O/o/0.
+# These samples cover right-side, lower, and compound-vowel layouts. For each
+# ring, left/right thicknesses form the vertical score and top/bottom
+# thicknesses form the horizontal score.
+KOREAN_RING_GLYPHS = ("a-ko", "o-ko", "yi-ko", "i-ko")
+INTER_RING_CHARACTERS = "Oo0"
 TEXT_OPSZ = 14
 DISPLAY_OPSZ = 32
 OUTPUT_DECIMAL_PLACES = 3
@@ -47,83 +47,83 @@ def parse_scale(value: str) -> float:
     return scale
 
 
-def bounding_width(glyph, glyph_set) -> float:
-    pen = BoundsPen(glyph_set)
+Bounds = tuple[float, float, float, float]
+
+
+def contour_bounds(glyph, glyph_set) -> list[Bounds]:
+    """Return curve-aware bounds for each decomposed contour in a glyph."""
+    pen = DecomposingRecordingPen(glyph_set)
     glyph.draw(pen)
-    if pen.bounds is None:
-        raise ValueError("sample glyph has no measurable bounds")
-    x_min, _y_min, x_max, _y_max = pen.bounds
-    return x_max - x_min
-
-
-def bounding_height(glyph, glyph_set) -> float:
-    pen = BoundsPen(glyph_set)
-    glyph.draw(pen)
-    if pen.bounds is None:
-        raise ValueError("sample glyph has no measurable bounds")
-    _x_min, y_min, _x_max, y_max = pen.bounds
-    return y_max - y_min
-
-
-def straight_stem_width(glyph, orientation: str) -> float:
-    """Measure a long straight vertical or horizontal Latin stem."""
-    if orientation not in {"vertical", "horizontal"}:
-        raise ValueError(f"unsupported stem orientation: {orientation}")
-
-    pen = RecordingPen()
-    glyph.draw(pen)
-    edge_lengths: dict[float, float] = {}
-    points: list[tuple[float, float]] = []
-    contour_start = None
-    current = None
-
-    def record_edge(start, end) -> None:
-        if start is None or end is None:
-            return
-        x1, y1 = start
-        x2, y2 = end
-        points.extend((start, end))
-        if orientation == "vertical" and abs(x1 - x2) < 1e-6 and y1 != y2:
-            edge_lengths[x1] = edge_lengths.get(x1, 0) + abs(y2 - y1)
-        elif orientation == "horizontal" and abs(y1 - y2) < 1e-6 and x1 != x2:
-            edge_lengths[y1] = edge_lengths.get(y1, 0) + abs(x2 - x1)
+    bounds: list[Bounds] = []
+    contour: RecordingPen | None = None
 
     for operator, operands in pen.value:
         if operator == "moveTo":
-            contour_start = current = operands[0]
-        elif operator == "lineTo":
-            for point in operands:
-                record_edge(current, point)
-                current = point
-        elif operator in ("curveTo", "qCurveTo"):
-            curve_points = [point for point in operands if point is not None]
-            points.extend(curve_points)
-            if curve_points:
-                current = curve_points[-1]
-        elif operator == "closePath":
-            record_edge(current, contour_start)
-            contour_start = current = None
-        elif operator == "endPath":
-            contour_start = current = None
+            if contour is not None:
+                raise ValueError("sample glyph contains an unfinished contour")
+            contour = RecordingPen()
+        if contour is None:
+            raise ValueError(f"unexpected drawing operation: {operator}")
 
-    if not points:
-        raise ValueError("stem sample glyph has no measurable outline")
-    axis = 1 if orientation == "vertical" else 0
-    values = [point[axis] for point in points]
-    extent = max(values) - min(values)
-    edge_positions = sorted(
-        position
-        for position, length in edge_lengths.items()
-        if length >= extent * 0.45
+        getattr(contour, operator)(*operands)
+        if operator in {"closePath", "endPath"}:
+            bounds_pen = BoundsPen(None)
+            contour.replay(bounds_pen)
+            if bounds_pen.bounds is not None:
+                bounds.append(tuple(float(value) for value in bounds_pen.bounds))
+            contour = None
+
+    if contour is not None:
+        raise ValueError("sample glyph contains an unfinished contour")
+    if not bounds:
+        raise ValueError("sample glyph has no measurable contours")
+    return bounds
+
+
+def contains(outer: Bounds, inner: Bounds) -> bool:
+    outer_x_min, outer_y_min, outer_x_max, outer_y_max = outer
+    inner_x_min, inner_y_min, inner_x_max, inner_y_max = inner
+    return (
+        outer_x_min < inner_x_min
+        and outer_y_min < inner_y_min
+        and outer_x_max > inner_x_max
+        and outer_y_max > inner_y_max
     )
-    spans = [
-        right - left
-        for left, right in zip(edge_positions, edge_positions[1:])
-        if right > left
+
+
+def bounds_area(bounds: Bounds) -> float:
+    x_min, y_min, x_max, y_max = bounds
+    return (x_max - x_min) * (y_max - y_min)
+
+
+def ring_stem_widths(glyph, glyph_set) -> tuple[float, float]:
+    """Measure average left/right and top/bottom thicknesses of a ring."""
+    bounds = contour_bounds(glyph, glyph_set)
+    candidates = [
+        (outer, inner)
+        for outer in bounds
+        for inner in bounds
+        if outer is not inner and contains(outer, inner)
     ]
-    if not spans:
-        raise ValueError(f"could not identify a long {orientation} stem")
-    return min(spans)
+    if not candidates:
+        raise ValueError("could not identify nested outer/inner ring contours")
+
+    # Each Korean sample contains other strokes, but only the ieung has a
+    # nested contour pair. Picking the largest candidate also makes the rule
+    # robust if a source later gains a small enclosed detail elsewhere.
+    outer, inner = max(candidates, key=lambda pair: bounds_area(pair[0]))
+    outer_x_min, outer_y_min, outer_x_max, outer_y_max = outer
+    inner_x_min, inner_y_min, inner_x_max, inner_y_max = inner
+
+    vertical = fmean(
+        (inner_x_min - outer_x_min, outer_x_max - inner_x_max)
+    )
+    horizontal = fmean(
+        (inner_y_min - outer_y_min, outer_y_max - inner_y_max)
+    )
+    if vertical <= 0 or horizontal <= 0:
+        raise ValueError("ring contours produced a non-positive stroke width")
+    return vertical, horizontal
 
 
 def ufo_stroke_scores(path: Path) -> tuple[float, float]:
@@ -131,24 +131,19 @@ def ufo_stroke_scores(path: Path) -> tuple[float, float]:
         raise FileNotFoundError(f"Astr master not found: {path}")
 
     font = Font.open(path, lazy=True)
-    required_glyphs = (
-        KOREAN_VERTICAL_STEM_GLYPH,
-        KOREAN_HORIZONTAL_STEM_GLYPH,
-    )
-    missing = [name for name in required_glyphs if name not in font]
+    missing = [name for name in KOREAN_RING_GLYPHS if name not in font]
     if missing:
         raise ValueError(
             f"{path.name} is missing Korean samples: {', '.join(missing)}"
         )
 
     upm = float(font.info.unitsPerEm or 1000)
+    samples = tuple(
+        ring_stem_widths(font[name], font) for name in KOREAN_RING_GLYPHS
+    )
     return (
-        math.log(
-            bounding_width(font[KOREAN_VERTICAL_STEM_GLYPH], font) / upm
-        ),
-        math.log(
-            bounding_height(font[KOREAN_HORIZONTAL_STEM_GLYPH], font) / upm
-        ),
+        fmean(math.log(vertical / upm) for vertical, _horizontal in samples),
+        fmean(math.log(horizontal / upm) for _vertical, horizontal in samples),
     )
 
 
@@ -169,26 +164,17 @@ class InterStrokeModel:
         self.upm = float(self.font["head"].unitsPerEm)
 
         cmap = self.font.getBestCmap() or {}
-        required_characters = (
-            INTER_VERTICAL_STEM_CHARACTERS
-            + INTER_HORIZONTAL_STEM_CHARACTERS
-        )
         missing = [
             character
-            for character in required_characters
+            for character in INTER_RING_CHARACTERS
             if ord(character) not in cmap
         ]
         if missing:
             raise ValueError(
                 f"Inter font is missing sample characters: {''.join(missing)}"
             )
-        self.vertical_stem_glyph_names = tuple(
-            cmap[ord(character)]
-            for character in INTER_VERTICAL_STEM_CHARACTERS
-        )
-        self.horizontal_stem_glyph_names = tuple(
-            cmap[ord(character)]
-            for character in INTER_HORIZONTAL_STEM_CHARACTERS
+        self.ring_glyph_names = tuple(
+            cmap[ord(character)] for character in INTER_RING_CHARACTERS
         )
 
     @lru_cache(maxsize=None)
@@ -196,19 +182,20 @@ class InterStrokeModel:
         glyph_set = self.font.getGlyphSet(
             location={"wght": weight, "opsz": optical_size}
         )
-        vertical_score = fmean(
-            math.log(
-                straight_stem_width(glyph_set[name], "vertical") / self.upm
-            )
-            for name in self.vertical_stem_glyph_names
+        samples = tuple(
+            ring_stem_widths(glyph_set[name], glyph_set)
+            for name in self.ring_glyph_names
         )
-        horizontal_score = fmean(
-            math.log(
-                straight_stem_width(glyph_set[name], "horizontal") / self.upm
-            )
-            for name in self.horizontal_stem_glyph_names
+        return (
+            fmean(
+                math.log(vertical / self.upm)
+                for vertical, _horizontal in samples
+            ),
+            fmean(
+                math.log(horizontal / self.upm)
+                for _vertical, horizontal in samples
+            ),
         )
-        return vertical_score, horizontal_score
 
     def find_weight(
         self,

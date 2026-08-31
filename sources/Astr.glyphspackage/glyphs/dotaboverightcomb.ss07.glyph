@@ -5,11 +5,11 @@ layers = (
 anchors = (
 {
 name = _top;
-pos = (105.82,545.898);
+pos = (105.032,545.898);
 },
 {
 name = top;
-pos = (105.82,713.744);
+pos = (105.032,713.032);
 }
 );
 layerId = m003;
@@ -26,11 +26,11 @@ width = 372;
 anchors = (
 {
 name = _top;
-pos = (115.158,545.898);
+pos = (115.84,545.898);
 },
 {
 name = top;
-pos = (115.158,722.178);
+pos = (115.84,722.794);
 }
 );
 layerId = m01;
@@ -47,11 +47,11 @@ width = 372;
 anchors = (
 {
 name = _top;
-pos = (120.514,545.898);
+pos = (121.254,545.898);
 },
 {
 name = top;
-pos = (120.514,727.015);
+pos = (121.254,727.716);
 }
 );
 layerId = "54FF0D0B-6EB9-4889-908D-B8898FFCE7DE";
@@ -62,17 +62,17 @@ ref = dotaccentcomb.ss07;
 }
 );
 vertWidth = 0;
-width = 372;
+width = 496;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (123.969,545.898);
+pos = (125.271,545.898);
 },
 {
 name = top;
-pos = (123.969,730.711);
+pos = (125.271,732.149);
 }
 );
 layerId = "1E3F0FE2-7EB2-4B39-B562-A9E797F546FD";
@@ -89,11 +89,11 @@ width = 496;
 anchors = (
 {
 name = _top;
-pos = (127.682,545.898);
+pos = (129.237,545.898);
 },
 {
 name = top;
-pos = (127.682,734.809);
+pos = (129.237,736.524);
 }
 );
 layerId = "E7059794-B319-4C6D-9648-9B840A1B2BBD";
@@ -110,11 +110,11 @@ width = 496;
 anchors = (
 {
 name = _top;
-pos = (134.273,545.898);
+pos = (135.811,545.898);
 },
 {
 name = top;
-pos = (134.273,742.081);
+pos = (135.811,743.779);
 }
 );
 layerId = m005;
@@ -131,11 +131,11 @@ width = 496;
 anchors = (
 {
 name = _top;
-pos = (81.591,515.625);
+pos = (80.459,515.625);
 },
 {
 name = top;
-pos = (81.591,696.007);
+pos = (80.459,694.379);
 }
 );
 layerId = "475D1BF0-F98B-52F2-9E74-80B671EB314C";
@@ -152,11 +152,11 @@ width = 246;
 anchors = (
 {
 name = _top;
-pos = (94.995,515.625);
+pos = (95.974,515.625);
 },
 {
 name = top;
-pos = (94.995,715.285);
+pos = (95.974,716.693);
 }
 );
 layerId = "DAD78D1B-E352-5238-A00F-A2F537341E40";
@@ -173,11 +173,11 @@ width = 246;
 anchors = (
 {
 name = _top;
-pos = (102.683,515.625);
+pos = (103.714,515.625);
 },
 {
 name = top;
-pos = (102.683,726.342);
+pos = (103.714,727.539);
 }
 );
 layerId = "D38EFE87-0ABC-5EFC-ADAA-BFB499A6908B";
@@ -188,17 +188,17 @@ ref = dotaccentcomb.ss07;
 }
 );
 vertWidth = 0;
-width = 246;
+width = 424;
 },
 {
 anchors = (
 {
 name = _top;
-pos = (107.085,515.625);
+pos = (108.702,515.625);
 },
 {
 name = top;
-pos = (107.085,727.539);
+pos = (108.702,727.539);
 }
 );
 layerId = "D818ED9C-C1BD-5BE6-876B-A3A0D22EDEB5";
@@ -215,11 +215,11 @@ width = 424;
 anchors = (
 {
 name = _top;
-pos = (111.694,515.625);
+pos = (113.624,515.625);
 },
 {
 name = top;
-pos = (111.694,727.539);
+pos = (113.624,727.539);
 }
 );
 layerId = "62339EF6-230A-5994-8405-203E8C3124AD";
@@ -236,11 +236,11 @@ width = 424;
 anchors = (
 {
 name = _top;
-pos = (119.876,515.625);
+pos = (121.786,515.625);
 },
 {
 name = top;
-pos = (119.876,727.539);
+pos = (121.786,727.539);
 }
 );
 layerId = "77D3F44C-1D32-5DB5-BC7E-810B56CE6E41";
