@@ -24247,7 +24247,11 @@ code = "# ----------------------------------------------------------------------
     sub [colon colon.case] [@DASH_ANY minus minus.case bullet] parenright' by parenright.case;
     # END smiley
     # -------------------------------------------------------------------------------------
+    # Astr: Keep outside Hangul from raising closing delimiters.
+    @ASTR_LEADING = [braceleft bracketleft parenleft asterisk at multiply minus plus plusminus divide equal notequal endash figuredash emdash hyphen bullet openbullet hyphenbullet trianglebullet blackleftbullet blackrightbullet blackSmallSquare leftArrow leftLongArrow leftLongArrow2 leftDoubleArrow leftLongDoubleArrow rightArrow rightLongArrow rightLongArrow2 rightDoubleArrow rightLongDoubleArrow leftRightArrow leftRightLongArrow leftRightDoubleArrow leftRightLongDoubleArrow northEastArrow southEastArrow southWestArrow northWestArrow colon approxequal asciitilde less greater lessequal greaterequal];
+    @ASTR_LEADING_CASE = [braceleft.case bracketleft.case parenleft.case asterisk.case at.case multiply.case minus.case plus.case plusminus.case divide.case equal.case notequal.case endash.case figuredash.case emdash.case hyphen.case bullet.case openbullet.case hyphenbullet.case trianglebullet.case blackleftbullet.case blackrightbullet.case blackSmallSquare.case leftArrow.case leftLongArrow.case leftLongArrow2.case leftDoubleArrow.case leftLongDoubleArrow.case rightArrow.case rightLongArrow.case rightLongArrow2.case rightDoubleArrow.case rightLongDoubleArrow.case leftRightArrow.case leftRightLongArrow.case leftRightDoubleArrow.case leftRightLongDoubleArrow.case northEastArrow.case southEastArrow.case southWestArrow.case northWestArrow.case colon.case approxequal.case asciitilde.case less.case greater.case lessequal.case greaterequal.case];
     # BEGIN case
+    ignore sub @ASTR_HANGUL [parenleft bracketleft braceleft]' @UC @LC;
     # Force lower-case parens if any one is lower case.
     # I.e. right paren in \"(abC)\" is always lower case.
     ignore sub parenleft @All @All parenright';
@@ -24299,11 +24303,16 @@ code = "# ----------------------------------------------------------------------
     # \"x----X\"
     ignore sub @ASTR_LC @CASE_L' @CASE_L @ASTR_UC;
     # \"x-\"
-    sub @CASE_L' @ASTR_UC by @CASE_R;
-    sub @CASE_L' @CASE_L @ASTR_UC by @CASE_R;
-    sub @CASE_L' @CASE_L @CASE_L @ASTR_UC by @CASE_R;
-    sub @CASE_L' @CASE_L @CASE_L @CASE_L @ASTR_UC by @CASE_R;
-    sub @CASE_L' @CASE_L @CASE_L @CASE_L @CASE_L @ASTR_UC by @CASE_R;
+    sub @CASE_L' @UC by @CASE_R;
+    sub @ASTR_LEADING' [@ASTR_HANGUL @ASTR_CJK_BRACKETS] by @ASTR_LEADING_CASE;
+    sub @CASE_L' @CASE_L @UC by @CASE_R;
+    sub @ASTR_LEADING' @CASE_L [@ASTR_HANGUL @ASTR_CJK_BRACKETS] by @ASTR_LEADING_CASE;
+    sub @CASE_L' @CASE_L @CASE_L @UC by @CASE_R;
+    sub @ASTR_LEADING' @CASE_L @CASE_L [@ASTR_HANGUL @ASTR_CJK_BRACKETS] by @ASTR_LEADING_CASE;
+    sub @CASE_L' @CASE_L @CASE_L @CASE_L @UC by @CASE_R;
+    sub @ASTR_LEADING' @CASE_L @CASE_L @CASE_L [@ASTR_HANGUL @ASTR_CJK_BRACKETS] by @ASTR_LEADING_CASE;
+    sub @CASE_L' @CASE_L @CASE_L @CASE_L @CASE_L @UC by @CASE_R;
+    sub @ASTR_LEADING' @CASE_L @CASE_L @CASE_L @CASE_L [@ASTR_HANGUL @ASTR_CJK_BRACKETS] by @ASTR_LEADING_CASE;
     # \"A-B\", \"A- B\", \"A-  B\"
     sub @ASTR_UC @CASE_L' @ASTR_UC by @CASE_R;
     sub @ASTR_UC @CASE_L' @Whitespace @ASTR_UC by @CASE_R;
@@ -73712,5 +73721,5 @@ version = 10;
 };
 };
 versionMajor = 1;
-versionMinor = 11;
+versionMinor = 12;
 }

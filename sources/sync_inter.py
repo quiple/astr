@@ -100,7 +100,7 @@ SYNC_STATE_KEY = "com.quiple.Astr.interSync"
 IMPORTED_GLYPH_KEY = "com.quiple.Astr.interGlyph"
 REMOVED_UNICODES_KEY = "com.quiple.Astr.interRemovedUnicodes"
 DISPLAY_MASTER_NAMESPACE = uuid.UUID("899f9541-4354-42f3-9582-fdf66f401235")
-SYNC_STATE_VERSION = 11
+SYNC_STATE_VERSION = 12
 Weight = int | float
 WEIGHT_DECIMAL_PLACES = 6
 GEOMETRY_DECIMAL_PLACES = 6
@@ -1338,6 +1338,53 @@ def _extend_inter_contextual_case(font) -> None:
         "Hangul compatibility jamo behave like lowercase in contextual punctuation.",
     )
     _fix_astr_contextual_punctuation(font, calt)
+    _fix_astr_closing_context(calt)
+
+
+def _fix_astr_closing_context(calt) -> None:
+    marker = "# Astr: Keep outside Hangul from raising closing delimiters."
+    if marker in calt.code:
+        return
+    left = re.search(r"@CASE_L\s*=\s*\[([^]]+)\];", calt.code)
+    right = re.search(r"@CASE_R\s*=\s*\[([^]]+)\];", calt.code)
+    if left is None or right is None or len(left[1].split()) != len(right[1].split()):
+        raise ValueError("Inter calt case classes have changed")
+    pairs = [
+        (a, b) for a, b in zip(left[1].split(), right[1].split())
+        if a not in {"parenright", "bracketright", "braceright"}
+    ]
+    definitions = (
+        f"{marker}\n"
+        f"    @ASTR_LEADING = [{' '.join(a for a, _ in pairs)}];\n"
+        f"    @ASTR_LEADING_CASE = [{' '.join(b for _, b in pairs)}];\n"
+        "    "
+    )
+    calt.code = calt.code.replace("# BEGIN case", definitions + "# BEGIN case", 1)
+    # Capitalized Latin words after Hangul keep a low opener even when the
+    # engine exposes the Latin lookahead. Inter's matching-closer rules only
+    # span 2–6 glyphs and cannot balance longer titles such as New Directions.
+    calt.code = calt.code.replace(
+        "# BEGIN case",
+        "# BEGIN case\n"
+        "    ignore sub @ASTR_HANGUL [parenleft bracketleft braceleft]' @UC @LC;",
+        1,
+    )
+
+    def directional(match):
+        context = match[1]
+        return (
+            f"sub @CASE_L'{context}@UC by @CASE_R;\n"
+            f"    sub @ASTR_LEADING'{context}[@ASTR_HANGUL @ASTR_CJK_BRACKETS] "
+            "by @ASTR_LEADING_CASE;"
+        )
+
+    calt.code, count = re.subn(
+        r"sub @CASE_L'((?: @CASE_L)* )@ASTR_UC by @CASE_R;",
+        directional,
+        calt.code,
+    )
+    if count != 5:
+        raise ValueError("Inter calt forward case rules have changed")
 
 
 def _fix_astr_contextual_punctuation(font, calt) -> None:
@@ -1951,6 +1998,7 @@ def validate_merged_font(font, commit: str, settings: dict) -> None:
         HANGUL_COMPATIBILITY_JAMO_TOKEN,
         CJK_BRACKET_TOKEN,
         "@ASTR_TRAILING",
+        "@ASTR_LEADING_CASE",
     )
     if calt is None or any(item not in calt.code for item in expected_contextual_code):
         raise ValueError(
