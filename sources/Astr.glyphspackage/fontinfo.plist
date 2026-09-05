@@ -24154,9 +24154,13 @@ code = "# ----------------------------------------------------------------------
     @DASH_CASE = [hyphen.case endash.case emdash.case];
     @DASH_ANY = [@DASH @DASH_CASE];
     # cap-height tall glyphs
+    # Astr: Directional punctuation and CJK brackets.
+    @ASTR_HANGUL = [$[unicode matches \"^(?:A(?:C|D|E|F)..|B...|C...|D(?:0|1|2|3|4|5|6)..|D7(?:0|1|2|3|4|5|6|7|8|9).|D7A(?:0|1|2|3))$\"]];
+    @ASTR_CJK_BRACKETS = [$[unicode matches \"^(?:232(?:9|A)|300(?:8|9|A|B|C|D|E|F)|301(?:0|1|4|5|6|7|8|9|A|B|D|E|F)|FF0(?:8|9)|FF3(?:B|D)|FF5(?:B|D|F)|FF6(?:0|2|3))$\"]];
+    @ASTR_TRAILING = [braceright bracketright parenright asterisk at multiply minus plus plusminus divide equal notequal figuredash bullet openbullet hyphenbullet trianglebullet blackleftbullet blackrightbullet blackSmallSquare leftArrow leftLongArrow leftLongArrow2 leftDoubleArrow leftLongDoubleArrow rightArrow rightLongArrow rightLongArrow2 rightDoubleArrow rightLongDoubleArrow leftRightArrow leftRightLongArrow leftRightDoubleArrow leftRightLongDoubleArrow northEastArrow southEastArrow southWestArrow northWestArrow colon approxequal asciitilde less greater lessequal greaterequal];
     @UC = [@Uppercase @Numeral ampersand exclam exclamdbl exclamdown uni2049 question uni2047 uni2048 questiondown interrobang invertedinterrobang bar paragraph dollar cent yen sterling florin uni20BA uni20BD euro uni20B9 tenge peseta peso kip won lira austral hryvnia naira guarani coloncurrency cedi cruzeiro tugrik drachma mill afii57636 manat rupee lari franc numero triagrt triagdn triagup warningSign blackleftpointingtriangle circleblack circlewhite diamondblack diamondblack_x diamondwhite diamondwhite_x sunWithRays blackSunWithRays heartWhiteSuit heartBlackSuit heavyBlackHeart upBlackArrow upWhiteArrow capslock placeofinterestsign control projective option alternativekeysymbol brokenCircleNorthWestArrow anticlockwiseOpenCircleArrow clockwiseOpenCircleArrow deleteleft deleteright clear ejectsymbol onehalf onethird onequarter threequarters fivesixths onefraction seveneighths oneeighth fiveeighths threeeighths percent perthousand pertenthousand uni214D cadauna careof accountof addresssubject];
     # Astr: Hangul syllables behave like capitals in contextual punctuation.
-    @ASTR_UC = [@UC
+    @ASTR_UC = [@UC @ASTR_CJK_BRACKETS
         $[unicode matches \"^(?:A(?:C|D|E|F)..|B...|C...|D(?:0|1|2|3|4|5|6)..|D7(?:0|1|2|3|4|5|6|7|8|9).|D7A(?:0|1|2|3))$\"]
     ];
     # punctuation
@@ -24280,7 +24284,8 @@ code = "# ----------------------------------------------------------------------
     ignore sub @ASTR_UC @CASE_L' @ASTR_LC;
     ignore sub @ASTR_UC @CASE_L' @Whitespace @ASTR_LC;
     ignore sub @ASTR_UC @CASE_L' @Whitespace @Whitespace @ASTR_LC;
-    sub @ASTR_UC @CASE_L' by @CASE_R;
+    sub [@UC @ASTR_CJK_BRACKETS] @CASE_L' by @CASE_R;
+    sub @ASTR_HANGUL @ASTR_TRAILING' by [braceright.case bracketright.case parenright.case asterisk.case at.case multiply.case minus.case plus.case plusminus.case divide.case equal.case notequal.case figuredash.case bullet.case openbullet.case hyphenbullet.case trianglebullet.case blackleftbullet.case blackrightbullet.case blackSmallSquare.case leftArrow.case leftLongArrow.case leftLongArrow2.case leftDoubleArrow.case leftLongDoubleArrow.case rightArrow.case rightLongArrow.case rightLongArrow2.case rightDoubleArrow.case rightLongDoubleArrow.case leftRightArrow.case leftRightLongArrow.case leftRightDoubleArrow.case leftRightLongDoubleArrow.case northEastArrow.case southEastArrow.case southWestArrow.case northWestArrow.case colon.case approxequal.case asciitilde.case less.case greater.case lessequal.case greaterequal.case];
     # \"+3\" EXCEPT \"<non-uc>+3\" (including backtrack, e.g. \"---X\")
     ignore sub @ASTR_LC @CASE_L' @ASTR_UC;
     # \"x-X\"
@@ -73707,5 +73712,5 @@ version = 10;
 };
 };
 versionMajor = 1;
-versionMinor = 10;
+versionMinor = 11;
 }

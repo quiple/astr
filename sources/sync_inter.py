@@ -100,7 +100,7 @@ SYNC_STATE_KEY = "com.quiple.Astr.interSync"
 IMPORTED_GLYPH_KEY = "com.quiple.Astr.interGlyph"
 REMOVED_UNICODES_KEY = "com.quiple.Astr.interRemovedUnicodes"
 DISPLAY_MASTER_NAMESPACE = uuid.UUID("899f9541-4354-42f3-9582-fdf66f401235")
-SYNC_STATE_VERSION = 10
+SYNC_STATE_VERSION = 11
 Weight = int | float
 WEIGHT_DECIMAL_PLACES = 6
 GEOMETRY_DECIMAL_PLACES = 6
@@ -122,6 +122,11 @@ HANGUL_SYLLABLE_TOKEN = (
 )
 ASTR_CONTEXTUAL_UPPERCASE_CLASS = "ASTR_UC"
 ASTR_CONTEXTUAL_LOWERCASE_CLASS = "ASTR_LC"
+CJK_BRACKET_TOKEN = (
+    '$[unicode matches "^(?:232(?:9|A)|300(?:8|9|A|B|C|D|E|F)|'
+    '301(?:0|1|4|5|6|7|8|9|A|B|D|E|F)|FF0(?:8|9)|'
+    'FF3(?:B|D)|FF5(?:B|D|F)|FF6(?:0|2|3))$"]'
+)
 
 
 def run(command: list[str], cwd: Path | None = None) -> None:
@@ -1332,6 +1337,50 @@ def _extend_inter_contextual_case(font) -> None:
         HANGUL_COMPATIBILITY_JAMO_TOKEN,
         "Hangul compatibility jamo behave like lowercase in contextual punctuation.",
     )
+    _fix_astr_contextual_punctuation(font, calt)
+
+
+def _fix_astr_contextual_punctuation(font, calt) -> None:
+    # U+2329/U+232A canonically normalize to U+3008/U+3009. Asta's
+    # original cmap only has the former, causing fallback in normal text.
+    for name, unicode_value in (("angleLeft", "3008"), ("angleRight", "3009")):
+        glyph = font.glyphs[name]
+        if glyph is not None and not any(
+            unicode_value in item.unicodes for item in font.glyphs
+        ):
+            glyph.unicodes = [*glyph.unicodes, unicode_value]
+
+    marker = "# Astr: Directional punctuation and CJK brackets."
+    if marker in calt.code:
+        return
+    match = re.search(r"@CASE_L\s*=\s*\[([^]]+)\];", calt.code)
+    if match is None:
+        raise ValueError("Inter calt no longer defines the expected @CASE_L class")
+    # Text engines can split Hangul and Latin into separate shaping runs.
+    # An opener must see its contents; a dash must see both sides. A
+    # one-sided Hangul rule cannot distinguish '한-' from the run in '한-a'.
+    excluded = {"parenleft", "bracketleft", "braceleft", "hyphen", "endash", "emdash"}
+    trailing = [name for name in match[1].split() if name not in excluded]
+    definitions = (
+        f"{marker}\n"
+        f"    @ASTR_HANGUL = [{HANGUL_SYLLABLE_TOKEN}];\n"
+        f"    @ASTR_CJK_BRACKETS = [{CJK_BRACKET_TOKEN}];\n"
+        f"    @ASTR_TRAILING = [{' '.join(trailing)}];\n"
+        "    "
+    )
+    calt.code = calt.code.replace("@UC = [", definitions + "@UC = [", 1)
+    calt.code = calt.code.replace(
+        "@ASTR_UC = [@UC", "@ASTR_UC = [@UC @ASTR_CJK_BRACKETS", 1
+    )
+    old = "sub @ASTR_UC @CASE_L' by @CASE_R;"
+    if calt.code.count(old) != 1:
+        raise ValueError("Inter calt one-sided case rule has changed")
+    calt.code = calt.code.replace(
+        old,
+        "sub [@UC @ASTR_CJK_BRACKETS] @CASE_L' by @CASE_R;\n"
+        "    sub @ASTR_HANGUL @ASTR_TRAILING' by "
+        "[" + " ".join(name + ".case" for name in trailing) + "];",
+    )
 
 
 def _kerning_group_keys(glyph) -> set[str]:
@@ -1900,6 +1949,8 @@ def validate_merged_font(font, commit: str, settings: dict) -> None:
         f"@{ASTR_CONTEXTUAL_LOWERCASE_CLASS}",
         HANGUL_SYLLABLE_TOKEN,
         HANGUL_COMPATIBILITY_JAMO_TOKEN,
+        CJK_BRACKET_TOKEN,
+        "@ASTR_TRAILING",
     )
     if calt is None or any(item not in calt.code for item in expected_contextual_code):
         raise ValueError(
