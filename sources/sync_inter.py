@@ -100,7 +100,7 @@ SYNC_STATE_KEY = "com.quiple.Astr.interSync"
 IMPORTED_GLYPH_KEY = "com.quiple.Astr.interGlyph"
 REMOVED_UNICODES_KEY = "com.quiple.Astr.interRemovedUnicodes"
 DISPLAY_MASTER_NAMESPACE = uuid.UUID("899f9541-4354-42f3-9582-fdf66f401235")
-SYNC_STATE_VERSION = 12
+SYNC_STATE_VERSION = 13
 Weight = int | float
 WEIGHT_DECIMAL_PLACES = 6
 GEOMETRY_DECIMAL_PLACES = 6
@@ -1338,58 +1338,103 @@ def _extend_inter_contextual_case(font) -> None:
         "Hangul compatibility jamo behave like lowercase in contextual punctuation.",
     )
     _fix_astr_contextual_punctuation(font, calt)
-    _fix_astr_closing_context(calt)
 
 
-def _fix_astr_closing_context(calt) -> None:
-    marker = "# Astr: Keep outside Hangul from raising closing delimiters."
-    if marker in calt.code:
-        return
-    left = re.search(r"@CASE_L\s*=\s*\[([^]]+)\];", calt.code)
-    right = re.search(r"@CASE_R\s*=\s*\[([^]]+)\];", calt.code)
-    if left is None or right is None or len(left[1].split()) != len(right[1].split()):
-        raise ValueError("Inter calt case classes have changed")
-    pairs = [
-        (a, b) for a, b in zip(left[1].split(), right[1].split())
-        if a not in {"parenright", "bracketright", "braceright"}
-    ]
-    definitions = (
-        f"{marker}\n"
-        f"    @ASTR_LEADING = [{' '.join(a for a, _ in pairs)}];\n"
-        f"    @ASTR_LEADING_CASE = [{' '.join(b for _, b in pairs)}];\n"
-        "    "
-    )
-    calt.code = calt.code.replace("# BEGIN case", definitions + "# BEGIN case", 1)
-    # Capitalized Latin words after Hangul keep a low opener even when the
-    # engine exposes the Latin lookahead. Inter's matching-closer rules only
-    # span 2–6 glyphs and cannot balance longer titles such as New Directions.
-    calt.code = calt.code.replace(
-        "# BEGIN case",
-        "# BEGIN case\n"
-        "    ignore sub @ASTR_HANGUL [parenleft bracketleft braceleft]' @UC @LC;",
-        1,
-    )
+# Bound only the intervening punctuation, not the length of either word.
+# A finite bound is required by OpenType chaining contexts.
+CONTEXTUAL_GAP_LIMIT = 8
 
-    def directional(match):
-        context = match[1]
-        return (
-            f"sub @CASE_L'{context}@UC by @CASE_R;\n"
-            f"    sub @ASTR_LEADING'{context}[@ASTR_HANGUL @ASTR_CJK_BRACKETS] "
-            "by @ASTR_LEADING_CASE;"
-        )
 
-    calt.code, count = re.subn(
-        r"sub @CASE_L'((?: @CASE_L)* )@ASTR_UC by @CASE_R;",
-        directional,
-        calt.code,
-    )
-    if count != 5:
-        raise ValueError("Inter calt forward case rules have changed")
+def _render_astr_contextual_case(calt) -> str:
+    def members(name):
+        match = re.search(rf"@{name}\s*=\s*\[([^]]+)\];", calt.code)
+        if match is None:
+            raise ValueError(f"Inter calt no longer defines @{name}")
+        return match[1].split()
+
+    left, right = members("CASE_L"), members("CASE_R")
+    if len(left) != len(right):
+        raise ValueError("Inter calt case classes have different lengths")
+    mapping = dict(zip(left, right))
+    openers = ["parenleft", "bracketleft", "braceleft"]
+    closers = ["parenright", "bracketright", "braceright"]
+    delimiters = set(openers + closers)
+    symbols = [g for g in left if g not in delimiters]
+    unary = [g for g in symbols if g not in {"hyphen", "endash", "emdash"}]
+    lines = ["# BEGIN case", "# Astr: Resolve delimiters before contextual symbols."]
+
+    def glyph_class(name, glyphs):
+        lines.append(f"@{name} = [{' '.join(glyphs)}];")
+
+    glyph_class("ASTR_HANGUL", [HANGUL_SYLLABLE_TOKEN])
+    glyph_class("ASTR_CJK_BRACKETS", [CJK_BRACKET_TOKEN])
+    for name, glyphs in (("OPEN", openers), ("CLOSE", closers),
+                         ("SYMBOL", symbols), ("UNARY", unary)):
+        glyph_class("ASTR_" + name, glyphs)
+        glyph_class("ASTR_" + name + "_CASE", [mapping[g] for g in glyphs])
+    # A raised delimiter is a visible tall boundary. Ordinary delimiters and
+    # quotation marks are transparent only in their inward-facing direction.
+    glyph_class("ASTR_TALL_LEFT", ["@ASTR_UC", "@ASTR_CJK_BRACKETS", "@ASTR_CLOSE_CASE"])
+    glyph_class("ASTR_TALL_RIGHT", ["@ASTR_UC", "@ASTR_CJK_BRACKETS", "@ASTR_OPEN_CASE"])
+    common = ["@Whitespace", "@ASTR_SYMBOL", "@ASTR_SYMBOL_CASE",
+              "quotesingle", "quotedbl"]
+    glyph_class("ASTR_GAP_LEFT", common + ["@ASTR_CLOSE", "quoteright", "quotedblright",
+                "comma", "period", "ellipsis", "twodotleader", "semicolon"])
+    glyph_class("ASTR_GAP_RIGHT", common + ["@ASTR_OPEN", "quoteleft", "quotedblleft",
+                "quotesinglbase", "quotedblbase"])
+
+    lines += ["lookup ASTR_Delimiters useExtension {", "    lookupflag IgnoreMarks;"]
+    # Retain Inter's short-pair convention, e.g. (Hangul), while keeping
+    # capitalized Latin annotations after Hangul low regardless of length.
+    lines.append("    ignore sub @ASTR_HANGUL @ASTR_OPEN' @UC @LC;")
+    for opener, closer in zip(openers, closers):
+        for count in range(2, 7):
+            lines.append(f"    ignore sub {opener} {'@All ' * count}{closer}';")
+    lines.append("    ignore sub @ASTR_LC @ASTR_OPEN' @ASTR_UC;")
+    for count in range(4):
+        lines.append("    sub @ASTR_OPEN' " + "@ASTR_OPEN " * count
+                     + "@ASTR_UC by @ASTR_OPEN_CASE;")
+    lines.append("    sub @ASTR_UC @ASTR_CLOSE' by @ASTR_CLOSE_CASE;")
+    lines.append("    sub @ASTR_CLOSE_CASE @ASTR_CLOSE' by @ASTR_CLOSE_CASE;")
+    for opener, closer in zip(openers, closers):
+        for count in range(2, 7):
+            lines.append(f"    sub {mapping[opener]} {'@All ' * count}"
+                         f"{closer}' by {mapping[closer]};")
+    lines.append("} ASTR_Delimiters;")
+
+    lines += ["lookup ASTR_ContextualSymbols useExtension {",
+              "    lookupflag IgnoreMarks;",
+              "    # Lowercase on either side takes precedence over tall context."]
+    for count in range(CONTEXTUAL_GAP_LIMIT + 1):
+        before = "@ASTR_GAP_LEFT " * count
+        after = "@ASTR_GAP_RIGHT " * count
+        lines.append(f"    ignore sub @ASTR_LC {before}@ASTR_SYMBOL';")
+        lines.append(f"    ignore sub @ASTR_SYMBOL' {after}@ASTR_LC;")
+    lines.append("    # Dashes require tall context on both sides, including across quotes.")
+    for left_count in range(CONTEXTUAL_GAP_LIMIT + 1):
+        before = "@ASTR_GAP_LEFT " * left_count
+        for right_count in range(CONTEXTUAL_GAP_LIMIT + 1):
+            after = "@ASTR_GAP_RIGHT " * right_count
+            lines.append(f"    sub @ASTR_TALL_LEFT {before}@ASTR_SYMBOL' "
+                         f"{after}@ASTR_TALL_RIGHT by @ASTR_SYMBOL_CASE;")
+    lines.append("    # Non-dash symbols also support prefix/suffix use, e.g. +A and 한:.")
+    for count in range(CONTEXTUAL_GAP_LIMIT + 1):
+        before = "@ASTR_GAP_LEFT " * count
+        after = "@ASTR_GAP_RIGHT " * count
+        lines.append(f"    sub @ASTR_TALL_LEFT {before}@ASTR_UNARY' by @ASTR_UNARY_CASE;")
+        lines.append(f"    sub @ASTR_UNARY' {after}@ASTR_TALL_RIGHT by @ASTR_UNARY_CASE;")
+    lines.append("    # Preserve Inter's Latin/numeral edge cases, e.g. A- and -3.")
+    for count in range(CONTEXTUAL_GAP_LIMIT + 1):
+        before = "@ASTR_GAP_LEFT " * count
+        after = "@ASTR_GAP_RIGHT " * count
+        lines.append(f"    sub @UC {before}@DASH' by @DASH_CASE;")
+        lines.append(f"    sub @DASH' {after}@UC by @DASH_CASE;")
+    lines += ["} ASTR_ContextualSymbols;", "# END case"]
+    return "\n    ".join(lines)
 
 
 def _fix_astr_contextual_punctuation(font, calt) -> None:
-    # U+2329/U+232A canonically normalize to U+3008/U+3009. Asta's
-    # original cmap only has the former, causing fallback in normal text.
+    # U+2329/U+232A normalize to U+3008/U+3009; retain Asta's outlines.
     for name, unicode_value in (("angleLeft", "3008"), ("angleRight", "3009")):
         glyph = font.glyphs[name]
         if glyph is not None and not any(
@@ -1397,37 +1442,24 @@ def _fix_astr_contextual_punctuation(font, calt) -> None:
         ):
             glyph.unicodes = [*glyph.unicodes, unicode_value]
 
-    marker = "# Astr: Directional punctuation and CJK brackets."
-    if marker in calt.code:
-        return
-    match = re.search(r"@CASE_L\s*=\s*\[([^]]+)\];", calt.code)
-    if match is None:
-        raise ValueError("Inter calt no longer defines the expected @CASE_L class")
-    # Text engines can split Hangul and Latin into separate shaping runs.
-    # An opener must see its contents; a dash must see both sides. A
-    # one-sided Hangul rule cannot distinguish '한-' from the run in '한-a'.
-    excluded = {"parenleft", "bracketleft", "braceleft", "hyphen", "endash", "emdash"}
-    trailing = [name for name in match[1].split() if name not in excluded]
-    definitions = (
-        f"{marker}\n"
-        f"    @ASTR_HANGUL = [{HANGUL_SYLLABLE_TOKEN}];\n"
-        f"    @ASTR_CJK_BRACKETS = [{CJK_BRACKET_TOKEN}];\n"
-        f"    @ASTR_TRAILING = [{' '.join(trailing)}];\n"
-        "    "
+    # Migrate earlier Astr patches as well as fresh Inter input. Rebuild the
+    # case section deterministically rather than stacking more substitutions.
+    calt.code = calt.code.replace("@UC @ASTR_CJK_BRACKETS", "@UC")
+    calt.code = re.sub(
+        r"(?m)^ *# Astr: (?:Directional punctuation and CJK brackets\.|"
+        r"Keep outside Hangul from raising closing delimiters\.)\n", "", calt.code,
     )
-    calt.code = calt.code.replace("@UC = [", definitions + "@UC = [", 1)
-    calt.code = calt.code.replace(
-        "@ASTR_UC = [@UC", "@ASTR_UC = [@UC @ASTR_CJK_BRACKETS", 1
+    # Legacy classes live outside the case section. Predicate tokens contain
+    # their own closing bracket, so remove the complete declaration line.
+    before, separator, tail = calt.code.partition("# BEGIN case")
+    before = re.sub(
+        r"(?m)^ *@ASTR_(?:HANGUL|CJK_BRACKETS|TRAILING|LEADING|LEADING_CASE) = .*;\n",
+        "", before,
     )
-    old = "sub @ASTR_UC @CASE_L' by @CASE_R;"
-    if calt.code.count(old) != 1:
-        raise ValueError("Inter calt one-sided case rule has changed")
-    calt.code = calt.code.replace(
-        old,
-        "sub [@UC @ASTR_CJK_BRACKETS] @CASE_L' by @CASE_R;\n"
-        "    sub @ASTR_HANGUL @ASTR_TRAILING' by "
-        "[" + " ".join(name + ".case" for name in trailing) + "];",
-    )
+    if not separator or tail.count("# END case") != 1:
+        raise ValueError("Inter calt case section has changed")
+    _, after = tail.split("# END case", 1)
+    calt.code = before + _render_astr_contextual_case(calt) + after
 
 
 def _kerning_group_keys(glyph) -> set[str]:
@@ -1997,8 +2029,8 @@ def validate_merged_font(font, commit: str, settings: dict) -> None:
         HANGUL_SYLLABLE_TOKEN,
         HANGUL_COMPATIBILITY_JAMO_TOKEN,
         CJK_BRACKET_TOKEN,
-        "@ASTR_TRAILING",
-        "@ASTR_LEADING_CASE",
+        "lookup ASTR_Delimiters useExtension",
+        "lookup ASTR_ContextualSymbols useExtension",
     )
     if calt is None or any(item not in calt.code for item in expected_contextual_code):
         raise ValueError(
